@@ -1,9 +1,9 @@
-# Cahier des Charges — [Nom du Projet]
+# Cahier des Charges — Pac-man
 
 **Version :** 1.0
-**Date :** JJ/MM/AAAA
-**Auteur(s) :** [Nom]
-**Statut :** Brouillon / En révision / Validé
+**Date :** 2026-04-28
+**Auteur(s) :** kebertra & gtourdia
+**Statut :** Brouillon
 
 ---
 
@@ -24,19 +24,40 @@
 
 ### 1.1 Contexte
 
-Décrivez le contexte dans lequel s'inscrit le projet. Quel problème ou besoin a déclenché ce projet ?
+Ce projet est realise dans le cadre de l'enseignement offert par le tronc commun 42.
 
-> Exemple : L'entreprise X gère actuellement ses commandes via des fichiers Excel partagés, ce qui génère des erreurs et des pertes de temps.
 
 ### 1.2 Objectifs
 
-- **Objectif 1 :** ...
-- **Objectif 2 :** ...
-- **Objectif 3 :** ...
+- **Interface Graphique Polie :** Fournir une interface graphique complète utilisant une bibliothèque simple (type MLX), incluant un menu principal, la vue de jeu et la gestion du Game Over.
+- **Menu Principal Interactif :** Implémenter une page d'accueil permettant de lancer une partie, consulter le Top 10 des scores, lire les instructions et quitter l'application.
+- **Fenêtre de Jeu Dynamique :** Afficher en temps réel le score, le nombre de vies restantes (départ à 3), le niveau actuel et le temps restant.
+- **Système de High-score Persistant :** Développer un système robuste de sauvegarde/chargement des 10 meilleurs scores (noms de 10 caractères max et scores entiers) dans un fichier JSON.
+- **Cheat Mode :** Intégrer des fonctionnalités de triche pour faciliter l'évaluation (invincibilité, gel des fantômes, saut de niveau, etc.).
+- **Progression et Niveaux :** Gérer au moins 10 niveaux successifs avec une limite de temps par niveau (ex: 90s).
+
+<br>
+
+- **Configuration par Fichier externe :** Permettre le paramétrage du jeu (vies, points, vitesse) via un fichier JSON supportant les commentaires (lignes débutant par #) passé en argument au lancement.  - **Intégration de Labyrinthe Tierce :** Adapter le moteur de jeu pour utiliser exclusivement le package 'A-Maze-ing' assigné pour la génération des couloirs, sans modification de son code source.  
+- **Robustesse et Gestion d'Erreurs :** Garantir l'absence totale de crash ou de traceback Python, notamment lors de la lecture de fichiers de configuration corrompus ou manquants.
+
+<br>
+
+- **Qualité de Code :** Adhérer aux standards Python 3.10+, respecter la norme flake8 et valider l'intégralité du code avec des type hints via mypy.
+- **Déploiement Public :** Livrer une version installable et fonctionnelle du jeu sur une plateforme de gaming publique (Steam ou Itch.io) en mode privé/unlisted.
+- **Documentation et Traçabilité :** Produire un README.md complet et un dossier de gestion de projet contenant les preuves de suivi (Timeline, Kanban, analyse de risques). 
+
+
 
 ### 1.3 Vision
 
 > "Permettre à [utilisateur] de [faire quoi] en [gain mesurable]."
+
+> "Permettre a l'utilisateur de lancer une game de pac-man en 1 clic"
+
+> "Permettre a l'utilisateur d enregistrer son score dans un leader board"
+
+> "Permettre a l evaluateur de modifier les parametres du jeu sur un appui de touche"
 
 ### 1.4 Parties prenantes
 

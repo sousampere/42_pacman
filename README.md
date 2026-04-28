@@ -1,6 +1,6 @@
 *This project has been created as part of the 42 curriculum by gtourdia, kebertra*
 
-# 42 Pac-Man
+# 42 Pac-Man, by sousampere &amp; keroberos68
 A 42 project made by gtourdia &amp; kebertra, recreating the Pac-Man game in python.
 
 # 📝​ Description
@@ -34,5 +34,18 @@ The final product is designed to be a deployment-ready package, suitable for dis
 # 🔬​ Implementation
 (WIP)
 
-# 🌐 General Software Architecture
+# 🔗​ General Software Architecture
 (WIP)
+
+# 🚀 Project Management
+(WIP)
+
+[gtourdia / @sousampere](https://github.com/sousampere)
+
+- (WIP)
+
+[kebertra / @KeroBeros68](https://github.com/KeroBeros68)
+
+- (WIP)
+
+![Logo](https://github.com/sousampere/sousampere/blob/main/42mulhouse.png?raw=true)

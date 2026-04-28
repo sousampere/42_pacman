@@ -75,23 +75,34 @@ Ce projet est realise dans le cadre de l'enseignement offert par le tronc commun
 ### 2.1 Fonctionnalités — Méthode MoSCoW
 
 **Must have (indispensable)**
-- [ ] ...
-- [ ] ...
+- [❌] Fichier de configuration JSON(5) supportant les commentaires
+- [❌] Jeu délployé sur un marketplace (ex: Itch.io)
+- [❌] Menu d'accueil affichant le leaderboard
+- [❌] Êcran Win/Lose
+- [❌] Écran pour enregistrer son score dans le leaderboard
+- [❌] Système d'enregistrement/récupération de scores
+- [❌] God mode (code Konami: ↑↑↓↓←→←→ab)
+- [❌] Mode "Pause"
 
 **Should have (important)**
 - [ ] ...
 
 **Could have (souhaitable)**
+- [❌] Effets visuels et sonores lors des power-ups, god mode et mort
 - [ ] ...
 
-**Won't have (hors périmètre)**
+**Won't have (hors périmètre) / Outstanding**
+- [❌] Possibilité d'entrer l'IP d'un backend dans le menu d'accueil pour enregistrer et récupérer les scores
+- [❌] Easter eggs
 - ...
 
 ### 2.2 User Stories
 
 | ID | Rôle | Action souhaitée | Bénéfice | Priorité |
 |----|------|-----------------|----------|----------|
-| US-01 | Utilisateur | Se connecter avec email/mdp | Accéder à mon espace | Must |
+| US-01 | Utilisateur | Appuie sur SPACE depuis le menu d'accueil | Lance le jeu | Must |
+| US-01 | Utilisateur | Appuie sur ESCAPE in-game | Met en pause le jeu | Must |
+| US-01 | Utilisateur | Appuie sur ESCAPE in-game | Met en pause le jeu | Must |
 | US-02 | Admin | Créer/modifier des utilisateurs | Gérer les accès | Must |
 | US-03 | | | | |
 

@@ -26,6 +26,18 @@ S10 [░░░░░░░░░░░░████████] Soutenance
 
 | Tâche | Assigné | S01 | S02 | Statut |
 |---|---|---|---|---|
+| Lecture complète du sujet | Kebertra + Gtourdiat | | | |
+| Redaction cahier des charges | Kebertra + Gtourdiat | | | |
+| Setup Git + structure projet | Kebertra + Gtourdiat | | | |
+| Makefile | Gtourdiat | | | |
+| Creation des classes Entity | Kebertra | | | |
+| Creation du ConfigLoader | Kebertra | | | |
+| Creation du GameEngine (fenetre de base, events key press) | Gtourdia | | | |
+| Creation du MazeAdapter | Gtourdia | | | |
+
+
+| Tâche | Assigné | S01 | S02 | Statut |
+|---|---|---|---|---|
 | Lecture complète du sujet | Kebertra + Gtourdiat | ██ | | ☐ |
 | Rédaction du cahier des charges | Kebertra + Gtourdiat | ██ | | ☐ |
 | Setup dépôt Git + structure projet | Kebertra | ██ | | ☐ |

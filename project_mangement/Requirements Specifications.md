@@ -201,64 +201,104 @@ Le jeu doit intégrer un générateur de labyrinthes externe (package A-Maze-ing
 
 ## 4. Architecture et intégrations
  
+L'architecture retenue est un **hybride à trois couches** : hiérarchie d'entités avec abstraction, State Machine sur le `GameEngine`, et `EventBus` léger pour découpler les managers transversaux.
+ 
 ### 4.1 Schéma d'architecture haut niveau
  
 ```
 pac-man.py  →  ConfigLoader  →  GameEngine
-                                    ├── MazeAdapter      →  [A-Maze-ing pkg]
-                                    ├── list[Entity]
-                                    │       ├── Player        (Entity + Movable)
-                                    │       ├── Ghost × 4     (Entity + Movable)
-                                    │       ├── Pacgum × N    (Entity + Collectible)
-                                    │       └── SuperPacgum×4 (Entity + Collectible)
-                                    ├── ScoreManager     →  highscores.json
-                                    ├── Renderer         →  [Python Arcade]
+                                    │
+                                    ├── StateMachine
+                                    │       ├── MenuState
+                                    │       ├── PlayingState  ──── list[Entity]
+                                    │       │                         ├── Player      (Entity+Movable)
+                                    │       │                         ├── Ghost × 4   (Entity+Movable)
+                                    │       │                         ├── Pacgum × N  (Entity+Collectible)
+                                    │       │                         └── SuperPacgum×4 (Entity+Collectible)
+                                    │       ├── PausedState
+                                    │       └── GameOverState
+                                    │
+                                    ├── EventBus  ←── publish(event)
+                                    │       ├── ScoreManager  →  highscores.json
+                                    │       ├── LivesManager
+                                    │       └── SoundManager  (optionnel)
+                                    │
+                                    ├── MazeAdapter  →  [A-Maze-ing pkg]
+                                    ├── Renderer     →  [Python Arcade]
                                     └── CheatManager
 ```
  
-### 4.2 Hiérarchie des entités et modules
+### 4.2 Les trois couches de l'architecture hybride
  
-#### Abstraction et interfaces
+#### Couche 1 — Hiérarchie d'entités (Entity / Movable / Collectible)
  
-Toutes les entités du jeu partagent une classe abstraite commune `Entity` et implémentent les interfaces qui correspondent à leurs capacités. Cela permet au `GameEngine` de manipuler des listes homogènes (`list[Entity]`) sans connaître les types concrets.
+Toutes les entités partagent une classe abstraite `Entity` et implémentent les interfaces correspondant à leurs capacités. Le `PlayingState` manipule uniquement des `list[Entity]` sans connaître les types concrets.
  
 ```
-Entity (abstract)
-│   position, size, update(), draw()
+Entity (abstract)          position, size, update(dt), draw()
 │
-├── «implements» Movable      → move(), get_speed()
-│       ├── Player
-│       └── Ghost
+├── + Movable (interface)  move(), get_speed()
+│       ├── Player         handle_input(), die(), respawn()
+│       └── Ghost          chase(), flee(), is_edible, home_corner
 │
-└── «implements» Collectible  → collect(), get_points()
-        ├── Pacgum
-        └── SuperPacgum       (+ activate_power())
+└── + Collectible (interface)  collect(), get_points()
+        ├── Pacgum             points = 10
+        └── SuperPacgum        points = 50, activate_power()
 ```
  
-**`Entity` (classe abstraite)** — socle commun : `position`, `size`, `update()`, `draw()`. Tout objet du jeu en hérite.
+#### Couche 2 — State Machine (sur GameEngine)
  
-**`Movable` (interface)** — contrat pour tout ce qui se déplace : `move()`, `get_speed()`. Implémenté par `Player` et `Ghost` uniquement.
+Le `GameEngine` délègue entièrement `update(dt)` et `draw()` à l'état courant. Chaque `State` implémente `on_enter()`, `on_exit()`, `update(dt)`, `draw()`.
  
-**`Collectible` (interface)** — contrat pour tout ce qui se ramasse : `collect()`, `get_points()`. Implémenté par `Pacgum` et `SuperPacgum`.
+```
+State (abstract)
+├── MenuState       affiche menu + highscores
+├── PlayingState    boucle de jeu, gère list[Entity] + EventBus
+├── PausedState     overlay pause, jeu suspendu
+└── GameOverState   score final, saisie nom, sauvegarde highscore
+```
  
-> **Avantage** : le `GameEngine` itère sur `list[Entity]` pour `update()`/`draw()`, filtre les `Collectible` pour les collisions de ramassage, et les `Movable` pour les déplacements — extensible sans modifier le moteur.
+Transitions déclenchées par événements :
+- `MenuState` → `PlayingState` : action "start"
+- `PlayingState` → `PausedState` : touche pause
+- `PausedState` → `PlayingState` : reprise
+- `PlayingState` → `GameOverState` : `PLAYER_DIED` (0 vies) ou `LEVEL_TIME_UP`
+- `GameOverState` → `MenuState` : retour menu
+#### Couche 3 — EventBus (découplage des managers)
+ 
+Le `PlayingState` publie des événements sur l'`EventBus`. Les managers s'y abonnent à l'initialisation et réagissent sans être couplés aux entités.
+ 
+| Événement publié | Abonnés | Action déclenchée |
+|---|---|---|
+| `PACGUM_EATEN(pts)` | `ScoreManager`, `SoundManager` | +score, son waka |
+| `SUPER_PACGUM_EATEN(pts)` | `ScoreManager`, `SoundManager` | +score, ghosts edibles, son power |
+| `GHOST_EATEN(pts)` | `ScoreManager`, `SoundManager` | +score, son ghost |
+| `PLAYER_DIED` | `LivesManager`, `SoundManager` | -1 vie, son death |
+| `LEVEL_COMPLETE` | `ScoreManager`, `GameEngine` | transition niveau suivant |
+| `LEVEL_TIME_UP` | `GameEngine` | transition game over |
+| `GHOST_EDIBLE_END` | `SoundManager` | fin du mode power |
+ 
+> **Pourquoi pas full Event-Driven ?** Les entités (`Player`, `Ghost`…) communiquent toujours directement via leurs méthodes dans `PlayingState` — seuls les managers transversaux (score, vies, son) passent par l'`EventBus`. Cela évite un flux illisible tout en découplant ce qui doit l'être.
  
 #### Modules
  
 | Module | Contenu | Dépendances |
 |---|---|---|
 | `pac-man.py` | Point d'entrée, parsing args | `config.py`, `game.py` |
-| `config.py` | `ConfigLoader` — lecture JSON + commentaires `#`, clamping | stdlib `json`, `logging` |
-| `game.py` | `GameEngine` — boucle principale, gestion des états | Tous les modules |
-| `entity.py` | Classe abstraite `Entity`, interfaces `Movable` et `Collectible` | stdlib `abc` |
-| `player.py` | `Player(Entity, Movable)` — vies, saisie clavier, die(), respawn() | `entity.py`, `maze_adapter.py` |
-| `ghost.py` | `Ghost(Entity, Movable)` — IA chase/flee, is_edible, home_corner, respawn() | `entity.py`, `maze_adapter.py` |
-| `pacgum.py` | `Pacgum(Entity, Collectible)` — points=10, collect() | `entity.py` |
-| `super_pacgum.py` | `SuperPacgum(Entity, Collectible)` — points=50, collect(), activate_power() | `entity.py` |
-| `maze_adapter.py` | Adaptateur vers le package A-Maze-ing assigné (`PERFECT=False`) | A-Maze-ing pkg |
-| `score.py` | `ScoreManager` — calcul score, highscores JSON (top 10) | stdlib `json` |
-| `renderer.py` | Rendu graphique (Arcade), HUD, menus, animations | Python Arcade |
-| `cheat.py` | Mode triche — invincibilité, level skip, freeze, vies bonus, vitesse | `game.py` |
+| `config.py` | `ConfigLoader` — JSON + commentaires `#`, clamping | stdlib `json`, `logging` |
+| `game.py` | `GameEngine` + `StateMachine` — boucle Arcade, transitions | `state.py`, tous |
+| `state.py` | `State` (abstract), `MenuState`, `PlayingState`, `PausedState`, `GameOverState` | `entity.py`, `event.py` |
+| `event.py` | `EventBus` — publish/subscribe, typage des événements | stdlib `abc` |
+| `entity.py` | `Entity` (abstract), interfaces `Movable` et `Collectible` | stdlib `abc` |
+| `player.py` | `Player(Entity, Movable)` — input, die(), respawn() | `entity.py`, `maze_adapter.py` |
+| `ghost.py` | `Ghost(Entity, Movable)` — IA chase/flee, edible, respawn() | `entity.py`, `maze_adapter.py` |
+| `pacgum.py` | `Pacgum(Entity, Collectible)` — points=10 | `entity.py` |
+| `super_pacgum.py` | `SuperPacgum(Entity, Collectible)` — points=50, activate_power() | `entity.py` |
+| `maze_adapter.py` | Adaptateur A-Maze-ing (`PERFECT=False`), fallback si erreur | A-Maze-ing pkg |
+| `score.py` | `ScoreManager` — score courant, highscores JSON top 10 | stdlib `json`, `event.py` |
+| `lives.py` | `LivesManager` — compteur vies, abonné `PLAYER_DIED` | `event.py` |
+| `renderer.py` | Rendu Arcade, HUD, animations | Python Arcade |
+| `cheat.py` | `CheatManager` — invincibilité, level skip, freeze, vies, vitesse | `game.py`, `event.py` |
  
 ### 4.3 Modèle de données
 

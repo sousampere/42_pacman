@@ -200,36 +200,66 @@ Le jeu doit intégrer un générateur de labyrinthes externe (package A-Maze-ing
 ---
 
 ## 4. Architecture et intégrations
-
+ 
 ### 4.1 Schéma d'architecture haut niveau
-
+ 
 ```
 pac-man.py  →  ConfigLoader  →  GameEngine
-                                    ├── MazeAdapter  →  [A-Maze-ing pkg]
-                                    ├── Player
-                                    ├── Ghost × 4
-                                    ├── Pacgum / SuperPacgum
-                                    ├── ScoreManager  →  highscores.json
-                                    └── Renderer  →  [Python Arcade]
+                                    ├── MazeAdapter      →  [A-Maze-ing pkg]
+                                    ├── list[Entity]
+                                    │       ├── Player        (Entity + Movable)
+                                    │       ├── Ghost × 4     (Entity + Movable)
+                                    │       ├── Pacgum × N    (Entity + Collectible)
+                                    │       └── SuperPacgum×4 (Entity + Collectible)
+                                    ├── ScoreManager     →  highscores.json
+                                    ├── Renderer         →  [Python Arcade]
+                                    └── CheatManager
 ```
-
-### 4.2 Modules principaux
-
-temporaire 1er jet d idee
-
-| Module | Rôle | Dépendances |
+ 
+### 4.2 Hiérarchie des entités et modules
+ 
+#### Abstraction et interfaces
+ 
+Toutes les entités du jeu partagent une classe abstraite commune `Entity` et implémentent les interfaces qui correspondent à leurs capacités. Cela permet au `GameEngine` de manipuler des listes homogènes (`list[Entity]`) sans connaître les types concrets.
+ 
+```
+Entity (abstract)
+│   position, size, update(), draw()
+│
+├── «implements» Movable      → move(), get_speed()
+│       ├── Player
+│       └── Ghost
+│
+└── «implements» Collectible  → collect(), get_points()
+        ├── Pacgum
+        └── SuperPacgum       (+ activate_power())
+```
+ 
+**`Entity` (classe abstraite)** — socle commun : `position`, `size`, `update()`, `draw()`. Tout objet du jeu en hérite.
+ 
+**`Movable` (interface)** — contrat pour tout ce qui se déplace : `move()`, `get_speed()`. Implémenté par `Player` et `Ghost` uniquement.
+ 
+**`Collectible` (interface)** — contrat pour tout ce qui se ramasse : `collect()`, `get_points()`. Implémenté par `Pacgum` et `SuperPacgum`.
+ 
+> **Avantage** : le `GameEngine` itère sur `list[Entity]` pour `update()`/`draw()`, filtre les `Collectible` pour les collisions de ramassage, et les `Movable` pour les déplacements — extensible sans modifier le moteur.
+ 
+#### Modules
+ 
+| Module | Contenu | Dépendances |
 |---|---|---|
-| `pac-man.py` | Point d'entrée, parsing args | ConfigLoader, GameEngine |
-| `config.py` | Chargement et validation JSON + commentaires `#` | stdlib json, logging |
-| `game.py` | Boucle de jeu principale, gestion états | Tous les modules |
-| `maze.py` / `maze_adapter.py` | Adaptateur vers le package A-Maze-ing assigné | A-Maze-ing pkg |
-| `player.py` | Logique joueur, vies, déplacement | maze.py |
-| `ghost.py` | IA fantômes, modes chase/flee | maze.py, player.py |
-| `entities.py` | Pacgum, SuperPacgum | maze.py |
-| `score.py` | Calcul score, gestion highscores JSON | stdlib json |
+| `pac-man.py` | Point d'entrée, parsing args | `config.py`, `game.py` |
+| `config.py` | `ConfigLoader` — lecture JSON + commentaires `#`, clamping | stdlib `json`, `logging` |
+| `game.py` | `GameEngine` — boucle principale, gestion des états | Tous les modules |
+| `entity.py` | Classe abstraite `Entity`, interfaces `Movable` et `Collectible` | stdlib `abc` |
+| `player.py` | `Player(Entity, Movable)` — vies, saisie clavier, die(), respawn() | `entity.py`, `maze_adapter.py` |
+| `ghost.py` | `Ghost(Entity, Movable)` — IA chase/flee, is_edible, home_corner, respawn() | `entity.py`, `maze_adapter.py` |
+| `pacgum.py` | `Pacgum(Entity, Collectible)` — points=10, collect() | `entity.py` |
+| `super_pacgum.py` | `SuperPacgum(Entity, Collectible)` — points=50, collect(), activate_power() | `entity.py` |
+| `maze_adapter.py` | Adaptateur vers le package A-Maze-ing assigné (`PERFECT=False`) | A-Maze-ing pkg |
+| `score.py` | `ScoreManager` — calcul score, highscores JSON (top 10) | stdlib `json` |
 | `renderer.py` | Rendu graphique (Arcade), HUD, menus, animations | Python Arcade |
-| `cheat.py` | Mode triche (invincibilité, level skip, etc.) | game.py |
-
+| `cheat.py` | Mode triche — invincibilité, level skip, freeze, vies bonus, vitesse | `game.py` |
+ 
 ### 4.3 Modèle de données
 
 **Configuration (`config.json`)**

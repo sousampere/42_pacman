@@ -1,5 +1,5 @@
 # TEST_PLAN — Plan de recette
-*Projet Pacman — Kebertra + Gtourdiat*
+*Projet Pacman — Kebertra + gtourdia*
 
 ---
 

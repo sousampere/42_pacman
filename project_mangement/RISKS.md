@@ -1,5 +1,5 @@
 # RISKS — Analyse des risques
-*Projet Pacman — Kebertra + Gtourdiat*
+*Projet Pacman — Kebertra + gtourdia*
 
 ---
 

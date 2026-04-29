@@ -1,5 +1,5 @@
 # TEAM — Organisation de l'équipe
-*Projet Pacman — Kebertra + Gtourdiat*
+*Projet Pacman — Kebertra + gtourdia*
 
 ---
 
@@ -8,7 +8,7 @@
 | Login | Rôle principal | Forces identifiées |
 |---|---|---|
 | Kebertra | Référent architecture & rendu | Arcade, moteur de jeu, intégration A-Maze-ing |
-| Gtourdiat | Référent qualité & features | Config, scoring, highscores, mode triche |
+| gtourdia | Référent qualité & features | Config, scoring, highscores, mode triche |
 
 > Les rôles sont indicatifs. Les deux membres doivent comprendre et pouvoir expliquer l'intégralité du code lors de la peer review.
 
@@ -18,20 +18,20 @@
 
 | Module | Responsable principal | Relecteur |
 |---|---|---|
-| `pac-man.py` (point d'entrée) | Gtourdiat | Kebertra |
-| `config.py` (ConfigLoader) | Gtourdiat | Kebertra |
-| `maze.py` / `maze_adapter.py` | Kebertra | Gtourdiat |
-| `game.py` (GameEngine) | Kebertra | Gtourdiat |
-| `player.py` | Gtourdiat | Kebertra |
-| `ghost.py` | Kebertra | Gtourdiat |
-| `entities.py` (Pacgum, SuperPacgum) | Gtourdiat | Kebertra |
-| `score.py` (ScoreManager) | Gtourdiat | Kebertra |
-| `renderer.py` (Arcade) | Kebertra | Gtourdiat |
-| `cheat.py` | Gtourdiat | Kebertra |
-| Makefile | Gtourdiat | Kebertra |
-| Tests unitaires | Gtourdiat | Kebertra |
-| README.md | Gtourdiat | Kebertra |
-| `project_management/` | Kebertra + Gtourdiat | — |
+| `pac-man.py` (point d'entrée) | gtourdia | Kebertra |
+| `config.py` (ConfigLoader) | gtourdia | Kebertra |
+| `maze.py` / `maze_adapter.py` | Kebertra | gtourdia |
+| `game.py` (GameEngine) | Kebertra | gtourdia |
+| `player.py` | gtourdia | Kebertra |
+| `ghost.py` | Kebertra | gtourdia |
+| `entities.py` (Pacgum, SuperPacgum) | gtourdia | Kebertra |
+| `score.py` (ScoreManager) | gtourdia | Kebertra |
+| `renderer.py` (Arcade) | Kebertra | gtourdia |
+| `cheat.py` | gtourdia | Kebertra |
+| Makefile | gtourdia | Kebertra |
+| Tests unitaires | gtourdia | Kebertra |
+| README.md | gtourdia | Kebertra |
+| `project_management/` | Kebertra + gtourdia | — |
 
 ---
 
@@ -61,9 +61,9 @@
 
 | Date | Décision | Justification | Décidé par |
 |---|---|---|---|
-| 29/04/2026 | Bibliothèque graphique : Python Arcade | Moderne, bien documentée, adapté aux jeux 2D tile-based, cross-platform | Kebertra + Gtourdiat |
-| 29/04/2026 | Highscores : JSON local | Simple, portable, requis par le sujet, pas de dépendance externe | Kebertra + Gtourdiat |
-| 29/04/2026 | Packaging : PyInstaller | Standard Python, génère un exécutable standalone | Kebertra + Gtourdiat |
+| 29/04/2026 | Bibliothèque graphique : Python Arcade | Moderne, bien documentée, adapté aux jeux 2D tile-based, cross-platform | Kebertra + gtourdia |
+| 29/04/2026 | Highscores : JSON local | Simple, portable, requis par le sujet, pas de dépendance externe | Kebertra + gtourdia |
+| 29/04/2026 | Packaging : PyInstaller | Standard Python, génère un exécutable standalone | Kebertra + gtourdia |
 | À compléter | Comportement fin de timer | game over OU restart du niveau ? | |
 | À compléter | Comportement fantômes : algo de chasse | BFS / distance Manhattan / aléatoire ? | |
 | À compléter | Plateforme de déploiement | Steam ou Itch.io ? | |

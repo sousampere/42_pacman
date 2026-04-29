@@ -76,15 +76,24 @@ Ce projet est realise dans le cadre de l'enseignement offert par le tronc commun
 
 **Must have (indispensable)**
 - [❌] Fichier de configuration JSON(5) supportant les commentaires
-- [❌] Jeu délployé sur un marketplace (ex: Itch.io)
-- [❌] Menu d'accueil affichant le leaderboard
+- [❌] Écran d'accueil affichant le leaderboard
 - [❌] Êcran Win/Lose
 - [❌] Écran pour enregistrer son score dans le leaderboard
 - [❌] Système d'enregistrement/récupération de scores
 - [❌] God mode (code Konami: ↑↑↓↓←→←→ab)
+    - [❌] xxxxxxx
 - [❌] Mode "Pause"
+- [❌] Jeu délployé sur un marketplace (ex: Itch.io)
 
 **Should have (important)**
+- [❌] Fichier de configuration
+    - [❌] Supporte les commentaires
+    - [❌] Permet de changer les paramètres de la game
+    - [❌] Aucune erreur imprévue
+- [❌] Génération de level basée sur le package a-maze-ing
+- [❌] Système de sauvegarde des scores persistant
+
+
 - [ ] ...
 
 **Could have (souhaitable)**
@@ -124,37 +133,24 @@ Ce projet est realise dans le cadre de l'enseignement offert par le tronc commun
 
 | Composant | Technologie | Justification |
 |-----------|------------|---------------|
-| Frontend | | |
-| Backend | | |
-| Base de données | | |
-| Hébergement | | |
-| CI/CD | | |
+| Frontend | ? | ? |
+| Backend | ? | ? |
 
 ### 3.2 Performances
 
 | Critère | Valeur cible |
 |---------|-------------|
-| Temps de réponse moyen | < X ms |
-| Disponibilité (uptime) | > 99,X % |
-| Charge simultanée supportée | X utilisateurs |
-| Temps de chargement page | < X s |
+| FPS | Fluide (+24) jusqu'à maze de 100x100 |
 
 ### 3.3 Sécurité
 
-- [ ] Authentification : [JWT / OAuth / SSO / autre]
-- [ ] Chiffrement des données en transit (HTTPS) et au repos
-- [ ] Conformité RGPD : [Oui / Non — préciser]
-- [ ] Gestion des rôles et permissions
-- [ ] Journalisation des actions (logs)
+- [❌] Parsing solide de tous les fichiers d'entrée
 
 ### 3.4 Compatibilité
 
 | Type | Cible |
 |------|-------|
-| Navigateurs | Chrome, Firefox, Safari, Edge (N-1) |
-| Appareils | Desktop, tablette, mobile |
-| OS serveur | Linux Ubuntu XX |
-| Résolution minimale | 1280x720 |
+| OS | Linux |
 
 ---
 

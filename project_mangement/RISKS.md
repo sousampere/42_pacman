@@ -161,7 +161,6 @@
 | R07 | :large_yellow_circle: En surveillance | — | |
 | R08 | :large_yellow_circle: En surveillance | — | |
 | R09 | :large_green_circle: Faible | — | |
-| R10 | :large_green_circle: Faible | — | |
 
 ---
 

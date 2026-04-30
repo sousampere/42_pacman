@@ -8,17 +8,17 @@ class MyGame(arcade.Window):
         self.player = Player(spawn_point=(100, 100), speed=10.0)
         self.scene_entities = arcade.SpriteList()
         self.scene_entities.append(self.player)
+        self.direction = (0, 0)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.player.move((0, 1))
+            self.direction = (0, 1)
         elif key == arcade.key.DOWN:
-            self.player.move((0, -1))
+            self.direction = (0, -1)
         elif key == arcade.key.RIGHT:
-            self.player.move((1, 0))
+            self.direction = (1, 0)
         elif key == arcade.key.LEFT:
-            self.player.move((-1, 0))
-        # ... etc
+            self.direction = (-1, 0)
 
     def on_key_release(self, key, modifiers):
         if key in (
@@ -27,9 +27,10 @@ class MyGame(arcade.Window):
             arcade.key.LEFT,
             arcade.key.RIGHT,
         ):
-            self.player.move((0, 0))
+            self.direction = (0, 0)
 
     def on_update(self, delta_time):
+        self.player.move(self.direction)
         self.scene_entities.update()
 
     def on_draw(self):

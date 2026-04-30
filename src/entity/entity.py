@@ -4,6 +4,16 @@ from abc import ABC, abstractmethod
 class Entity(ABC):
     def __init__(self, spawn_point: tuple[int, int]) -> None:
         self.spawn_point: tuple[int, int] = spawn_point
+        self._x: float = float(spawn_point[0])
+        self._y: float = float(spawn_point[1])
+
+    @property
+    def x(self) -> float:
+        return self._x
+
+    @property
+    def y(self) -> float:
+        return self._y
 
 
 class Movable(ABC):

@@ -1,12 +1,10 @@
 from src.entity.player import Player
-import pytest
 
 
 class TestPlayer:
-    def test_player_initial_position(self) -> None:
-        player = Player(spawn_point=(0, 0))
+    def test_player_move_down(self):
+        player = Player(spawn_point=(100, 100), speed=1)
+        player.move((0, 1))
 
-        player.move((0,1))
-
-        assert player.center_y == 1
-        assert player.center_x == 0
+        assert player._x == 100
+        assert player._y == 101

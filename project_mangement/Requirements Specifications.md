@@ -105,6 +105,7 @@ Le jeu doit intégrer un générateur de labyrinthes externe (package A-Maze-ing
     - [❌] Freeze fantômes
     - [❌] Vies bonus
     - [❌] Speed hack
+    - [❌] No clip
 - [❌] Déploiement sur Steam ou Itch.io (build privé/unlisted)
 - [❌] Makefile avec cibles : `install`, `run`, `debug`, `clean`, `lint`
     - [❌] Rule install

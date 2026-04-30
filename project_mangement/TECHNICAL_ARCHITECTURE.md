@@ -5,7 +5,8 @@
 
 ```
 main():
-- Load config with ConfigLoader()
+- Load config avec ConfigLoader()
+- Cree le GameEngine depuis la config
 ```
 
 ## src/ConfigLoader.py
@@ -57,6 +58,14 @@ MazeAdapter(AbsMazeAdapter):
 
 ```
 GameEngine:
-- Render game
+- render_menu()
+  > Affiche le menu
+- render_game()
+  > Affiche un niveau
+- render_pause()
+  > Affiche un menu de pause
+- render_finish()
+  > Affiche un menu de partie terminee
+
 - Listen to keys / even
 ```

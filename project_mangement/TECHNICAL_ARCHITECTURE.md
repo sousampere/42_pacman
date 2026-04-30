@@ -5,11 +5,22 @@
 
 ```
 main():
+- Load arguments avec argparse
 - Load config avec ConfigLoader()
 - Cree le GameEngine depuis la config
 ```
 
-## src/ConfigLoader.py
+## src/arguments.py
+
+```
+Les arguments sont set avec argparse
+
+Arguments:
+--config (ou 1er arg si pas de flag): str | chemin vers le fichier de config
+--theme: str | chemin vers le dossier de theme
+```
+
+## src/config_loader.py
 
 ```
 Config(BaseModel):
@@ -34,7 +45,7 @@ ConfigLoader(AbsConfigLoader):
   > Ouvre un fichier source et le transforme en objet Config
 ```
 
-## src/MazeAdapter.py
+## src/maze_adapter.py
 
 ```
 Cell:
@@ -54,10 +65,39 @@ MazeAdapter(AbsMazeAdapter):
   > Use the A-Maze-Ing package to get a maze with the given data, output a Maze object
 ```
 
-## src/GameEngine.py
+## src/entities.py
 
 ```
-GameEngine:
+(À compléter par kebertra)
+```
+
+## src/game_views.py
+
+```
+MenuView(arcade.View):
+  > ...
+
+GameView(arcade.View):
+  > ...
+
+# Note: Le on_draw() du PauseView appelle le on_draw du GameView pour faire une superposition
+PauseView(arcade.View):
+  > ...
+
+FinishView(arcade.View):
+```
+
+## src/game_engine.py
+
+```
+GameEngine(arcade.Window):
+- maze_adapter: MazeAdapter | Pour générer des maze
+- config: Config | Pour accéder à la config
+- menu_view: arcade.View | Scene de menu
+- game_view: arcade.View | Scene in-game
+- pause_view: arcade.View | Scene de pause
+- finish_view: arcade.View | Scene de finish
+
 - render_menu()
   > Affiche le menu
 - render_game()
@@ -66,6 +106,7 @@ GameEngine:
   > Affiche un menu de pause
 - render_finish()
   > Affiche un menu de partie terminee
-
-- Listen to keys / even
+- save_score(nickname: str, score: int, time: int, config_hash: str) -> None
+  > Enregistre dans le leaderboard la score
+- (diverses fonctions surchargées pour gérer les events)
 ```

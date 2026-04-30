@@ -15,6 +15,7 @@ class Player(arcade.Sprite, Entity, Movable):
         }
         self.center_x = self._x
         self.center_y = self._y
+        self._lives: int = 3
 
     def move(self, direction: tuple[float, float]) -> None:
         dx, dy = direction
@@ -38,9 +39,22 @@ class Player(arcade.Sprite, Entity, Movable):
         self.center_y = self._y
         if self.right > 800:
             self._x = 800 - self.width / 2
+            self.die()  # test
         if self.left < 0:
             self._x = self.width / 2
         if self.top > 600:
             self._y = 600 - self.height / 2
         if self.bottom < 0:
             self._y = self.height / 2
+
+    def die(self) -> None:
+        self._lives -= 1
+        if self._lives == 0:
+            raise NotImplementedError("GAME OVER A IMPLEMENTER")
+        self.respawn()
+
+    def respawn(self) -> None:
+        self._x, self._y = self.spawn_point
+
+        self.center_x = self._x
+        self.center_y = self._y

@@ -228,10 +228,7 @@ pac-man.py  →  ConfigLoader  →  GameEngine
                                     └── CheatManager
 ```
 
-#### Game engine process
 
-(WIP)
-- Get parsed config
  
 ### 4.2 Les trois couches de l'architecture hybride
  

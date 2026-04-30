@@ -1,21 +1,21 @@
 # GANTT — Projet Pacman
-*Kebertra + Gtourdiat — 10 semaines*
+*Kebertra + gtourdia — 10 semaines*
 
 ---
 
 ## Planning macro
 
 ```
-S01 [████████░░░░░░░░░░░░] Conception & Setup
-S02 [████████░░░░░░░░░░░░] Conception & Setup
-S03 [░░░░████████░░░░░░░░] Core gameplay
-S04 [░░░░████████░░░░░░░░] Core gameplay
-S05 [░░░░████████░░░░░░░░] Core gameplay
-S06 [░░░░░░░░████████░░░░] Fonctionnalités
-S07 [░░░░░░░░████████░░░░] Fonctionnalités
-S08 [░░░░░░░░░░░░████████] Qualité & Tests
-S09 [░░░░░░░░░░░░████████] Packaging & Déploiement
-S10 [░░░░░░░░░░░░████████] Soutenance
+S01 [░░░░░░░░░░░░] Conception & Setup
+S02 [░░░░░░░░░░░░] Conception & Setup
+S03 [░░░░░░░░░░░░] Core gameplay
+S04 [░░░░░░░░░░░░] Core gameplay
+S05 [░░░░░░░░░░░░] Core gameplay
+S06 [░░░░░░░░░░░░] Fonctionnalités
+S07 [░░░░░░░░░░░░] Fonctionnalités
+S08 [░░░░░░░░░░░░] Qualité & Tests
+S09 [░░░░░░░░░░░░] Packaging & Déploiement
+S10 [░░░░░░░░░░░░] Soutenance
 ```
 
 ---
@@ -26,80 +26,80 @@ S10 [░░░░░░░░░░░░████████] Soutenance
 
 | Tâche | Assigné | S01 | S02 | Statut |
 |---|---|---|---|---|
-| Lecture complète du sujet | Kebertra + Gtourdiat | ██ | | ☐ |
-| Rédaction du cahier des charges | Kebertra + Gtourdiat | ██ | | ☐ |
-| Setup dépôt Git + structure projet | Kebertra | ██ | | ☐ |
-| Makefile (install, run, debug, clean, lint) | Gtourdiat | ██ | | ☐ |
-| Prise en main du package A-Maze-ing | Kebertra + Gtourdiat | | ██ | ☐ |
-| Prise en main de Python Arcade | Kebertra | | ██ | ☐ |
-| Définition de l'architecture modulaire | Kebertra + Gtourdiat | | ██ | ☐ |
-| ConfigLoader (JSON + commentaires #) | Gtourdiat | | ██ | ☐ |
+| Lecture complète du sujet | Kebertra + gtourdia | x | | |
+| Redaction cahier des charges | Kebertra + gtourdia | x | | |
+| Setup Git | Kebertra + gtourdia | x | | |
+| Setup prévisionnel de l'architecture (classes, methodes, ...) | Kebertra + gtourdia | x | | |
+| Makefile | gtourdia | x | | |
+| Creation des classes Entity | Kebertra | | x | |
+| Creation du ConfigLoader | Gtourdia | | x | |
+| Creation du GameEngine (fenetre de base, events key press) | Gtourdia | | x | |
+| Creation du MazeAdapter | Kebertra | | x | |
 
 ### Phase 2 — Core Gameplay (S03–S05)
 
 | Tâche | Assigné | S03 | S04 | S05 | Statut |
 |---|---|---|---|---|---|
-| MazeAdapter (intégration A-Maze-ing) | Kebertra | ██ | | | ☐ |
-| Rendu du labyrinthe (Arcade) | Kebertra | ██ | ██ | | ☐ |
-| Player : déplacement, collisions murs | Gtourdiat | ██ | ██ | | ☐ |
-| Entités : Pacgum, SuperPacgum | Gtourdiat | | ██ | | ☐ |
-| Ghost : mouvement autonome | Kebertra | | ██ | ██ | ☐ |
-| Ghost : mode edible + réapparition | Kebertra | | | ██ | ☐ |
-| Système de vies + game over | Gtourdiat | | | ██ | ☐ |
-| Boucle de jeu complète (GameEngine) | Kebertra + Gtourdiat | | | ██ | ☐ |
-| MVP jouable bout en bout | Kebertra + Gtourdiat | | | ██ | ☐ |
+| Rendu du labyrinthe (Arcade) | gtourdia | x |  | |  |
+| Ajout joueur : déplacement/colisions | Kebertra | x |  | |  |
+| Ajout pacgums (avec player interraction) | gtourdia | x | | | |
+| Ajout super-pacgums | Kebertra | |  |  |  |
+| Ajout ghost : mouvement autonome | gtourdia | |  |  |  |
+| Ghost : mode edible + réapparition | gtourdia | | |  |  |
+| Ecran game over | Kebertra | | |  |  |
+| Boucle de jeu complète (GameEngine) | Kebertra + gtourdia | | |  |  |
+| MVP jouable bout en bout | Kebertra + gtourdia | | |  |  |
 
 ### Phase 3 — Fonctionnalités (S06–S07)
 
 | Tâche | Assigné | S06 | S07 | Statut |
 |---|---|---|---|---|
-| Système de score | Gtourdiat | ██ | | ☐ |
-| Highscores persistants (JSON, top 10) | Gtourdiat | ██ | ██ | ☐ |
-| Menu principal (démarrer, highscores, instructions, quitter) | Kebertra | ██ | | ☐ |
-| HUD in-game (score, vies, niveau, timer) | Kebertra | ██ | | ☐ |
-| Menu pause + reprise | Gtourdiat | | ██ | ☐ |
-| Écran Game Over + saisie nom | Kebertra | | ██ | ☐ |
-| Écran Victoire | Kebertra | | ██ | ☐ |
-| Mode triche complet (5 fonctions) | Gtourdiat | ██ | ██ | ☐ |
-| Progression 10 niveaux | Kebertra + Gtourdiat | | ██ | ☐ |
+| Highscore persistant | gtourdia |  |  | |  |
+| Enchainement de niveaux 1 à 10+ | kebertra |  |  | |  |
+| Menu principal (démarrer, highscores, instructions, quitter) | kebertra |  |  | |  |
+| In-game HUD (score, vies, niveau, timer, progress) | gtourdia |  |  | |  |
+| Menu pause + reprise | kebertra | | | |
+| Game over screen + saisie nom | gtourdia | | | |
+| Victory screen + saisie nom | gtourdia | | | |
+| God Mode | kebertra | | | |
 
 ### Phase 4 — Qualité & Tests (S08)
 
 | Tâche | Assigné | S08 | Statut |
 |---|---|---|---|
-| Conformité flake8 (PEP 8) | Gtourdiat | ██ | ☐ |
-| Typage complet + mypy sans erreur | Kebertra | ██ | ☐ |
-| Docstrings PEP 257 | Kebertra + Gtourdiat | ██ | ☐ |
-| Tests unitaires ConfigLoader | Gtourdiat | ██ | ☐ |
-| Tests unitaires ScoreManager | Gtourdiat | ██ | ☐ |
-| Tests unitaires MazeAdapter | Kebertra | ██ | ☐ |
-| Tests fonctionnels jeu complet | Kebertra + Gtourdiat | ██ | ☐ |
-| Revue croisée du code | Kebertra + Gtourdiat | ██ | ☐ |
+| Conformité flake8 (PEP 8) | gtourdia |  |  |
+| Typage complet + mypy sans erreur | Kebertra |  |  |
+| Docstrings PEP 257 | Kebertra + gtourdia |  |  |
+| Tests unitaires ConfigLoader | gtourdia |  |  |
+| Tests unitaires ScoreManager | gtourdia |  |  |
+| Tests unitaires MazeAdapter | Kebertra |  |  |
+| Tests fonctionnels jeu complet | Kebertra + gtourdia |  |  |
+| Revue croisée du code | Kebertra + gtourdia |  |  |
 
 ### Phase 5 — Packaging & Déploiement (S09)
 
 | Tâche | Assigné | S09 | Statut |
 |---|---|---|---|
-| Script de packaging (PyInstaller) | Kebertra | ██ | ☐ |
-| Build Linux + test | Gtourdiat | ██ | ☐ |
-| Déploiement Steam ou Itch.io (build privé) | Kebertra + Gtourdiat | ██ | ☐ |
-| README complet en anglais | Gtourdiat | ██ | ☐ |
-| Vérification make lint final | Kebertra | ██ | ☐ |
+| Script de packaging (PyInstaller) | Kebertra |  |  |
+| Build Linux + test | gtourdia |  |  |
+| Déploiement Steam ou Itch.io (build privé) | Kebertra + gtourdia |  |  |
+| README complet en anglais | gtourdia |  |  |
+| Vérification make lint final | Kebertra |  |  |
 
 ### Phase 6 — Soutenance (S10)
 
 | Tâche | Assigné | S10 | Statut |
 |---|---|---|---|
-| Finalisation project_management/ | Kebertra + Gtourdiat | ██ | ☐ |
-| Revue de tout le code (prépa recode) | Kebertra + Gtourdiat | ██ | ☐ |
-| Vérification dépôt Git (noms de fichiers, structure) | Gtourdiat | ██ | ☐ |
-| Simulation peer review (cheat mode testé) | Kebertra | ██ | ☐ |
+| Finalisation project_management/ | Kebertra + gtourdia |  |  |
+| Revue de tout le code (prépa recode) | Kebertra + gtourdia |  |  |
+| Vérification dépôt Git (noms de fichiers, structure) | gtourdia |  |  |
+| Simulation peer review (cheat mode testé) | Kebertra |  |  |
 
 ---
 
 ## Suivi d'avancement
 
-> Mettre à jour chaque semaine. Remplacer ☐ par :white_check_mark: quand c'est terminé, par :warning: si en retard, par :x: si bloqué.
+> Mettre à jour chaque semaine. Remplacer  par :white_check_mark: quand c'est terminé, par :warning: si en retard, par :x: si bloqué.
 
 | Semaine | Prévu | Réalisé | Écart | Notes |
 |---|---|---|---|---|

@@ -8,7 +8,7 @@
 |---|---|
 | Version | 1.0 |
 | Date | 29/04/2026 |
-| Auteur(s) | Kebertra — Gtourdiat |
+| Auteur(s) | Kebertra — gtourdia |
 | Statut | Brouillon |
 | Langage | Python 3.10+ |
 | Bibliothèque graphique | Arcade (Python) |
@@ -58,8 +58,8 @@ Le jeu doit intégrer un générateur de labyrinthes externe (package A-Maze-ing
 | Rôle | Nom / Login | Responsabilité |
 |---|---|---|
 | Commanditaire | École 42 | Définition du sujet, évaluation |
-| Chef de projet | Kebertra / Gtourdiat | Coordination, gestion du dépôt Git |
-| Développeurs | Kebertra + Gtourdiat | Réalisation, tests |
+| Chef de projet | Kebertra / gtourdia | Coordination, gestion du dépôt Git |
+| Développeurs | Kebertra + gtourdia | Réalisation, tests |
 | Évaluateurs (pairs) | Autres étudiants 42 | Revue par les pairs, cheat mode |
 
 ---
@@ -227,6 +227,8 @@ pac-man.py  →  ConfigLoader  →  GameEngine
                                     ├── Renderer     →  [Python Arcade]
                                     └── CheatManager
 ```
+
+
  
 ### 4.2 Les trois couches de l'architecture hybride
  
@@ -426,7 +428,7 @@ Le `PlayingState` publie des événements sur l'`EventBus`. Les managers s'y abo
 | Technique — linting | flake8 et mypy sans erreur (flags obligatoires du sujet) |
 | Technique — externe | Utiliser le package A-Maze-ing assigné as-is (ne pas le modifier) |
 | Technique — config | Le fichier de config sera modifié pendant la soutenance |
-| Ressources | Équipe de 2 développeurs (Kebertra + Gtourdiat) |
+| Ressources | Équipe de 2 développeurs (Kebertra + gtourdia) |
 | Organisationnelle | Soumission via dépôt Git uniquement |
 | Légale | Build déployé en privé/unlisted sur la plateforme choisie |
 | Pédagogique | Tout code généré par IA doit être compris et explicable par l'équipe |
@@ -505,4 +507,4 @@ Le `PlayingState` publie des événements sur l'`EventBus`. Les managers s'y abo
 
 | Version | Date | Auteur | Modifications |
 |---|---|---|---|
-| 1.0 | 29/04/2026 | Kebertra / Gtourdiat | Création initiale |
+| 1.0 | 29/04/2026 | Kebertra / gtourdia | Création initiale |

@@ -3,7 +3,7 @@ from src.entity.entity import Entity, Movable
 
 
 class Player(arcade.Sprite, Entity, Movable):
-    def __init__(self, spawn_point: tuple[int, int], speed: float):
+    def __init__(self, spawn_point: tuple[int, int], speed: float = 10):
         super().__init__("assets/entity/Pacman_base.png", scale=0.5)
 
         Entity.__init__(self, spawn_point)

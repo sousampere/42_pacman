@@ -3,4 +3,10 @@ import pytest
 
 
 class TestPlayer:
-    player = Player(spawn_point=(0, 0), speed=2)
+    def test_player_initial_position(self) -> None:
+        player = Player(spawn_point=(0, 0))
+
+        player.move((0,1))
+
+        assert player.center_y == 1
+        assert player.center_x == 0

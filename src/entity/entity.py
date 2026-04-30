@@ -1,0 +1,35 @@
+from abc import ABC, abstractmethod
+
+
+class Entity(ABC):
+    def __init__(self, spawn_point: tuple[int, int]) -> None:
+        self.spawn_point: tuple[int, int] = spawn_point
+
+
+class Movable(ABC):
+    def __init__(
+        self,
+        speed: float = 0.0,
+    ) -> None:
+        self.speed: float = speed
+
+    @abstractmethod
+    def move(self, direction: tuple[float, float]) -> None:
+        pass
+
+    @property
+    def get_speed(self) -> float:
+        return self.speed
+
+
+class Collectible(ABC):
+    def __init__(self, point: int = 0) -> None:
+        self.point: int = point
+
+    @abstractmethod
+    def collect(self):
+        pass
+
+    @property
+    def get_point(self) -> int:
+        return self.point

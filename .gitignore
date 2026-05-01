@@ -212,3 +212,6 @@ feedback.md
 notation.md
 src/data/
 src/data/
+pacman.pdf
+pacman.md
+tests.py

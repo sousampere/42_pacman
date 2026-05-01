@@ -1,3 +1,5 @@
+from re import A
+
 import arcade
 
 
@@ -30,15 +32,28 @@ class GameView(arcade.View):
         super().__init__()
         self.engine = engine
         self.background_color = arcade.color.RED
+        self.sprites: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
+
+        # Player sprite
+        self.circle = arcade.Sprite()
+        self.circle.position = self.center
+        self.sprites.append(self.circle)
 
     def on_draw(self) -> bool | None:
         self.clear()
+        self.sprites.draw()
         return super().on_draw()
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.ESCAPE:
             self.engine.switch_pause()
+        if symbol == arcade.key.SPACE:
+            self.circle.change_x -= 50
         return super().on_key_press(symbol, modifiers)
+
+    def on_update(self, delta_time: float) -> bool | None:
+        self.sprites.update()
+        return super().on_update(delta_time)
 
 
 class PauseView(arcade.View):
@@ -51,7 +66,15 @@ class PauseView(arcade.View):
 
     def on_draw(self) -> bool | None:
         self.clear()
-        return super().on_draw()
+        super().on_draw()
+
+        # Draw the screen of the GameView
+        self.engine.game_view.on_draw()
+
+        # Apply a soft shadow on the screen
+        arcade.draw_lbwh_rectangle_filled(
+            0, 0, self.engine.width, self.engine.height, (0, 0, 0, 128)
+        )
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.ESCAPE:
@@ -76,6 +99,8 @@ class GameEngine:
     """Game Engine that orchestrate different views and their data"""
 
     def __init__(self) -> None:
+        self.width = 1280
+        self.height = 720
         self.window = arcade.Window(width=1280, height=720, title="Pac-Man")
         self.maze_adapter = None
         self.config_data = None

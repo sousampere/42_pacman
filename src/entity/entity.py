@@ -37,9 +37,16 @@ class Movable(ABC):
 class Collectible(ABC):
     def __init__(self, score: int = 0) -> None:
         self.score: int = score
+        self.__already_collect: bool = False
+
+    def collect(self):
+        if not self.__already_collect:
+            self.__already_collect = True
+            return True
+        return False
 
     @abstractmethod
-    def collect(self):
+    def activate_power(self):
         pass
 
     @property

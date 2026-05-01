@@ -1,14 +1,13 @@
 import arcade
 from src.entity.entity import Entity, Movable
 
-
 SCALE: float = 0.5
 LIVES: int = 3
 WINDOWS_WIDTH: int = 800
 WINDOWS_HEIGHT: int = 600
 
 
-class Player(arcade.Sprite, Entity, Movable):
+class Player(Entity, Movable):
     def __init__(self, spawn_point: tuple[int, int], speed: float = 10):
         arcade.Sprite.__init__(
             self, "assets/entity/Pacman_base.png", scale=SCALE

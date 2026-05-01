@@ -1,4 +1,5 @@
 import arcade
+from src.entity.pacgum import Pacgum
 from src.entity.player import Player
 
 
@@ -6,8 +7,10 @@ class MyGame(arcade.Window):
     def __init__(self):
         super().__init__(800, 600, "Mon Jeu ISP")
         self.player = Player(spawn_point=(100, 100), speed=10.0)
+        self.pacgum = Pacgum(spawn_point=(400, 500))
         self.scene_entities = arcade.SpriteList()
         self.scene_entities.append(self.player)
+        self.scene_entities.append(self.pacgum)
         self.direction = (0, 0)
 
     def on_key_press(self, key, modifiers):
@@ -32,6 +35,11 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         self.player.move(self.direction)
         self.scene_entities.update()
+        hit_list = arcade.check_for_collision(self.player, self.pacgum)
+
+        if hit_list and self.pacgum.collect():
+            print(self.pacgum.score)
+            self.pacgum.remove_from_sprite_lists()
 
     def on_draw(self):
         self.clear()

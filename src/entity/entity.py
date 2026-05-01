@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
+import arcade
 
-class Entity(ABC):
+
+class Entity(arcade.Sprite, ABC):
     def __init__(self, spawn_point: tuple[int, int]) -> None:
         self.spawn_point: tuple[int, int] = spawn_point
         self._x: float = float(spawn_point[0])
@@ -33,13 +35,13 @@ class Movable(ABC):
 
 
 class Collectible(ABC):
-    def __init__(self, point: int = 0) -> None:
-        self.point: int = point
+    def __init__(self, score: int = 0) -> None:
+        self.score: int = score
 
     @abstractmethod
     def collect(self):
         pass
 
     @property
-    def get_point(self) -> int:
-        return self.point
+    def get_score(self) -> int:
+        return self.score

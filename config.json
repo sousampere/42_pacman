@@ -1,0 +1,11 @@
+{
+    "highscore_filename": "leaderboard.json",
+    "lvl_width": 16,
+    "lvl_height": 10,
+    "lives": 5,
+    "pacgum_points": 20,
+    "super_pacgum_points": 50,
+    "ghost_points": 200,
+    "seed": "forty-two",
+    "max_teime": 90
+}

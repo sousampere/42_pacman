@@ -1,6 +1,10 @@
 import arcade
 
 
+class GameEngineError(Exception):
+    pass
+
+
 class MenuView(arcade.View):
     """View of the menu (onboarding)"""
 
@@ -75,28 +79,44 @@ class GameEngine:
         self.window = arcade.Window(width=1280, height=720, title="Pac-Man")
         self.maze_adapter = None
         self.config_data = None
+        self.is_configured = False  # Set to True when Views added
 
     def set_views(
         self, menu: MenuView, game: GameView, pause: PauseView, finish: FinishView
     ) -> None:
+        """Initialize the menu, game, pause and finish views."""
         self.menu_view = menu
         self.game_view = game
         self.pause_view = pause
         self.finish_view = finish
 
+        # Switch to menu view by default
+        self.switch_menu()
+
+        # Save configuration as done to enable starting the game
+        self.is_configured = True
+
     def switch_menu(self) -> None:
+        """Change the current to the menu view"""
         self.window.show_view(self.menu_view)
 
     def switch_game(self) -> None:
+        """Change the current to the game view"""
         self.window.show_view(self.game_view)
 
     def switch_pause(self) -> None:
+        """Change the current to the pause view"""
         self.window.show_view(self.pause_view)
 
     def switch_finish(self) -> None:
+        """Change the current view to the finish view"""
         self.window.show_view(self.finish_view)
 
-    @staticmethod
-    def run() -> None:
+    def run(self) -> None:
+        """Run the game after"""
+        if not self.is_configured:
+            raise GameEngineError(
+                "Tried to run the game without configuring all game views"
+            )
         arcade.run()
         return None

@@ -1,7 +1,6 @@
 import random
 
 import arcade
-from src.entity.entity import Collectible
 from src.entity.pacgum import Pacgum
 from src.entity.player import Player
 from src.entity.super_pacgum import SuperPacgum

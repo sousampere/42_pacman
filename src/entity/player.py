@@ -10,14 +10,17 @@ WINDOWS_HEIGHT: int = 600
 class Player(Entity, Movable):
     def __init__(self, spawn_point: tuple[int, int], speed: float = 10):
         arcade.Sprite.__init__(
-            self, "assets/entity/Pacman_base.png", scale=SCALE
+            self, scale=SCALE
         )
         Entity.__init__(self, spawn_point)
         Movable.__init__(self, speed)
-        self.textures_dir = {
-            "left": arcade.load_texture("assets/entity/Pacman_base_left.png"),
-            "right": arcade.load_texture("assets/entity/Pacman_base.png"),
-        }
+        sheet = arcade.load_spritesheet("assets/entity/pacman.png")
+        self.textures = sheet.get_texture_grid(
+            size=(128, 128),
+            columns=5,
+            count=5,
+        )
+        self.texture = self.textures[0]
         self.center_x = self._x
         self.center_y = self._y
         self._lives: int = LIVES
@@ -27,16 +30,16 @@ class Player(Entity, Movable):
         self._x += dx * self.speed
         self._y += dy * self.speed
         if dx < 0:
-            self.texture = self.textures_dir["left"]
+            self.texture = self.textures[0]
             self.angle = 0
         elif dx > 0:
-            self.texture = self.textures_dir["right"]
+            self.texture = self.textures[0]
             self.angle = 0
         elif dy > 0:
-            self.texture = self.textures_dir["right"]
+            self.texture = self.textures[0]
             self.angle = -90
         elif dy < 0:
-            self.texture = self.textures_dir["left"]
+            self.texture = self.textures[0]
             self.angle = -90
 
     def update(self, delta_time: float = 1 / 60):

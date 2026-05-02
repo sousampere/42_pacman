@@ -1,9 +1,13 @@
-from re import A
+from tkinter import font
 
 import arcade
 
 
 class GameEngineError(Exception):
+    pass
+
+
+class FontError(GameEngineError):
     pass
 
 
@@ -64,6 +68,7 @@ class PauseView(arcade.View):
         self.engine = engine
         self.background_color = arcade.color.GRAY
 
+
     def on_draw(self) -> bool | None:
         self.clear()
         super().on_draw()
@@ -75,6 +80,21 @@ class PauseView(arcade.View):
         arcade.draw_lbwh_rectangle_filled(
             0, 0, self.engine.width, self.engine.height, (0, 0, 0, 128)
         )
+
+        # Write "Paused..."
+        start_x = 0
+        start_y = 100
+        arcade.draw_text(
+            "Paused...",
+            self.engine.width / 2,
+            self.engine.height / 2,
+            color=arcade.color.WHITE_SMOKE,
+            font_size=24,
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Early GameBoy",
+        )
+        return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.ESCAPE:
@@ -101,10 +121,16 @@ class GameEngine:
     def __init__(self) -> None:
         self.width = 1280
         self.height = 720
-        self.window = arcade.Window(width=1280, height=720, title="Pac-Man")
+        self.window = arcade.Window(
+            width=self.width, height=self.height, title="Pac-Man"
+        )
         self.maze_adapter = None
         self.config_data = None
         self.is_configured = False  # Set to True when Views added
+        try:
+            self.pixel_font = arcade.load_font("assets/fonts/Early GameBoy.ttf")
+        except (FileNotFoundError, PermissionError):
+            pass
 
     def set_views(
         self, menu: MenuView, game: GameView, pause: PauseView, finish: FinishView

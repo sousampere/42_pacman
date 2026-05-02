@@ -1,0 +1,28 @@
+[
+    {
+        "signature": "abcd",
+        "scores": [
+            {
+                "username": "sousampere",
+                "score": 42
+            },
+            {
+                "username": "kebertra",
+                "score": 42
+            }
+        ]
+    },
+    {
+        "signature": "ohmyzsh",
+        "scores": [
+            {
+                "username": "sousampere",
+                "score": 68100
+            },
+            {
+                "username": "kebertra",
+                "score": 765
+            }
+        ]
+    }
+]

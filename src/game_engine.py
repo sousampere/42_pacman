@@ -1,13 +1,14 @@
-
 import arcade
 
 
 class GameEngineError(Exception):
-    pass
+    def __init__(self, msg: str = "") -> None:
+        super().__init__(f"GameEngine error: {msg}")
 
 
 class FontError(GameEngineError):
-    pass
+    def __init__(self, msg: str = "") -> None:
+        super().__init__(f"Font error: {msg}")
 
 
 class MenuView(arcade.View):
@@ -27,19 +28,42 @@ class MenuView(arcade.View):
         self.start_button.center_x = self.engine.width / 2
         self.start_button.center_y = self.engine.height / 2 - self.engine.height * 0.2
         self.sprite_list.append(self.start_button)
+        # Load background
+        try:
+            self.background = arcade.load_texture("assets/background/background_1.jpg")
+        except (FileNotFoundError, PermissionError):
+            self.background = None
 
     def on_draw(self) -> bool | None:
-        """ Method for drawing at screen """
+        """Method for drawing at screen"""
         self.clear()
-        super().on_draw()
+
+        # Apply background
+        if self.background is not None:
+            rect = arcade.Rect(
+                x=self.width / 2,
+                y=self.height / 2,
+                width=self.width,
+                height=self.height,
+                left=0,
+                right=0,
+                bottom=0,
+                top=0,
+            )
+            arcade.draw_texture_rect(self.background, rect)
+
+        # Apply a soft shadow on the screen
+        arcade.draw_lbwh_rectangle_filled(
+            0, 0, self.engine.width, self.engine.height, (0, 0, 0, 128)
+        )
 
         # Write "Welcome to Pac-Man"
         arcade.draw_text(
-            "Welcome to Pac-Man",
+            "Pac-Man",
             self.engine.width / 2,
             self.engine.height * 0.9,
             color=arcade.color.WHITE_SMOKE,
-            font_size=24,
+            font_size=42,
             anchor_x="center",
             anchor_y="center",
             font_name="Early GameBoy",
@@ -56,7 +80,7 @@ class MenuView(arcade.View):
         if symbol == arcade.key.SPACE:
             self.engine.switch_game()
 
-        return super().on_key_press(symbol, modifiers)
+        return None
 
     def on_mouse_press(
         self, x: int, y: int, button: int, modifiers: int
@@ -70,7 +94,7 @@ class MenuView(arcade.View):
             if sprite == self.start_button:
                 self.engine.switch_game()
 
-        return super().on_mouse_press(x, y, button, modifiers)
+        return None
 
 
 class GameView(arcade.View):
@@ -91,7 +115,8 @@ class GameView(arcade.View):
     def on_draw(self) -> bool | None:
         self.clear()
         self.sprites.draw()
-        return super().on_draw()
+
+        return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.ESCAPE:
@@ -99,11 +124,12 @@ class GameView(arcade.View):
         if symbol == arcade.key.SPACE:
             self.circle.change_x -= 50
 
-        return super().on_key_press(symbol, modifiers)
+        return None
 
     def on_update(self, delta_time: float) -> bool | None:
         self.sprites.update()
-        return super().on_update(delta_time)
+
+        return None
 
 
 class PauseView(arcade.View):
@@ -116,7 +142,6 @@ class PauseView(arcade.View):
 
     def on_draw(self) -> bool | None:
         self.clear()
-        super().on_draw()
 
         # Draw the screen of the GameView
         self.engine.game_view.on_draw()
@@ -145,7 +170,7 @@ class PauseView(arcade.View):
         if symbol == arcade.key.ESCAPE:
             self.engine.switch_game()
 
-        return super().on_key_press(symbol, modifiers)
+        return None
 
 
 class FinishView(arcade.View):
@@ -158,7 +183,8 @@ class FinishView(arcade.View):
 
     def on_draw(self) -> bool | None:
         self.clear()
-        return super().on_draw()
+
+        return None
 
 
 class GameEngine:

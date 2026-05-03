@@ -6,9 +6,12 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "arcade>=3.3.3",
+    "pydantic>=2.13.3",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
+    "flake8>=7.3.0",
+    "mypy>=1.20.2",
 ]

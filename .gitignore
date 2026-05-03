@@ -212,6 +212,13 @@ feedback.md
 notation.md
 src/data/
 src/data/
+<<<<<<< HEAD
 pacman.md
 pacman.pdf
 tests.py
+=======
+
+tests.py
+pacman.pdf
+pacman.md
+>>>>>>> main

@@ -1,6 +1,6 @@
 # Made by gtourdia & kebertra
 
-from src.game_engine import GameEngine, MenuView, GameView, PauseView, FinishView
+from src.game_engine.game_engine import GameEngine, MenuView, GameView, PauseView, FinishView
 
 
 def main():

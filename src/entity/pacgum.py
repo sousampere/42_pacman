@@ -8,11 +8,9 @@ SCORE: int = 50
 
 class Pacgum(Entity, Collectible):
     def __init__(self, spawn_point: tuple[int, int]) -> None:
-        arcade.Sprite.__init__(self, "assets/entity/pacgum.png", scale=SCALE)
-        Entity.__init__(self, spawn_point)
+        Entity.__init__(self, spawn_point, SCALE)
         Collectible.__init__(self, score=SCORE)
-        self.center_x = self._x
-        self.center_y = self._y
+        self.texture = arcade.load_texture("assets/entity/pacgum.png")
 
     def activate_power(self):
         return super().activate_power()

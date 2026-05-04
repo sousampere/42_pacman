@@ -1,6 +1,8 @@
 import random
 
 import arcade
+from src.entity.entity import Collectible
+from src.entity.ghost import Ghost
 from src.entity.pacgum import Pacgum
 from src.entity.player import Player
 from src.entity.super_pacgum import SuperPacgum
@@ -9,18 +11,21 @@ from src.entity.super_pacgum import SuperPacgum
 class MyGame(arcade.Window):
     def __init__(self) -> None:
         super().__init__(800, 600, "Mon Jeu ISP")
-        self.pacgum_list: arcade.SpriteList = arcade.SpriteList()
+        self.entity_list: arcade.SpriteList = arcade.SpriteList()
         self.scene_entities: arcade.SpriteList = arcade.SpriteList()
         self.player = Player(spawn_point=(100, 100), speed=10.0)
+        self.ghost = Ghost(spawn_point=(500, 300), speed=10.0)
         self.scene_entities.append(self.player)
+        self.scene_entities.append(self.ghost)
 
         for _ in range(random.randint(5, 40)):
             pacgum = Pacgum((random.randint(10, 780), random.randint(10, 580)))
-            self.pacgum_list.append(pacgum)
+            self.entity_list.append(pacgum)
             self.scene_entities.append(pacgum)
         self.super_pacgum = SuperPacgum((200, 200))
         self.scene_entities.append(self.super_pacgum)
-        self.pacgum_list.append(self.super_pacgum)
+        self.entity_list.append(self.super_pacgum)
+        self.entity_list.append(self.ghost)
         self.direction = (0, 0)
 
     def on_key_press(self, key, modifiers):
@@ -45,15 +50,23 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time) -> None:
         self.player.move(self.direction)
         self.scene_entities.update()
-        hit_list: list[Pacgum] = arcade.check_for_collision_with_list(
-            self.player, self.pacgum_list
+        hit_list: list[Collectible | Ghost] = arcade.check_for_collision_with_list(
+            self.player, self.entity_list
         )
 
-        for gum in hit_list:
-            if gum.collect():
-                print(gum.score)
-                gum.activate_power()
-                gum.remove_from_sprite_lists()
+        for entities in hit_list:
+            if isinstance(entities, Collectible):
+                if entities.collect():
+                    print(entities.score)
+                    entities.activate_power()
+                    entities.remove_from_sprite_lists()
+            elif isinstance(entities, Ghost):
+                if not entities.is_edible:
+                    self.player.die()
+                    entities.is_edible = True
+                else:
+                    print("meurt")
+                    entities.die()
 
     def on_draw(self):
         self.clear()

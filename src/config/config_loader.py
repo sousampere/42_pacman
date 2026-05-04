@@ -20,13 +20,16 @@ class ConfigJSONError(ConfigError):
 
 class Config(BaseModel):
     highscore_filename: str = Field(
-        default="leaderboard.json", description="Leaderboard input/output source"
+        default="leaderboard.json",
+        description="Leaderboard input/output source",
     )
     level: list[dict[str, int]] = Field(
         default=[{"width": 20, "height": 20}] * 10,
         description="List of levels dimensions (width,height)",
     )
-    lives: int = Field(ge=1, default=20, description="Number of lives of the player")
+    lives: int = Field(
+        ge=1, default=20, description="Number of lives of the player"
+    )
     pacgum_points: int = Field(
         ge=0, default=10, description="Points earned for each pacgum eaten"
     )
@@ -37,11 +40,15 @@ class Config(BaseModel):
         ge=0, default=200, description="Points earned for each ghost eatten"
     )
     seed: str = Field(
-        default="forty-two", description="Seed on which the random generation is based"
+        default="forty-two",
+        description="Seed on which the random generation is based",
     )
-    max_time: int = Field(ge=1, default=90, description="Max duration of each level")
+    max_time: int = Field(
+        ge=1, default=90, description="Max duration of each level"
+    )
     signature: str = Field(
-        default="", description="Signature of the config (automatically generated)"
+        default="",
+        description="Signature of the config (automatically generated)",
     )
 
     @model_validator(mode="after")
@@ -182,12 +189,11 @@ class ConfigLoader(ABCConfigLoader):
                     or "height" not in lvl.keys()
                 ):
                     print(
-                        "[Warning] Removed an invalid "
-                        "level in your config."
+                        "[Warning] Removed an invalid " "level in your config."
                     )
                     ConfigLoader.warn_invalid_key("level")
                     data.pop("level")
-                    data['level'].remove(lvl)
+                    data["level"].remove(lvl)
                 else:
                     if (
                         type(lvl["width"]) is not int
@@ -201,11 +207,13 @@ class ConfigLoader(ABCConfigLoader):
                             "[Warning] Removed an invalid "
                             "level in your config."
                         )
-                        data['level'].remove(lvl)
+                        data["level"].remove(lvl)
         if "level" in data.keys():
             if len(data["level"]) < 10:
-                print("[Warning] Not enough levels in config. "
-                      "Using default levels.")
+                print(
+                    "[Warning] Not enough levels in config. "
+                    "Using default levels."
+                )
                 data.pop("level")
 
         # Create the Config object

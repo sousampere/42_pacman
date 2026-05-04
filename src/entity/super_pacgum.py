@@ -9,11 +9,9 @@ SCORE: int = 500
 
 class SuperPacgum(Pacgum):
     def __init__(self, spawn_point: tuple[int, int]) -> None:
-        arcade.Sprite.__init__(self, "assets/entity/super_pacgum.png", scale=SCALE)
-        Entity.__init__(self, spawn_point)
+        Entity.__init__(self, spawn_point, SCALE)
         Collectible.__init__(self, score=SCORE)
-        self.center_x = self._x
-        self.center_y = self._y
+        self.texture = arcade.load_texture("assets/entity/super_pacgum.png")
 
     def activate_power(self):
         print("ULTIMATE POWAAAA")

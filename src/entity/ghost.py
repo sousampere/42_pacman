@@ -1,4 +1,7 @@
+from collections.abc import Callable
+
 import arcade
+
 from src.entity.entity import Entity, Movable
 
 SCALE: float = 0.5
@@ -7,8 +10,8 @@ WINDOWS_WIDTH: int = 800
 WINDOWS_HEIGHT: int = 600
 
 
-class Player(Entity, Movable):
-    def __init__(self, spawn_point: tuple[int, int], speed: float = 10):
+class Ghost(Entity, Movable):
+    def __init__(self, spawn_point: tuple[int, int], speed) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, speed)
         sheet = arcade.load_spritesheet("assets/entity/pacman.png")
@@ -17,8 +20,9 @@ class Player(Entity, Movable):
             columns=5,
             count=5,
         )
-        self.texture = self.textures[0]
-        self._lives: int = LIVES
+        self.texture = self.textures[4]
+        self.__is_edible: bool = False
+        # self._chase_algorithm: Callable = AFAIRE
 
     def move(self, direction: tuple[float, float]) -> None:
         dx, dy = direction
@@ -50,13 +54,19 @@ class Player(Entity, Movable):
             self._y = self.height / 2
 
     def die(self) -> None:
-        self._lives -= 1
-        if self._lives == 0:
-            raise NotImplementedError("GAME OVER A IMPLEMENTER")
-        self.respawn()
+        if self.__is_edible:
+            self.respawn()
 
     def respawn(self) -> None:
         self._x, self._y = self.spawn_point
 
         self.center_x = self._x
         self.center_y = self._y
+
+    @property
+    def is_edible(self) -> bool:
+        return self.__is_edible
+
+    @is_edible.setter
+    def is_edible(self, value: bool) -> None:
+        self.__is_edible = value

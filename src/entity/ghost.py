@@ -11,7 +11,9 @@ WINDOWS_HEIGHT: int = 600
 
 
 class Ghost(Entity, Movable):
-    def __init__(self, spawn_point: tuple[int, int], speed) -> None:
+    def __init__(
+        self, spawn_point: tuple[int, int], speed, chase_algorithm: Callable
+    ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, speed)
         sheet = arcade.load_spritesheet("assets/entity/pacman.png")
@@ -22,7 +24,7 @@ class Ghost(Entity, Movable):
         )
         self.texture = self.textures[4]
         self.__is_edible: bool = False
-        # self._chase_algorithm: Callable = AFAIRE
+        self._chase_algorithm: Callable = chase_algorithm
 
     def move(self, direction: tuple[float, float]) -> None:
         dx, dy = direction

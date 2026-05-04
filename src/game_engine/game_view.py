@@ -1,4 +1,6 @@
 
+from arcade.shape_list import ShapeElementList, create_rectangle_filled
+
 from ..maze_adapter.maze_adapter import MazeAdapter
 
 import arcade
@@ -7,113 +9,121 @@ class GameView(arcade.View):
     """View of the game (in-game)"""
 
     def __init__(self, engine: "GameEngine") -> None:
-        super().__init__()
-        self.engine = engine
-        self.background_color = arcade.color.BLACK
+        """Initialize the view"""
+        self.engine = engine  # GameEngine to access engine variables
+
+        # Scene setup
+        self.background_color = arcade.color.BLACK  # Default
+        self.MAZE_DIMENSIONS = (40, 14)
+        self.maze = MazeAdapter(self.MAZE_DIMENSIONS).get_multiple_maze()[0]
+        self.previous_frame_dimensions = (self.window.width, self.window.height)
+        self.level = 0
+
+        # Sprites setup
         self.sprites: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
-        self.maze = MazeAdapter((40, 40)).get_multiple_maze()[0]
-        self.maze_blocs: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
+        self.cell_sprite = arcade.load_texture('assets/maze/bloc.png')
+        self.maze_blocs = arcade.SpriteList()
 
         # -- Load sprites --
-        # Maze sprites
-        self.create_maze_sprites()
         # Player sprite
-        self.circle = arcade.Sprite()
+        self.circle = arcade.Sprite('assets/maze/bloc.png')
         self.circle.position = self.window.center
         self.sprites.append(self.circle)
 
+
+    def get_maze(self, level: int) -> list[list[int]]:
+        """ WIP, This function will generate maze"""
+        return self.maze[0]
+
     def on_draw(self) -> bool | None:
-        self.clear()
-        self.sprites.draw()
+        """Function to draw on the screen"""
+        self.clear() # Clear previous frame
+        self.sprites.draw() # Display all sprites from the self.sprites list
+
+        # Draw all the sprites on the screen
+        if (self.previous_frame_dimensions != (self.window.width, self.window.height)
+            or len(self.maze_blocs) == 0):
+            self.previous_frame_dimensions = (self.window.width, self.window.height)
+            self.maze_blocs = arcade.SpriteList()
+            coords = self.get_walls_blocs_coords()
+            for coord in coords:
+                # Get the most optimal tile size
+                if (self.MAZE_DIMENSIONS[0] > self.MAZE_DIMENSIONS[1]):
+                    tile_size = (self.window.width / (self.MAZE_DIMENSIONS[0] * 2)) * 0.7
+                else:
+                    tile_size = (self.window.height / (self.MAZE_DIMENSIONS[1] * 2)) * 0.7
+                bloc = arcade.Sprite(
+                    self.cell_sprite,
+                    1,
+                    coord[0] * tile_size + self.window.width/2 - (tile_size * 2 * self.MAZE_DIMENSIONS[0]) / 2,
+                    coord[1] * tile_size + self.window.height/2 - (tile_size * 2 * self.MAZE_DIMENSIONS[1]) / 2
+                    )
+                bloc.width = tile_size
+                bloc.height = tile_size
+                self.maze_blocs.append(bloc)
+
+        # Draw maze blocs
         self.maze_blocs.draw()
 
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        """Keyboard interactions events"""
         if symbol == arcade.key.ESCAPE:
             self.engine.switch_pause()
         if symbol == arcade.key.SPACE:
             self.circle.change_x -= 10
+        if symbol == arcade.key.R:
+            self.level += 1
+            self.maze = MazeAdapter(self.MAZE_DIMENSIONS).get_multiple_maze()[self.level]
+            self.maze_blocs = arcade.SpriteList()
+            print(f'level {self.level}')
 
         return None
 
     def on_update(self, delta_time: float) -> bool | None:
+        """ Update sprites """
         self.sprites.update()
-        self.maze_blocs.update()
 
         return None
 
-    def get_maze(self) -> list[list[int]]:
-        """ WIP, This function will generate maze"""
-        # prototype_maze = [['0xd', '0x5', '0x3', '0x9', '0x1', '0x5', '0x5', '0x3', '0xd', '0x3', '0x9', '0x1', '0x5', '0x5', '0x1', '0x3', '0x9', '0x1', '0x5', '0x3'],
-        #     ['0x9', '0x3', '0xc', '0x4', '0x2', '0x9', '0x5', '0x6', '0x9', '0x6', '0x8', '0x4', '0x5', '0x1', '0x2', '0xc', '0x4', '0x2', '0x9', '0x6'],
-        #     ['0x8', '0x4', '0x5', '0x5', '0x2', '0xa', '0x9', '0x7', '0x8', '0x5', '0x2', '0x9', '0x5', '0x2', '0xc', '0x5', '0x1', '0x6', '0xa', '0xb'],
-        #     ['0x8', '0x5', '0x3', '0x9', '0x2', '0x8', '0x0', '0x5', '0x4', '0x5', '0x0', '0x2', '0xd', '0x4', '0x5', '0x1', '0x2', '0x9', '0x6', '0xa'],
-        #     ['0x8', '0x3', '0xa', '0xc', '0x2', '0xa', '0xc', '0x1', '0x1', '0x5', '0x6', '0xc', '0x5', '0x5', '0x3', '0x8', '0x4', '0x6', '0x9', '0x2'],
-        #     ['0x8', '0x6', '0x8', '0x1', '0x2', '0xc', '0x1', '0x2', '0xc', '0x1', '0x1', '0x5', '0x5', '0x3', '0x8', '0x4', '0x5', '0x1', '0x2', '0xa'],
-        #     ['0x8', '0x5', '0x2', '0x8', '0x6', '0xb', '0xc', '0x6', '0xb', '0x8', '0x6', '0xd', '0x5', '0x2', '0xc', '0x3', '0x9', '0x6', '0xc', '0x2'],
-        #     ['0x8', '0x1', '0x6', '0xc', '0x5', '0x6', '0xf', '0x9', '0x4', '0x2', '0xf', '0xf', '0xf', '0xc', '0x3', '0xa', '0x8', '0x5', '0x5', '0x6'],
-        #     ['0xa', '0xc', '0x1', '0x1', '0x1', '0x3', '0xf', '0xc', '0x7', '0x8', '0x5', '0x7', '0xf', '0x9', '0x6', '0xa', '0xc', '0x5', '0x5', '0x3'],
-        #     ['0x8', '0x5', '0x4', '0x4', '0x6', '0xa', '0xf', '0xf', '0xf', '0xa', '0xf', '0xf', '0xf', '0xc', '0x1', '0x6', '0x9', '0x3', '0x9', '0x2'],
-        #     ['0xa', '0x9', '0x1', '0x5', '0x5', '0x2', '0x9', '0x3', '0xf', '0xa', '0xf', '0xd', '0x5', '0x1', '0x4', '0x1', '0x2', '0xc', '0x2', '0xa'],
-        #     ['0xa', '0xa', '0xc', '0x1', '0x1', '0x4', '0x2', '0xa', '0xf', '0xa', '0xf', '0xf', '0xf', '0xa', '0x9', '0x4', '0x6', '0xd', '0x2', '0xa'],
-        #     ['0x8', '0x2', '0x9', '0x2', '0xc', '0x5', '0x4', '0x4', '0x7', '0x8', '0x1', '0x3', '0x9', '0x2', '0x8', '0x1', '0x1', '0x1', '0x6', '0xa'],
-        #     ['0x8', '0x4', '0x2', '0x8', '0x5', '0x1', '0x1', '0x1', '0x1', '0x6', '0xa', '0xe', '0x8', '0x4', '0x6', '0xc', '0x0', '0x4', '0x3', '0xa'],
-        #     ['0xc', '0x1', '0x4', '0x4', '0x3', '0xa', '0xc', '0x2', '0xc', '0x3', '0xc', '0x1', '0x2', '0xd', '0x1', '0x5', '0x4', '0x1', '0x4', '0x6'],
-        #     ['0x9', '0x4', '0x3', '0x9', '0x2', '0x8', '0x3', '0xc', '0x3', '0x8', '0x3', '0x8', '0x4', '0x1', '0x2', '0xd', '0x3', '0x8', '0x5', '0x3'],
-        #     ['0x8', '0x3', '0x8', '0x2', '0x8', '0x0', '0x2', '0x9', '0x6', '0xa', '0xa', '0x8', '0x7', '0x8', '0x4', '0x1', '0x2', '0x8', '0x7', '0xa'],
-        #     ['0xa', '0x8', '0x2', '0xa', '0x8', '0x2', '0x8', '0x6', '0x9', '0x2', '0xa', '0xc', '0x5', '0x6', '0x9', '0x2', '0x8', '0x6', '0x9', '0x6'],
-        #     ['0xc', '0x2', '0x8', '0x2', '0xa', '0x8', '0x6', '0x9', '0x4', '0x4', '0x4', '0x5', '0x5', '0x1', '0x2', '0xe', '0x8', '0x1', '0x2', '0xb'],
-        #     ['0xd', '0x4', '0x6', '0xc', '0x4', '0x4', '0x5', '0x4', '0x5', '0x5', '0x5', '0x5', '0x5', '0x6', '0xc', '0x5', '0x4', '0x4', '0x4', '0x6']]
+    def on_resize(self, width: int, height: int) -> bool | None:
+        print(width, height)
+        return super().on_resize(width, height)
 
-        # from ..maze_adapter.maze_adapter import MazeAdapter
-        # maze_gen = MazeAdapter((40, 40))
+    def get_walls_blocs_coords(self) -> list[tuple[int, int]]:
+        """Returns a list of walls coords from the engine's maze"""
+        maze = self.get_maze(self.level)
+        coords: set[tuple[int, int]] = set()  # List of coords of all wall blocs (x,y)
 
-        # maze = maze_gen.get_multiple_maze()[0][0]
-        return self.maze[0]
-        return maze
-    
-    def create_maze_sprites(self):
-        """ Create a sprite for each  """
-        tile_size = self.window.width * 0.02
-        maze = self.get_maze()
-        for row_value, row in enumerate(maze[::-1]):  # reverse read due to for loop
-            for collumn_value, cell in enumerate(row):
-                if cell & 4:  # 4 because the maze is read in reversed because of for loop
-                    self.create_top_wall(tile_size, collumn_value * 3, row_value * 3)
-                if cell & 2:
-                    self.create_right_wall(tile_size, collumn_value * 3, row_value * 3)
-                if cell & 1:  # 1 because the maze is read in reversed because of for loop
-                    self.create_bottom_wall(tile_size, collumn_value * 3, row_value * 3)
-                if cell & 8:
-                    self.create_left_wall(tile_size, collumn_value * 3, row_value * 3)
+        # Scan each cell
+        for y, row in enumerate(maze[::-1]):  # reverse read due to for loop
+                for x, cell in enumerate(row):
+                    if cell & 4:  # 4 because the maze is read in reversed because of for loop
+                        # Top wall
+                        coords.add(((x * 2), (y * 2)))
+                        coords.add(((x * 2) + 1, (y * 2)))
+                        coords.add(((x * 2) + 2, (y * 2)))
+                    if cell & 2:
+                        # Right wall
+                        coords.add(((x * 2) + 2, (y * 2)))
+                        coords.add(((x * 2) + 2, (y * 2) + 1))
+                        coords.add(((x * 2) + 2, (y * 2) + 2))
+                    if cell & 1:  # 1 because the maze is read in reversed because of for loop
+                        # Bottom wall
+                        coords.add(((x * 2), (y * 2) + 2))
+                        coords.add(((x * 2) + 1, (y * 2) + 2))
+                        coords.add(((x * 2) + 2, (y * 2) + 2))
+                    if cell & 8:
+                        # Left wall
+                        coords.add(((x * 2), (y * 2)))
+                        coords.add(((x * 2), (y * 2) + 1))
+                        coords.add(((x * 2), (y * 2) + 2))
+                    if cell == 15:
+                        # Left wall
+                        coords.add(((x * 2) + 1, (y * 2) + 1))
+                # # break
 
-    
-    def create_cell_sprite(self, tile_size: int, x: int, y: int):
-        """ Create a maze bloc sprite and add it to the maze sprites """
-        cell_sprite = arcade.Sprite('assets/maze/bloc.png')
-        cell_sprite.width, cell_sprite.height = (tile_size, tile_size)
-        cell_sprite.center_x = x * tile_size
-        cell_sprite.center_y = y * tile_size
-        self.maze_blocs.append(cell_sprite)
-        return None
+        # Return as list
+        return list(coords)
 
-    def create_top_wall(self, tile_size: int, x: int, y: int):
-        self.create_cell_sprite(tile_size, x, y)
-        self.create_cell_sprite(tile_size, x + 1, y)
-        self.create_cell_sprite(tile_size, x + 2, y)
-
-    def create_bottom_wall(self, tile_size: int, x: int, y: int):
-        self.create_cell_sprite(tile_size, x, y + 2)
-        self.create_cell_sprite(tile_size, x + 1, y + 2)
-        self.create_cell_sprite(tile_size, x + 2, y + 2)
-
-    def create_left_wall(self, tile_size: int, x: int, y: int):
-        self.create_cell_sprite(tile_size, x, y)
-        self.create_cell_sprite(tile_size, x, y + 1)
-        self.create_cell_sprite(tile_size, x, y + 2)
-
-    def create_right_wall(self, tile_size: int, x: int, y: int):
-        self.create_cell_sprite(tile_size, x + 2, y)
-        self.create_cell_sprite(tile_size, x + 2, y + 1)
-        self.create_cell_sprite(tile_size, x + 2, y + 2)

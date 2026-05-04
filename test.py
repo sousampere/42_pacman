@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
 
         for gum in hit_list:
             if gum.collect():
-                print(gum.score)
+                # print(gum.score)
                 gum.activate_power()
                 gum.remove_from_sprite_lists()
 

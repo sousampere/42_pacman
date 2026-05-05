@@ -4,10 +4,15 @@ import arcade
 
 
 class Entity(arcade.Sprite, ABC):
-    def __init__(self, spawn_point: tuple[int, int]) -> None:
+    def __init__(self, spawn_point: tuple[int, int], scale) -> None:
+        arcade.Sprite.__init__(
+            self, scale=scale
+        )
         self.spawn_point: tuple[int, int] = spawn_point
         self._x: float = float(spawn_point[0])
         self._y: float = float(spawn_point[1])
+        self.center_x = self._x
+        self.center_y = self._y
 
     @property
     def x(self) -> float:
@@ -50,5 +55,5 @@ class Collectible(ABC):
         pass
 
     @property
-    def get_score(self) -> int:
+    def score(self) -> int:
         return self.__score

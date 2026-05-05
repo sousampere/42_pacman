@@ -1,4 +1,6 @@
 import arcade
+
+from src.config.config_loader import Config
 from .menu_view import MenuView
 from .game_view import GameView
 from .pause_view import PauseView
@@ -17,12 +19,13 @@ class FontError(GameEngineError):
 class GameEngine:
     """Game Engine that orchestrate different views and their data"""
 
-    def __init__(self) -> None:
+    def __init__(self, config: Config) -> None:
         self.width = 1280
         self.height = 720
         self.window = arcade.Window(
             width=self.width, height=self.height, title="Pac-Man", resizable=True
         )
+        self.config = config
         self.window.set_minimum_size(1920, 1080)
         self.maze_adapter = None
         self.config_data = None

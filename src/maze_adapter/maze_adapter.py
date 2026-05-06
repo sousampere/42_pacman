@@ -1,4 +1,7 @@
+import numpy as np
+
 from mazegenerator.mazegenerator import MazeGenerator  # type: ignore
+from numpy.typing import NDArray
 
 DEFAULT_SEED: int = 42
 DEFAULT_NB_LEVEL: int = 10
@@ -6,7 +9,7 @@ DEFAULT_SIGNATURE: str = "2020350501004290"
 
 
 class MazeAdapterError(Exception):
-    def __init__(self, msg: str = '') -> None:
+    def __init__(self, msg: str = "") -> None:
         super().__init__(f"Maze Adapter Error: {msg}")
 
 
@@ -28,71 +31,66 @@ class MazeAdapter:
 
     def get_maze(
         self, size: tuple[int, int], seed: int = DEFAULT_SEED
-    ) -> list[list[int]]:
+    ) -> tuple[NDArray, NDArray]:
         try:
             maze = MazeGenerator(size=size, seed=seed)
         except RecursionError as e:
             raise MazeAdapterError(str(e))
-        return maze.maze
+        return self.get_walls_amd_path_coords(np.array(maze.maze))
 
     def get_multiple_maze(
         self, levels: list[dict[str, int]], seed: int = DEFAULT_SEED
     ):
-        maze_list: list[tuple[list[list[int]], int]] = []
+        maze_list: list[tuple[NDArray, NDArray, int]] = []
         for i, level in enumerate(levels):
             size = (level.get("width", 20), level.get("height", 10))
             if i != 0:
                 seed += self.__hash_to_int(self.__initial_signature)
-            maze_list.append((self.get_maze(size, seed), seed))
+            wall, path = self.get_maze(size, seed)
+            maze_list.append((wall, path, seed))
         return maze_list
 
-    def get_walls_blocs_coords(self, maze: list[list[int]]) -> list[tuple[int, int]]:
-        """Returns a list of walls coords from the engine's maze"""
-        coords: set[tuple[int, int]] = set()  # List of coords of all wall blocs (x,y)
+    def get_walls_amd_path_coords(
+        self, maze: NDArray
+    ) -> tuple[NDArray, NDArray]:
+        m = maze[::-1]
+        h, w = m.shape
 
-        # Scan each cell
-        for y, row in enumerate(maze[::-1]):  # reverse read due to for loop
-                for x, cell in enumerate(row):
-                    if cell & 4:  # 4 because the maze is read in reversed because of for loop
-                        # Top wall
-                        coords.add(((x * 2), (y * 2)))
-                        coords.add(((x * 2) + 1, (y * 2)))
-                        coords.add(((x * 2) + 2, (y * 2)))
-                    if cell & 2:
-                        # Right wall
-                        coords.add(((x * 2) + 2, (y * 2)))
-                        coords.add(((x * 2) + 2, (y * 2) + 1))
-                        coords.add(((x * 2) + 2, (y * 2) + 2))
-                    if cell & 1:  # 1 because the maze is read in reversed because of for loop
-                        # Bottom wall
-                        coords.add(((x * 2), (y * 2) + 2))
-                        coords.add(((x * 2) + 1, (y * 2) + 2))
-                        coords.add(((x * 2) + 2, (y * 2) + 2))
-                    if cell & 8:
-                        # Left wall
-                        coords.add(((x * 2), (y * 2)))
-                        coords.add(((x * 2), (y * 2) + 1))
-                        coords.add(((x * 2), (y * 2) + 2))
-                    if cell == 15:
-                        # Left wall
-                        coords.add(((x * 2) + 1, (y * 2) + 1))
+        iy, ix = np.indices((h * 2 + 1, w * 2 + 1))
+        allcoords = np.column_stack((ix.ravel(), iy.ravel()))
 
-        # Return as list
-        return list(coords)
+        wall_rules = [
+            (1, [(0, 2), (1, 2), (2, 2)]),
+            (2, [(2, 0), (2, 1), (2, 2)]),
+            (4, [(0, 0), (1, 0), (2, 0)]),
+            (8, [(0, 0), (0, 1), (0, 2)]),
+            (15, [(1, 1)]),
+        ]
+        all_segments = []
+        for bit, offsets in wall_rules:
+            condition = (m == bit) if bit == 15 else (m & bit)
+            ys, xs = np.where(condition)
+            if ys.size > 0:
+                for dx, dy in offsets:
+                    all_segments.append(
+                        np.column_stack((xs * 2 + dx, ys * 2 + dy))
+                    )
 
-# maze_gen = MazeAdapter(DEFAULT_SIGNATURE, 10)
+        wall_coords = np.unique(np.concatenate(all_segments), axis=0)
 
-# # 14*10 min
-# levels = [
-#     {"width": 145, "height": 100},
-#     {"width": 20, "height": 10},
-#     {"width": 20, "height": 10},
-#     {"width": 20, "height": 10},
-#     {"width": 20, "height": 10},
-#     {"width": 20, "height": 10},
-# ]
-# maze = maze_gen.get_multiple_maze(levels, 42)
-# for m in maze:
-#     print(m[0])
-#     print(m[1])
-#     print()
+        def row_diff(A, B):
+            A = np.ascontiguousarray(A).astype(np.int32)
+            B = np.ascontiguousarray(B).astype(np.int32)
+
+            dt = np.dtype([("f0", A.dtype), ("f1", A.dtype)])
+
+            struct_A = A.view(dt)
+            struct_B = B.view(dt)
+
+            mask = np.isin(struct_A, struct_B, invert=True)
+
+            return A[mask.ravel()]
+
+        path_coords = row_diff(allcoords, wall_coords)
+
+        return wall_coords, path_coords

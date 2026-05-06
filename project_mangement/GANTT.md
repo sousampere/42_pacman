@@ -99,7 +99,7 @@ S10 [░░░░░░░░░░░░] Soutenance
 
 ## Suivi d'avancement
 
-> Mettre à jour chaque semaine. Remplacer  par :white_check_mark: quand c'est terminé, par :warning: si en retard, par :x: si bloqué.
+> Mettre à jour chaque semaine. Remplacer  par ✅ quand c'est terminé, par ⚠️ si en retard, par ❌ si bloqué.
 
 | Semaine | Prévu | Réalisé | Écart | Notes |
 |---|---|---|---|---|

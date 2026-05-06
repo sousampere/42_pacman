@@ -31,7 +31,7 @@ class GameEngine:
         self.config_data = None
         self.is_configured = False  # Set to True when Views added
         try:
-            self.pixel_font = arcade.load_font("assets/fonts/Early GameBoy.ttf")
+            arcade.load_font("assets/fonts/Early GameBoy.ttf")
         except (FileNotFoundError, PermissionError):
             pass
 

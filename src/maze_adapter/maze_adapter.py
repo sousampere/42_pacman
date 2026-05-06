@@ -6,12 +6,11 @@ DEFAULT_SIGNATURE: str = "2020350501004290"
 
 
 class MazeAdapterError(Exception):
-    def __init__(self, msg) -> None:
+    def __init__(self, msg: str = '') -> None:
         super().__init__(f"Maze Adapter Error: {msg}")
 
 
 class MazeAdapter:
-
     def __init__(
         self,
         signature: str = DEFAULT_SIGNATURE,
@@ -39,7 +38,7 @@ class MazeAdapter:
     def get_multiple_maze(
         self, levels: list[dict[str, int]], seed: int = DEFAULT_SEED
     ):
-        maze_list = []
+        maze_list: list[tuple[list[list[int]], int]] = []
         for i, level in enumerate(levels):
             size = (level.get("width", 20), level.get("height", 10))
             if i != 0:

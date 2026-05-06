@@ -2,6 +2,8 @@
 from src.renderer.renderer import Renderer
 
 from ..maze_adapter.maze_adapter import MazeAdapter
+from ..config.config_loader import Config
+from typing import TYPE_CHECKING
 
 import arcade
 
@@ -9,18 +11,22 @@ class NotImplementedError(Exception):
     def __init__(self, msg: str = '') -> None:
         super().__init__(f'NOT IMPLEMENTED ERROR: {msg}')
 
+if TYPE_CHECKING:
+    from ..game_engine.game_engine import GameEngine
+
 class GameView(arcade.View):
     """View of the game (in-game)"""
 
-    def __init__(self, engine: "GameEngine") -> None:
+    def __init__(self, config: Config, engine: "GameEngine") -> None:
         """Initialize the view"""
         super().__init__()
-        self.engine = engine  # GameEngine to access engine variables
 
         # Scene setup
+        self.config = config
+        self.engine = engine
         self.background_color = arcade.color.BLACK  # Default background color
-        self.levels = self.engine.config.level  # Array of levels from the config
-        self.maze_list : list[tuple[list[list[int]]]] = MazeAdapter().get_multiple_maze(self.levels)  # List of generated mazes
+        self.levels: list[dict[str, int]] = self.config.level  # Array of levels from the config
+        self.maze_list : list[tuple[list[list[int]], int]] = MazeAdapter().get_multiple_maze(self.levels)  # List of generated mazes
         self.level = 0  # Current level
 
 
@@ -45,13 +51,9 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time: float) -> bool | None:
         """ Update sprites """
-        self.entities.update()
         return None
 
     def on_resize(self, width: int, height: int) -> bool | None:
         """ Function executed when the window is resized """
 
-        # Resize player
-        self.player.width = self.get_tile_size()
-        self.player.height = self.get_tile_size()
         return super().on_resize(width, height)

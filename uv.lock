@@ -12,6 +12,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "arcade" },
+    { name = "flake8" },
     { name = "mazegenerator" },
     { name = "pydantic" },
 ]
@@ -26,6 +27,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "arcade", specifier = ">=3.3.3" },
+    { name = "flake8", specifier = ">=7.3.0" },
     { name = "mazegenerator", path = "maze_gen/mazegenerator-00001-py3-none-any.whl" },
     { name = "pydantic", specifier = ">=2.13.3" },
 ]

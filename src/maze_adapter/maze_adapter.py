@@ -47,6 +47,39 @@ class MazeAdapter:
             maze_list.append((self.get_maze(size, seed), seed))
         return maze_list
 
+    def get_walls_blocs_coords(self, maze: list[list[int]]) -> list[tuple[int, int]]:
+        """Returns a list of walls coords from the engine's maze"""
+        coords: set[tuple[int, int]] = set()  # List of coords of all wall blocs (x,y)
+
+        # Scan each cell
+        for y, row in enumerate(maze[::-1]):  # reverse read due to for loop
+                for x, cell in enumerate(row):
+                    if cell & 4:  # 4 because the maze is read in reversed because of for loop
+                        # Top wall
+                        coords.add(((x * 2), (y * 2)))
+                        coords.add(((x * 2) + 1, (y * 2)))
+                        coords.add(((x * 2) + 2, (y * 2)))
+                    if cell & 2:
+                        # Right wall
+                        coords.add(((x * 2) + 2, (y * 2)))
+                        coords.add(((x * 2) + 2, (y * 2) + 1))
+                        coords.add(((x * 2) + 2, (y * 2) + 2))
+                    if cell & 1:  # 1 because the maze is read in reversed because of for loop
+                        # Bottom wall
+                        coords.add(((x * 2), (y * 2) + 2))
+                        coords.add(((x * 2) + 1, (y * 2) + 2))
+                        coords.add(((x * 2) + 2, (y * 2) + 2))
+                    if cell & 8:
+                        # Left wall
+                        coords.add(((x * 2), (y * 2)))
+                        coords.add(((x * 2), (y * 2) + 1))
+                        coords.add(((x * 2), (y * 2) + 2))
+                    if cell == 15:
+                        # Left wall
+                        coords.add(((x * 2) + 1, (y * 2) + 1))
+
+        # Return as list
+        return list(coords)
 
 # maze_gen = MazeAdapter(DEFAULT_SIGNATURE, 10)
 

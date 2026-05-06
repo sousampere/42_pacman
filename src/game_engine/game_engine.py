@@ -26,7 +26,7 @@ class GameEngine:
             width=self.width, height=self.height, title="Pac-Man", resizable=True
         )
         self.config = config
-        self.window.set_minimum_size(1920, 1080)
+        # self.window.set_minimum_size(1920, 1080)
         self.maze_adapter = None
         self.config_data = None
         self.is_configured = False  # Set to True when Views added

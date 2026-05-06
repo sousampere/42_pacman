@@ -8,9 +8,9 @@
 | Symbole | Signification |
 |---|---|
 | ☐ | Non testé |
-| :white_check_mark: | Testé et validé |
-| :warning: | Testé — comportement anormal, bug ouvert |
-| :x: | Testé — échec bloquant |
+| ✅ | Testé et validé |
+| ⚠️ | Testé — comportement anormal, bug ouvert |
+| ❌ | Testé — échec bloquant |
 
 **Environnement de test** : Linux, Python 3.10+, `make install` effectué, package A-Maze-ing installé.
 

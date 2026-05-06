@@ -7,22 +7,22 @@
 
 | ID | Risque | Probabilité | Impact | Criticité |
 |---|---|---|---|---|
-| R01 | Interface du package A-Maze-ing incompatible ou mal documentée | Moyenne | Élevé | :red_circle: Critique |
-| R02 | Config modifiée pendant la soutenance → crash ou comportement inattendu | Élevée | Élevé | :red_circle: Critique |
-| R03 | mypy ou flake8 échoue en dernière minute (typage incomplet) | Moyenne | Élevé | :red_circle: Critique |
-| R04 | Build PyInstaller ne fonctionne pas sur la plateforme cible | Moyenne | Élevé | :red_circle: Critique |
-| R05 | Retard sur le Core gameplay → MVP pas prêt à mi-parcours | Moyenne | Moyen | :large_orange_circle: Élevé |
-| R06 | Arcade incompatible avec l'environnement Linux de l'évaluateur | Faible | Élevé | :large_orange_circle: Élevé |
-| R07 | Mode triche incomplet → points perdus à la peer review | Faible | Moyen | :large_yellow_circle: Modéré |
-| R08 | Mauvaise gestion des erreurs → traceback visible pendant la soutenance | Faible | Élevé | :large_orange_circle: Élevé |
-| R09 | Un membre de l'équipe indisponible sur une période clé | Faible | Moyen | :large_yellow_circle: Modéré |
-| R10 | Highscores corrompus ou perdus (fichier JSON invalide) | Faible | Faible | :large_green_circle: Faible |
+| R01 | Interface du package A-Maze-ing incompatible ou mal documentée | Moyenne | Élevé | 🔴 Critique |
+| R02 | Config modifiée pendant la soutenance → crash ou comportement inattendu | Élevée | Élevé | 🔴 Critique |
+| R03 | mypy ou flake8 échoue en dernière minute (typage incomplet) | Moyenne | Élevé | 🔴 Critique |
+| R04 | Build PyInstaller ne fonctionne pas sur la plateforme cible | Moyenne | Élevé | 🔴 Critique |
+| R05 | Retard sur le Core gameplay → MVP pas prêt à mi-parcours | Moyenne | Moyen | 🟠 Élevé |
+| R06 | Arcade incompatible avec l'environnement Linux de l'évaluateur | Faible | Élevé | 🟠 Élevé |
+| R07 | Mode triche incomplet → points perdus à la peer review | Faible | Moyen | 🟡 Modéré |
+| R08 | Mauvaise gestion des erreurs → traceback visible pendant la soutenance | Faible | Élevé | 🟠 Élevé |
+| R09 | Un membre de l'équipe indisponible sur une période clé | Faible | Moyen | 🟡 Modéré |
+| R10 | Highscores corrompus ou perdus (fichier JSON invalide) | Faible | Faible | 🟢 Faible |
 
 ---
 
 ## Détail et mitigation
 
-### :red_circle: R01 — Package A-Maze-ing incompatible ou mal documentée
+### 🔴 R01 — Package A-Maze-ing incompatible ou mal documentée
 
 **Description** : Le package est produit par un autre groupe d'étudiants. Son interface peut être instable, mal documentée, ou changer entre le moment où on le reçoit et la peer review (le sujet précise qu'il sera réinstallé lors de la revue).
 
@@ -36,7 +36,7 @@
 
 ---
 
-### :red_circle: R02 — Config modifiée pendant la soutenance
+### 🔴 R02 — Config modifiée pendant la soutenance
 
 **Description** : Le sujet indique explicitement que la configuration sera modifiée lors de la défense. Des valeurs invalides, manquantes, ou hors limites seront probablement injectées.
 
@@ -50,7 +50,7 @@
 
 ---
 
-### :red_circle: R03 — mypy / flake8 échoue en dernière minute
+### 🔴 R03 — mypy / flake8 échoue en dernière minute
 
 **Description** : Ignorer le typage et le linting pendant le développement pour aller vite, puis découvrir des dizaines d'erreurs en S08.
 
@@ -64,7 +64,7 @@
 
 ---
 
-### :red_circle: R04 — Build PyInstaller défaillant
+### 🔴 R04 — Build PyInstaller défaillant
 
 **Description** : PyInstaller peut échouer à embarquer les assets Arcade (images, sons, polices) ou produire un binaire non fonctionnel sur la plateforme cible.
 
@@ -78,7 +78,7 @@
 
 ---
 
-### :large_orange_circle: R05 — Retard sur le Core gameplay
+### 🟠 R05 — Retard sur le Core gameplay
 
 **Description** : Le moteur de jeu (boucle, collisions, fantômes) est la partie la plus complexe. Un retard ici décale toutes les phases suivantes.
 
@@ -91,7 +91,7 @@
 
 ---
 
-### :large_orange_circle: R06 — Incompatibilité Arcade chez l'évaluateur
+### 🟠 R06 — Incompatibilité Arcade chez l'évaluateur
 
 **Description** : Python Arcade nécessite OpenGL 3.3+. Certaines machines de l'école ou VMs peuvent ne pas le supporter.
 
@@ -104,7 +104,7 @@
 
 ---
 
-### :large_orange_circle: R08 — Traceback visible pendant la soutenance
+### 🟠 R08 — Traceback visible pendant la soutenance
 
 **Description** : Une exception non interceptée lors de la démo (config modifiée, fichier manquant, erreur de générateur) = pénalité directe selon le sujet.
 
@@ -115,7 +115,7 @@
 
 ---
 
-### :large_yellow_circle: R07 — Mode triche incomplet
+### 🟡 R07 — Mode triche incomplet
 
 **Description** : Le mode triche est explicitement évalué lors de la peer review. Une fonctionnalité manquante ou buguée est visible immédiatement.
 
@@ -125,7 +125,7 @@
 
 ---
 
-### :large_yellow_circle: R09 — Indisponibilité d'un membre
+### 🟡 R09 — Indisponibilité d'un membre
 
 **Description** : Maladie, examens, contraintes personnelles sur une semaine clé.
 
@@ -136,7 +136,7 @@
 
 ---
 
-### :large_green_circle: R10 — Highscores corrompus
+### 🟢 R10 — Highscores corrompus
 
 **Description** : Le fichier JSON des highscores peut être absent, vide, ou mal formé.
 
@@ -152,16 +152,16 @@
 
 | ID | Statut actuel | Évolution | Notes |
 |---|---|---|---|
-| R01 | :large_yellow_circle: En surveillance | — | Package reçu, à tester |
-| R02 | :large_yellow_circle: En surveillance | — | |
-| R03 | :large_yellow_circle: En surveillance | — | |
-| R04 | :large_yellow_circle: En surveillance | — | |
-| R05 | :large_yellow_circle: En surveillance | — | |
-| R06 | :large_yellow_circle: En surveillance | — | |
-| R07 | :large_yellow_circle: En surveillance | — | |
-| R08 | :large_yellow_circle: En surveillance | — | |
-| R09 | :large_green_circle: Faible | — | |
-| R10 | :large_green_circle: Faible | — | |
+| R01 | 🟡 En surveillance | — | Package reçu, à tester |
+| R02 | 🟡 En surveillance | — | |
+| R03 | 🟡 En surveillance | — | |
+| R04 | 🟡 En surveillance | — | |
+| R05 | 🟡 En surveillance | — | |
+| R06 | 🟡 En surveillance | — | |
+| R07 | 🟡 En surveillance | — | |
+| R08 | 🟡 En surveillance | — | |
+| R09 | 🟢 Faible | — | |
+| R10 | 🟢 Faible | — | |
 
 ---
 

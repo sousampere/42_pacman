@@ -49,7 +49,10 @@ class GameView(arcade.View):
         )
 
         # Render game from Rendere
-        self.renderer.render_game(self.maze_list[0][0])
+
+        walls, paths, seed = self.maze_list[0]
+
+        self.renderer.render_game(walls)
 
         fps_text = f"FPS: {int(self.fps)}"
         arcade.draw_text(fps_text, 10, 10, arcade.color.WHITE, 18)

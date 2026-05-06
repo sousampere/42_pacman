@@ -23,7 +23,6 @@ class Renderer:
         )  # XP texture
         self.fps = 0  # To calculate FPS
         self.maze_adapter = MazeAdapter()
-        pass
 
     def render_game(self, maze: NDArray[Any], lifes: int = 42) -> None:
         """Draws the game to the screen"""
@@ -33,7 +32,7 @@ class Renderer:
             + window.width / 2
         )
 
-        # Draw maze
+        # # Draw maze
         maze_blocs = self.build_maze_walls(maze)
         maze_blocs.draw()
 
@@ -71,7 +70,6 @@ class Renderer:
             24,
             font_name="Early GameBoy",
         )
-        pass
 
     def create_attribute_placeholder(
         self, HUD_x: int, added_height: int = 0
@@ -122,11 +120,12 @@ class Renderer:
         self, maze: NDArray[Any]
     ) -> tuple[int, int]:
         """Refresh the self.maze_dimensions according to the current maze"""
-        maze_dimensions = (len(maze[0]), len(maze))
-        return maze_dimensions
+        x = max(coords[0] for coords in maze)
+        y = max(coords[1] for coords in maze)
+        return (int(x / 2), int(y / 2))
 
     def build_maze_walls(
-        self, maze: NDArray[Any]
+        self, walls: NDArray[Any]
     ) -> arcade.SpriteList[arcade.Sprite]:
         """Returns a list of sprites corresponding to each bloc composing the given maze.
 
@@ -135,23 +134,21 @@ class Renderer:
         """
         # Draw all the sprites on the screen
         maze_blocs: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
-        coords = self.maze_adapter.get_walls_blocs_coords(maze)
-        maze_dimensions = self.calculate_maze_dimensions(maze)
-        window = arcade.get_window()
-        for coord in coords:
-            # Calculate tile size that will be OK for the current window size
-            tile_size = self.get_tile_size(maze)
-
+        # print(walls)
+        # print(maze_dimensions)
+        # exit()
+        # Calculate tile size that will be OK for the current window size
+        tile_size = self.get_tile_size(walls)
+        maze_dimensions = self.calculate_maze_dimensions(walls)
+        for coord in walls:
+            x, y = self.get_coords(coord, walls, maze_dimensions, tile_size)
+            # x, y = (10, 10)
             # Create sprite with a good tile size
             bloc = arcade.Sprite(
                 self.maze_bloc_texture,
                 1,
-                coord[0] * tile_size
-                + window.width / 2
-                - (tile_size * 2 * maze_dimensions[0]) / 2,
-                coord[1] * tile_size
-                + window.height / 2
-                - (tile_size * 2 * maze_dimensions[1]) / 2,
+                x,
+                y,
             )
             bloc.width = tile_size
             bloc.height = tile_size
@@ -159,17 +156,26 @@ class Renderer:
 
         return maze_blocs
 
+    def get_coords(self, coords: tuple[int, int], walls: NDArray[Any], maze_dimensions: tuple[int, int], tile_size: int) -> tuple[int, int]:
+        """Returns converted coords from game coords to render coords"""
+        window = arcade.get_window()
+        x = coords[0] * tile_size + window.width / 2 - (tile_size * 2 * maze_dimensions[0]) / 2
+        y = coords[1] * tile_size + window.height / 2 - (tile_size * 2 * maze_dimensions[1]) / 2
+        return (int(x), int(y),)
+
     def get_tile_size(self, maze: NDArray[Any]) -> int:
         """Return an adapted tile size for the window size"""
-        # Get maze dimensions
-        maze_dimensions = self.calculate_maze_dimensions(maze)
-        max_x = maze_dimensions[0] * 2 + 1
-        max_y = maze_dimensions[1] * 2 + 1
+        MAZE_DIMENSIONS = self.calculate_maze_dimensions(maze)
+        max_x = MAZE_DIMENSIONS[0] * 2 + 1
+        max_y = MAZE_DIMENSIONS[1] * 2 + 1
 
         # Get window dimensions
         window = arcade.get_window()
 
         # Calculate tile size so that the maze takes max (multiplicator)% of height/width
-        tile_size = min(window.width / max_x, window.height / max_y) * 0.8
+        tile_size = min(
+            window.width / max_x,
+            window.height / max_y
+        ) * 0.8
 
         return int(tile_size)

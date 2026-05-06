@@ -20,7 +20,7 @@ def main():
     # Set different views
     engine.set_views(
         menu=MenuView(engine),
-        game=GameView(engine),
+        game=GameView(config, engine),
         pause=PauseView(engine),
         finish=FinishView(engine),
     )

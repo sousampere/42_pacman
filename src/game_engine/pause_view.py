@@ -1,5 +1,9 @@
 
 import arcade
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..game_engine.game_engine import GameEngine
 
 
 class PauseView(arcade.View):

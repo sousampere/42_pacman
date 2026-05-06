@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "arcade>=3.3.3",
+    "flake8>=7.3.0",
+    "mazegenerator",
     "pydantic>=2.13.3",
 ]
 
@@ -15,3 +17,6 @@ dev = [
     "flake8>=7.3.0",
     "mypy>=1.20.2",
 ]
+
+[tool.uv.sources]
+mazegenerator = { path = "maze_gen/mazegenerator-00001-py3-none-any.whl" }

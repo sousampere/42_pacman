@@ -49,42 +49,44 @@ class Renderer:
         self.maze_sprite_list.draw()
 
         # Draw logo
-        logo = self.create_logo(window)
-        arcade.draw_texture_rect(self.logo_title_texture, logo)
+        self.logo = self.create_logo(window)
+        arcade.draw_texture_rect(self.logo_title_texture, self.logo)
 
         # Draw lifes
-        self.draw_attribute(window, self.life_texture, HUD_x, lifes, 0)
+        self.draw_attribute(window, self.life_texture,
+                            self.logo.x + self.logo.width / 2 + window.width * 0.01,
+                            self.logo.y, 99)
 
         # Draw XP
-        self.draw_attribute(
-            window, self.xp_texture, HUD_x, lifes, -(window.height * 0.05)
-        )
+        self.draw_attribute(window, self.xp_texture,
+                            self.logo.x + self.logo.width / 2 + window.width * 0.11,
+                            self.logo.y, 99)
 
     def draw_attribute(
         self,
         window: arcade.Window,
         icon: arcade.Texture,
-        HUD_x: int,
+        x: int,
+        y: int,
         value: str | int = 0,
-        added_height: float = 0,
     ) -> None:
         placeholder = self.create_attribute_placeholder(
-            window, int(HUD_x), added_height
+            window, x, y, 
         )
         arcade.draw_texture_rect(icon, placeholder)
-        text_x = placeholder.x
-        text_y = window.height * 0.7 + added_height - (24 / 2)
+        text_x = x
+        text_y = y
         arcade.draw_text(
             value,
-            text_x,
-            text_y,
+            text_x + 30,
+            text_y - (24 / 2),
             arcade.color.WHITE,
             24,
             font_name="Early GameBoy",
         )
 
     def create_attribute_placeholder(
-        self, window: arcade.Window, HUD_x: int, added_height: float = 0
+        self, window: arcade.Window, x: int, y: int, added_width: float = 0
     ) -> arcade.Rect:
         """Creates a layer that displays the lifes of the player"""
         resize_factor = 0.05
@@ -92,8 +94,8 @@ class Renderer:
             (window.height * resize_factor) / self.logo_title_texture.height
         )
         rect = arcade.Rect(
-            x=HUD_x + width / 2,
-            y=window.height * 0.7 + added_height,
+            x=x,
+            y=y,
             width=(self.logo_title_texture.width)
             / (self.logo_title_texture.height / (
                 window.height * resize_factor)),

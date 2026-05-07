@@ -1,10 +1,9 @@
-
 import arcade
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
+
 
 class MenuView(arcade.View):
     """View of the menu (onboarding)"""
@@ -13,7 +12,8 @@ class MenuView(arcade.View):
         super().__init__()
         self.engine = engine
         self.background_color = (0, 8, 20)  # Soft black background
-        self.sprite_list: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList[
+            arcade.Sprite] = arcade.SpriteList()
 
         # -- Load sprites --
         # Load play button :
@@ -21,9 +21,10 @@ class MenuView(arcade.View):
         self.sprite_list.append(self.start_button)
         # Load background
         try:
-            self.background = arcade.load_texture("assets/background/background_1.jpg")
+            self.background = arcade.load_texture(
+                "assets/background/background_1.jpg")
         except (FileNotFoundError, PermissionError):
-            raise NotImplementedError('NOT IMPLEMENTED : Missing background')
+            raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 
     def on_draw(self) -> bool | None:
         """Method for drawing at screen"""
@@ -66,7 +67,7 @@ class MenuView(arcade.View):
         # Draw sprites
         self.sprite_list.draw()
         return None
-    
+
     def on_update(self, delta_time: float) -> bool | None:
         self.sprite_list.update()
         return super().on_update(delta_time)
@@ -95,7 +96,7 @@ class MenuView(arcade.View):
         return None
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
-        if self.start_button.collides_with_point((x,y)):
+        if self.start_button.collides_with_point((x, y)):
             c = self.window.get_system_mouse_cursor(self.window.CURSOR_HAND)
             self.start_button.scale = 0.105
             self.window.set_mouse_cursor(c)

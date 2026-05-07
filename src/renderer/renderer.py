@@ -3,8 +3,6 @@ from typing import Any
 import arcade
 from numpy.typing import NDArray
 
-from src.maze_adapter.maze_adapter import MazeAdapter
-
 
 class Renderer:
     def __init__(self) -> None:
@@ -16,17 +14,16 @@ class Renderer:
             "assets/misc/logo-title.png"
         )  # Load logo title
         self.life_texture = arcade.load_texture(
-            "assets/misc/life.png"
-        )  # Lifes texture
+            "assets/misc/life.png")  # Lifes texture
         self.xp_texture = arcade.load_texture(
-            "assets/misc/xp.png"
+            "assets/misc/xp.png")  # XP texture
+        self.bg_texture = arcade.load_texture(
+            "assets/background/background_2.png"
         )  # XP texture
         self.fps = 0  # To calculate FPS
-        self.maze_adapter = MazeAdapter()
-        self.maze_sprite_list: arcade.SpriteList[arcade.Sprite] = (
-            arcade.SpriteList()
-        )
-        self._cached_tile_size: int = -1
+        self.maze_sprite_list: arcade.SpriteList[
+            arcade.Sprite] = arcade.SpriteList()
+        self._cached_window_size: tuple[int, int] = (-1, -1)
 
     def render_game(self, maze: NDArray[Any], lifes: int = 42) -> None:
         """Draws the game to the screen"""
@@ -34,12 +31,20 @@ class Renderer:
         tile_size = self.get_tile_size(maze, window)
 
         HUD_x = int(
-            self.calculate_maze_dimensions(maze)[0]
-            * tile_size
-            + window.width / 2
+            self.calculate_maze_dimensions(
+                maze)[0] * tile_size + window.width / 2
         )
 
-        # # Draw maze
+        # Draw background
+        bg_rect = self.get_background(window)
+        arcade.draw_texture_rect(self.bg_texture, bg_rect)
+
+        # Apply a soft shadow on the screen
+        arcade.draw_lbwh_rectangle_filled(
+            0, 0, window.width, window.height, (0, 0, 0, 150)
+        )
+
+        # Draw maze
         self.maze_sprite_list = self.build_maze_walls(maze, tile_size, window)
         self.maze_sprite_list.draw()
 
@@ -61,13 +66,13 @@ class Renderer:
         icon: arcade.Texture,
         HUD_x: int,
         value: str | int = 0,
-        added_height: int = 0,
+        added_height: float = 0,
     ) -> None:
         placeholder = self.create_attribute_placeholder(
             window, int(HUD_x), added_height
         )
         arcade.draw_texture_rect(icon, placeholder)
-        text_x = placeholder.x + window.width * 0
+        text_x = placeholder.x
         text_y = window.height * 0.7 + added_height - (24 / 2)
         arcade.draw_text(
             value,
@@ -79,7 +84,7 @@ class Renderer:
         )
 
     def create_attribute_placeholder(
-        self, window: arcade.Window, HUD_x: int, added_height: int = 0
+        self, window: arcade.Window, HUD_x: int, added_height: float = 0
     ) -> arcade.Rect:
         """Creates a layer that displays the lifes of the player"""
         resize_factor = 0.05
@@ -90,10 +95,8 @@ class Renderer:
             x=HUD_x + width / 2,
             y=window.height * 0.7 + added_height,
             width=(self.logo_title_texture.width)
-            / (
-                self.logo_title_texture.height
-                / (window.height * resize_factor)
-            ),
+            / (self.logo_title_texture.height / (
+                window.height * resize_factor)),
             height=window.height * resize_factor,
             left=0,
             right=0,
@@ -109,10 +112,8 @@ class Renderer:
             x=window.width / 2,
             y=window.height * 0.93,
             width=self.logo_title_texture.width
-            * (
-                (window.height * resize_factor)
-                / self.logo_title_texture.height
-            ),
+            * ((window.height * resize_factor
+                ) / self.logo_title_texture.height),
             height=window.height * resize_factor,
             left=0,
             right=0,
@@ -137,10 +138,7 @@ class Renderer:
         on the window dimensions,
         so that the maze always let at least a 20% margin on each window side
         """
-        if (
-            self.maze_sprite_list is not None
-            and self._cached_tile_size == tile_size
-        ):
+        if self._cached_window_size == window.get_size():
             return self.maze_sprite_list
         maze_dimensions = self.calculate_maze_dimensions(walls)
         xs = (
@@ -160,7 +158,8 @@ class Renderer:
             bloc.width = tile_size
             bloc.height = tile_size
             self.maze_sprite_list.append(bloc)
-        self._cached_tile_size = tile_size
+
+        self._cached_window_size = window.get_size()
 
         return self.maze_sprite_list
 
@@ -173,3 +172,17 @@ class Renderer:
         tile_size = min(window.width / max_x, window.height / max_y) * 0.8
 
         return int(tile_size)
+
+    def get_background(self, window: arcade.Window) -> arcade.Rect:
+        # Apply background
+        rect = arcade.Rect(
+            x=window.width / 2,
+            y=window.height / 2,
+            width=window.width,
+            height=window.height,
+            left=0,
+            right=0,
+            bottom=0,
+            top=0,
+        )
+        return rect

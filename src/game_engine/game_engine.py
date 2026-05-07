@@ -6,6 +6,7 @@ from .game_view import GameView
 from .pause_view import PauseView
 from .finish_view import FinishView
 
+
 class GameEngineError(Exception):
     def __init__(self, msg: str = "") -> None:
         super().__init__(f"GameEngine error: {msg}")
@@ -23,10 +24,11 @@ class GameEngine:
         self.width = 1280
         self.height = 720
         self.window = arcade.Window(
-            width=self.width, height=self.height, title="Pac-Man", resizable=True
+            width=self.width, height=self.height,
+            title="Pac-Man", resizable=True
         )
         self.config = config
-        # self.window.set_minimum_size(1920, 1080)
+        self.window.set_minimum_size(1920, 1080)
         self.maze_adapter = None
         self.config_data = None
         self.is_configured = False  # Set to True when Views added
@@ -36,7 +38,8 @@ class GameEngine:
             pass
 
     def set_views(
-        self, menu: MenuView, game: GameView, pause: PauseView, finish: FinishView
+        self, menu: MenuView, game: GameView,
+        pause: PauseView, finish: FinishView
     ) -> None:
         """Initialize the menu, game, pause and finish views."""
         self.menu_view = menu

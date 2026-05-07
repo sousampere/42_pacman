@@ -1,5 +1,4 @@
 from abc import abstractmethod, ABC
-import re
 from pydantic import BaseModel, ValidationError, model_validator
 import json
 
@@ -43,7 +42,8 @@ class Leaderboard(BaseModel):
             if type(score["score"]) is not int:
                 raise LeaderboardError("Invalid username data type provided")
             if len(score["username"]) > 10:
-                raise LeaderboardError("A username is too " "long in the leaderboard")
+                raise LeaderboardError(
+                    "A username is too " "long in the leaderboard")
             # Case of negative score
             if score["score"] < 0:
                 raise LeaderboardError(
@@ -118,7 +118,8 @@ class LeaderboardManager(ABSLeaderboardManager):
             try:
                 leaderboards.append(
                     Leaderboard(
-                        signature=leaderboard["signature"], scores=leaderboard["scores"]
+                        signature=leaderboard[
+                            "signature"], scores=leaderboard["scores"]
                     )
                 )
             except ValidationError:

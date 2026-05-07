@@ -23,41 +23,48 @@ class Renderer:
         )  # XP texture
         self.fps = 0  # To calculate FPS
         self.maze_adapter = MazeAdapter()
+        self.maze_sprite_list: arcade.SpriteList[arcade.Sprite] = (
+            arcade.SpriteList()
+        )
+        self._cached_tile_size: int = -1
 
     def render_game(self, maze: NDArray[Any], lifes: int = 42) -> None:
         """Draws the game to the screen"""
         window = arcade.get_window()
+        tile_size = self.get_tile_size(maze, window)
+
         HUD_x = int(
-            self.calculate_maze_dimensions(maze)[0] * self.get_tile_size(maze)
+            self.calculate_maze_dimensions(maze)[0]
+            * tile_size
             + window.width / 2
         )
 
         # # Draw maze
-        maze_blocs = self.build_maze_walls(maze)
-        maze_blocs.draw()
+        self.maze_sprite_list = self.build_maze_walls(maze, tile_size, window)
+        self.maze_sprite_list.draw()
 
         # Draw logo
-        logo = self.create_logo()
+        logo = self.create_logo(window)
         arcade.draw_texture_rect(self.logo_title_texture, logo)
 
         # Draw lifes
-        self.draw_attribute(self.life_texture, HUD_x, lifes, 0)
+        self.draw_attribute(window, self.life_texture, HUD_x, lifes, 0)
 
         # Draw XP
         self.draw_attribute(
-            self.xp_texture, HUD_x, lifes, -(window.height * 0.05)
+            window, self.xp_texture, HUD_x, lifes, -(window.height * 0.05)
         )
 
     def draw_attribute(
         self,
+        window: arcade.Window,
         icon: arcade.Texture,
         HUD_x: int,
         value: str | int = 0,
         added_height: int = 0,
     ) -> None:
-        window = arcade.get_window()
         placeholder = self.create_attribute_placeholder(
-            int(HUD_x), added_height
+            window, int(HUD_x), added_height
         )
         arcade.draw_texture_rect(icon, placeholder)
         text_x = placeholder.x + window.width * 0
@@ -72,10 +79,9 @@ class Renderer:
         )
 
     def create_attribute_placeholder(
-        self, HUD_x: int, added_height: int = 0
+        self, window: arcade.Window, HUD_x: int, added_height: int = 0
     ) -> arcade.Rect:
         """Creates a layer that displays the lifes of the player"""
-        window = arcade.get_window()
         resize_factor = 0.05
         width = self.logo_title_texture.width * (
             (window.height * resize_factor) / self.logo_title_texture.height
@@ -96,9 +102,8 @@ class Renderer:
         )
         return rect
 
-    def create_logo(self) -> arcade.Rect:
+    def create_logo(self, window: arcade.Window) -> arcade.Rect:
         """Creates a layer that displays the logo of the game"""
-        window = arcade.get_window()
         resize_factor = 0.15
         rect = arcade.Rect(
             x=window.width / 2,
@@ -116,66 +121,55 @@ class Renderer:
         )
         return rect
 
-    def calculate_maze_dimensions(
-        self, maze: NDArray[Any]
-    ) -> tuple[int, int]:
+    def calculate_maze_dimensions(self, maze: NDArray[Any]) -> tuple[int, int]:
         """Refresh the self.maze_dimensions according to the current maze"""
-        x = max(coords[0] for coords in maze)
-        y = max(coords[1] for coords in maze)
+        x = maze[:, 0].max()
+        y = maze[:, 1].max()
         return (int(x / 2), int(y / 2))
 
     def build_maze_walls(
-        self, walls: NDArray[Any]
+        self, walls: NDArray[Any], tile_size: int, window: arcade.Window
     ) -> arcade.SpriteList[arcade.Sprite]:
-        """Returns a list of sprites corresponding to each bloc composing the given maze.
+        """Returns a list of sprites corresponding to each bloc composing the
+        given maze.
 
-        The sprites have a size of (tile_size) which is calculated depending on the window dimensions,
+        The sprites have a size of (tile_size) which is calculated depending
+        on the window dimensions,
         so that the maze always let at least a 20% margin on each window side
         """
-        # Draw all the sprites on the screen
-        maze_blocs: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
-        # print(walls)
-        # print(maze_dimensions)
-        # exit()
-        # Calculate tile size that will be OK for the current window size
-        tile_size = self.get_tile_size(walls)
+        if (
+            self.maze_sprite_list is not None
+            and self._cached_tile_size == tile_size
+        ):
+            return self.maze_sprite_list
         maze_dimensions = self.calculate_maze_dimensions(walls)
-        for coord in walls:
-            x, y = self.get_coords(coord, walls, maze_dimensions, tile_size)
-            # x, y = (10, 10)
-            # Create sprite with a good tile size
-            bloc = arcade.Sprite(
-                self.maze_bloc_texture,
-                1,
-                x,
-                y,
-            )
+        xs = (
+            walls[:, 0] * tile_size
+            + window.width / 2
+            - (tile_size * 2 * maze_dimensions[0]) / 2
+        ).astype(int)
+        ys = (
+            walls[:, 1] * tile_size
+            + window.height / 2
+            - (tile_size * 2 * maze_dimensions[1]) / 2
+        ).astype(int)
+        self.maze_sprite_list = arcade.SpriteList()
+
+        for x, y in zip(xs, ys):
+            bloc = arcade.Sprite(self.maze_bloc_texture, 1, x, y)
             bloc.width = tile_size
             bloc.height = tile_size
-            maze_blocs.append(bloc)
+            self.maze_sprite_list.append(bloc)
+        self._cached_tile_size = tile_size
 
-        return maze_blocs
+        return self.maze_sprite_list
 
-    def get_coords(self, coords: tuple[int, int], walls: NDArray[Any], maze_dimensions: tuple[int, int], tile_size: int) -> tuple[int, int]:
-        """Returns converted coords from game coords to render coords"""
-        window = arcade.get_window()
-        x = coords[0] * tile_size + window.width / 2 - (tile_size * 2 * maze_dimensions[0]) / 2
-        y = coords[1] * tile_size + window.height / 2 - (tile_size * 2 * maze_dimensions[1]) / 2
-        return (int(x), int(y),)
-
-    def get_tile_size(self, maze: NDArray[Any]) -> int:
+    def get_tile_size(self, maze: NDArray[Any], window: arcade.Window) -> int:
         """Return an adapted tile size for the window size"""
-        MAZE_DIMENSIONS = self.calculate_maze_dimensions(maze)
-        max_x = MAZE_DIMENSIONS[0] * 2 + 1
-        max_y = MAZE_DIMENSIONS[1] * 2 + 1
+        maze_dimensions = self.calculate_maze_dimensions(maze)
+        max_x = maze_dimensions[0] * 2 + 1
+        max_y = maze_dimensions[1] * 2 + 1
 
-        # Get window dimensions
-        window = arcade.get_window()
-
-        # Calculate tile size so that the maze takes max (multiplicator)% of height/width
-        tile_size = min(
-            window.width / max_x,
-            window.height / max_y
-        ) * 0.8
+        tile_size = min(window.width / max_x, window.height / max_y) * 0.8
 
         return int(tile_size)

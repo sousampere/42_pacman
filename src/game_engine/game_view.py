@@ -1,5 +1,8 @@
 from numpy.typing import NDArray
 
+import numpy as np
+
+from src.entity.player import Player
 from src.renderer.renderer import Renderer
 
 from ..maze_adapter.maze_adapter import MazeAdapter
@@ -40,6 +43,24 @@ class GameView(arcade.View):
         )  # List of generated mazes
         self.renderer = Renderer()  # Initialize renderer
         self.level = 0  # Current level
+        self.current_maze: tuple[NDArray, NDArray, int] = self.maze_list[0]
+        self.entity_list: arcade.SpriteList = self.init_entity()
+
+    def init_entity(self) -> arcade.SpriteList:
+        entity: arcade.SpriteList = arcade.SpriteList()
+        center_point = self.current_maze[1].mean(axis=0)
+
+        distances = np.sum((self.current_maze[1] - center_point)**2, axis=1)
+
+        closest_idx = np.argmin(distances)
+
+        closest_point = tuple(self.current_maze[1][closest_idx].tolist())
+
+        print(closest_point)
+        self.player: Player = Player(closest_point)
+
+        entity.append(self.player)
+        return entity
 
     def on_draw(self) -> bool | None:
         """Function to draw on the screen"""
@@ -50,9 +71,10 @@ class GameView(arcade.View):
 
         # Render game from Rendere
 
-        walls, paths, seed = self.maze_list[0]
+        walls, paths, seed = self.current_maze
 
         self.renderer.render_game(walls)
+        self.entity_list.draw()
 
         fps_text = f"FPS: {int(self.fps)}"
         arcade.draw_text(fps_text, 10, 10, arcade.color.WHITE, 18)
@@ -63,6 +85,9 @@ class GameView(arcade.View):
         """Keyboard interactions events"""
         if symbol == arcade.key.ESCAPE:
             self.engine.switch_pause()
+        if symbol == arcade.key.A:
+            self.current_maze = self.maze_list[1]
+            self.init_entity()
 
         return None
 
@@ -70,6 +95,7 @@ class GameView(arcade.View):
         """Update sprites"""
         if delta_time > 0:
             self.fps = 1 / delta_time
+        self.player
         return None
 
     def on_resize(self, width: int, height: int) -> bool | None:

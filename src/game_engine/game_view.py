@@ -1,3 +1,5 @@
+from time import time
+
 from numpy.typing import NDArray
 
 from src.renderer.renderer import Renderer
@@ -53,7 +55,8 @@ class GameView(arcade.View):
         self.renderer.render_game(walls, paths)
 
         fps_text = f"FPS: {int(self.fps)}"
-        arcade.draw_text(fps_text, 10, self.window.height - 10 - 18, arcade.color.WHITE, 18, font_name="Early GameBoy")
+        arcade.draw_text(fps_text, 10, self.window.height - 10 - 18,
+                         (50, 255, 50), 18, font_name="Early GameBoy")
 
         return None
 

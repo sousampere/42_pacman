@@ -22,7 +22,7 @@ class MenuView(arcade.View):
         # Load background
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_1.jpg")
+                "assets/background/background_2.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 

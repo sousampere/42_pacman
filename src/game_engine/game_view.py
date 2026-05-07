@@ -50,10 +50,10 @@ class GameView(arcade.View):
 
         # Render game from Rendere
         walls, paths, seed = self.maze_list[0]
-        self.renderer.render_game(walls)
+        self.renderer.render_game(walls, paths)
 
         fps_text = f"FPS: {int(self.fps)}"
-        arcade.draw_text(fps_text, 10, 10, arcade.color.WHITE, 18)
+        arcade.draw_text(fps_text, 10, self.window.height - 10 - 18, arcade.color.WHITE, 18, font_name="Early GameBoy")
 
         return None
 

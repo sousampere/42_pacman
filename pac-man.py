@@ -1,7 +1,13 @@
 # Made by gtourdia & kebertra
 
 from src.config.config_loader import ConfigError, ConfigLoader
-from src.game_engine.game_engine import GameEngine, MenuView, GameView, PauseView, FinishView
+from src.game_engine.game_engine import (
+    GameEngine,
+    MenuView,
+    GameView,
+    PauseView,
+    FinishView,
+)
 
 
 def main():
@@ -9,9 +15,9 @@ def main():
 
     # Load config
     try:
-        config = ConfigLoader.load_config('data/config.json')
+        config = ConfigLoader.load_config("data/config.json")
     except ConfigError:
-        print('[Error] Could not read your configuration file. Aborting.')
+        print("[Error] Could not read your configuration file. Aborting.")
         exit(1)
 
     # Load game engine

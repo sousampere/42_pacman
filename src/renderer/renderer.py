@@ -181,7 +181,7 @@ class Renderer:
 
         tile_size = min(window.width / max_x, window.height / max_y) * 0.8
 
-        return int(tile_size)
+        return min(30, int(tile_size))
 
     def get_background(self, window: arcade.Window) -> arcade.Rect:
         # Apply background

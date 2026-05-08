@@ -28,6 +28,8 @@ class GameView(arcade.View):
         self.config = config
         self.engine = engine
 
+        self.lives = config.lives
+
         # Scene setup
         self.current_maze = 0
         self.levels: list[dict[str, int]] = (
@@ -51,7 +53,7 @@ class GameView(arcade.View):
 
         # Render game from Rendere
         walls, paths, seed = self.maze_list[self.current_maze]
-        self.renderer.render_game(walls, paths)
+        self.renderer.render_game(walls, paths, self.lives)
 
         fps_text = f"FPS: {int(self.fps)}"
         arcade.draw_text(fps_text, 10, self.window.height - 10 - 18,

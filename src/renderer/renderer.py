@@ -9,7 +9,7 @@ class Renderer:
     def __init__(self) -> None:
         """Initialize the renderer"""
         self.cheat_mode: bool = False  # Cheat mode enabled or not
-        self.fps = 0  # To calculate FPS
+        self.fps = 0  # To calculate FPS\
 
         # Load maze related textures
         self.cheat_maze_wall_texture = arcade.load_texture(
@@ -55,8 +55,10 @@ class Renderer:
         # Cache
         self._cached_window_size: tuple[int, int] = (-1, -1)
 
-    def render_game(self, maze: NDArray[Any], path: NDArray[Any], lifes: int = 42) -> None:
+    def render_game(self, maze: NDArray[Any], path: NDArray[Any], lifes: int) -> None:
         """Draws the game to the screen"""
+        CONTROL_TEXT = 'Escape: Pause       Space: Cheat       R: Next lvl'
+
         window = arcade.get_window()
         tile_size = self.get_tile_size(maze, window)
 
@@ -92,7 +94,7 @@ class Renderer:
                             self.life_texture,
                             self.logo.x + self.logo.width / 2 + window.width * 0.01,
                             self.logo.y,
-                            99)
+                            lifes)
 
         # Draw XP
         self.draw_attribute(window,
@@ -109,9 +111,8 @@ class Renderer:
                             '1')
 
         # Draw controls
-        ctrl_text = 'Escape: Pause - Space: Cheat'
         arcade.draw_text(
-            ctrl_text,
+            CONTROL_TEXT,
             window.width / 2,
             window.height * 0.05,
             arcade.color.WHITE,
@@ -229,7 +230,6 @@ class Renderer:
             bloc.width = tile_size
             bloc.height = tile_size
             self.maze_sprite_list.append(bloc)
-
 
     def get_tile_size(self, maze: NDArray[Any], window: arcade.Window) -> int:
         """Return an adapted tile size for the window size"""

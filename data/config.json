@@ -1,9 +1,9 @@
 {
   "highscore_filename": "data/leaderboard.json",
   "lives": 5,
-  "pacgum_points": 20,
+  "pacgum_points": 15,
   "super_pacgum_points": 50,
-  "ghost_points": 200,
+  "ghost_points": 150,
   "seed": "forty-two",
   "max_time": 90,
   "level": [
@@ -12,19 +12,19 @@
       "height": 14
     },
     {
-      "width": 12,
-      "height": 10
-    },
-    {
-      "width": 13,
-      "height": 10
-    },
-    {
-      "width": 14,
-      "height": 10
+      "width": 15,
+      "height": 15
     },
     {
       "width": 15,
+      "height": 15
+    },
+    {
+      "width": 5,
+      "height": 15
+    },
+    {
+      "width": 16,
       "height": 10
     },
     {
@@ -33,19 +33,19 @@
     },
     {
       "width": 17,
-      "height": 10
+      "height": 15
     },
     {
       "width": 18,
-      "height": 10
+      "height": 15
     },
     {
       "width": 19,
-      "height": 10
+      "height": 15
     },
     {
-      "width": 2,
-      "height": 10
+      "width": 15,
+      "height": 15
     }
   ]
 }

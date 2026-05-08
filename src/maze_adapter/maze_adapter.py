@@ -94,3 +94,5 @@ class MazeAdapter:
         path_coords = row_diff(allcoords, wall_coords)
 
         return wall_coords, path_coords
+
+    from datetime import datetime

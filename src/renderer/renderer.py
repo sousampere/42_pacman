@@ -1,3 +1,4 @@
+from turtle import width
 from typing import Any
 
 import arcade
@@ -7,31 +8,51 @@ from numpy.typing import NDArray
 class Renderer:
     def __init__(self) -> None:
         """Initialize the renderer"""
-        self.maze_bloc_texture = arcade.load_texture(
-            "assets/maze/bloc.png"
-        )  # Load bloc texture
-        sheet = arcade.load_spritesheet("assets/maze/tilemap_packed.png")
-        self.textures = sheet.get_texture_grid(
-            size=(16, 16),
-            columns=12,
-            count=16*16,
-        )
+        self.cheat_mode: bool = False  # Cheat mode enabled or not
+        self.fps = 0  # To calculate FPS
+
+        # Load maze related textures
+        self.cheat_maze_wall_texture = arcade.load_texture(
+            'assets/maze/cheat_mode_maze_wall.png')
+        self.cheat_maze_path_texture = arcade.load_texture(
+            'assets/maze/cheat_mode_maze_path.png')
+        self.maze_wall_texture = arcade.load_texture(
+            'assets/maze/maze_wall.png')
+        self.maze_path_texture = arcade.load_texture(
+            'assets/maze/maze_path.png')
+
+        # Load logo title sprites
         self.logo_title_texture = arcade.load_texture(
             "assets/misc/logo-title.png"
         )  # Load logo title
+        self.logo_title_texture_cheat = arcade.load_texture(
+            "assets/misc/logo-title-cheat.png"
+        )  # Load logo title
+
+        # Load background texture
+        self.bg_texture = arcade.load_texture(
+            "assets/background/background_2.png"
+        )  # Background texture
+        self.bg_texture_cheat = arcade.load_texture(
+            "assets/background/background_cheat.png"
+        )  # Background cheat texture
+
+        # Load icon textures
         self.life_texture = arcade.load_texture(
             "assets/misc/life.png")  # Lifes texture
         self.xp_texture = arcade.load_texture(
             "assets/misc/xp.png")  # XP texture
-        self.bg_texture = arcade.load_texture(
-            "assets/background/background_2.png"
+        self.lvl_texture = arcade.load_texture(
+            "assets/misc/level.png"
         )  # XP texture
-        self.fps = 0  # To calculate FPS
+
         self.maze_sprite_list: arcade.SpriteList[
             arcade.Sprite] = arcade.SpriteList()
-        self.path_sprite_list: arcade.SpriteList[
-            arcade.Sprite] = arcade.SpriteList()
+        
+        # List containing attributes (lifes, score, etc.)
         self.attributes_sprites: list[arcade.Rect] = []
+
+        # Cache
         self._cached_window_size: tuple[int, int] = (-1, -1)
 
     def render_game(self, maze: NDArray[Any], path: NDArray[Any], lifes: int = 42) -> None:
@@ -41,11 +62,16 @@ class Renderer:
 
         # Draw background
         bg_rect = self.get_background(window)
-        arcade.draw_texture_rect(self.bg_texture, bg_rect)
+        if self.cheat_mode:
+            arcade.draw_texture_rect(self.bg_texture_cheat, bg_rect)
+            shadow = 220
+        else:
+            arcade.draw_texture_rect(self.bg_texture, bg_rect)
+            shadow = 150
 
         # Apply a soft shadow on the screen
         arcade.draw_lbwh_rectangle_filled(
-            0, 0, window.width, window.height, (0, 0, 0, 150)
+            0, 0, window.width, window.height, (0, 0, 0, shadow)
         )
 
         # Draw maze
@@ -54,17 +80,45 @@ class Renderer:
 
         # Draw logo
         self.logo = self.create_logo(window)
-        arcade.draw_texture_rect(self.logo_title_texture, self.logo)
+        if self.cheat_mode:
+            arcade.draw_texture_rect(self.logo_title_texture_cheat,
+                                    self.logo)
+        else:
+            arcade.draw_texture_rect(self.logo_title_texture,
+                                    self.logo)
 
         # Draw lifes
-        self.draw_attribute(window, self.life_texture,
+        self.draw_attribute(window,
+                            self.life_texture,
                             self.logo.x + self.logo.width / 2 + window.width * 0.01,
-                            self.logo.y, 99)
+                            self.logo.y,
+                            99)
 
         # Draw XP
-        self.draw_attribute(window, self.xp_texture,
+        self.draw_attribute(window,
+                            self.xp_texture,
                             self.attributes_sprites[-1].x + 150,
-                            self.logo.y, 99)
+                            self.logo.y,
+                            99)
+
+        # Draw level
+        self.draw_attribute(window,
+                            self.lvl_texture,
+                            self.attributes_sprites[-1].x + 150,
+                            self.logo.y,
+                            '1')
+
+        # Draw controls
+        ctrl_text = 'Escape: Pause - Space: Cheat'
+        arcade.draw_text(
+            ctrl_text,
+            window.width / 2,
+            window.height * 0.05,
+            arcade.color.WHITE,
+            16,
+            font_name="Early GameBoy",
+            anchor_x='center'
+        )
 
     def draw_attribute(
         self,
@@ -145,8 +199,12 @@ class Renderer:
         maze_dimensions = self.calculate_maze_dimensions(walls)
         
         self.maze_sprite_list = arcade.SpriteList()
-        self.save_blocs(self.textures[0], walls, tile_size, window, maze_dimensions)
-        self.save_blocs(self.textures[48], path, tile_size, window, maze_dimensions)
+        if self.cheat_mode:
+            self.save_blocs(self.cheat_maze_wall_texture, walls, tile_size, window, maze_dimensions)
+            self.save_blocs(self.cheat_maze_path_texture, path, tile_size, window, maze_dimensions)
+        else:
+            self.save_blocs(self.maze_wall_texture, walls, tile_size, window, maze_dimensions)
+            self.save_blocs(self.maze_path_texture, path, tile_size, window, maze_dimensions)
 
         self._cached_window_size = window.get_size()
 
@@ -196,3 +254,6 @@ class Renderer:
             top=0,
         )
         return rect
+
+    def reset_cache(self) -> None:
+        self._cached_window_size = (-1, -1)

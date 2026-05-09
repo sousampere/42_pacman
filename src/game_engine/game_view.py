@@ -1,5 +1,3 @@
-from time import time
-
 from numpy.typing import NDArray
 
 from src.renderer.renderer import Renderer
@@ -27,11 +25,13 @@ class GameView(arcade.View):
         """Initialize the view"""
         super().__init__()
         self.window = arcade.get_window()
-
-        # Scene setup
         self.config = config
         self.engine = engine
-        self.background_color = arcade.color.BLACK  # Default background color
+
+        self.lives = config.lives
+
+        # Scene setup
+        self.current_maze = 0
         self.levels: list[dict[str, int]] = (
             self.config.level
         )  # Array of levels from the config
@@ -41,6 +41,7 @@ class GameView(arcade.View):
             self.levels
         )  # List of generated mazes
         self.renderer = Renderer()  # Initialize renderer
+
         self.level = 0  # Current level
 
     def on_draw(self) -> bool | None:
@@ -51,8 +52,8 @@ class GameView(arcade.View):
         )
 
         # Render game from Rendere
-        walls, paths, seed = self.maze_list[0]
-        self.renderer.render_game(walls, paths)
+        walls, paths, seed = self.maze_list[self.current_maze]
+        self.renderer.render_game(walls, paths, self.lives)
 
         fps_text = f"FPS: {int(self.fps)}"
         arcade.draw_text(fps_text, 10, self.window.height - 10 - 18,
@@ -64,6 +65,16 @@ class GameView(arcade.View):
         """Keyboard interactions events"""
         if symbol == arcade.key.ESCAPE:
             self.engine.switch_pause()
+
+        # Dev feature to go to cheat mode
+        if symbol == arcade.key.SPACE:
+            self.renderer.cheat_mode = True
+            self.renderer.reset_cache()
+
+        # Dev feature to swich maze
+        if symbol == arcade.key.R:
+            self.current_maze += 1
+            self.renderer.reset_cache()
 
         return None
 

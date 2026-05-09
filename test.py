@@ -50,7 +50,8 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time) -> None:
         self.player.move(self.direction)
         self.scene_entities.update()
-        hit_list: list[Collectible | Ghost] = arcade.check_for_collision_with_list(
+        hit_list: list[Collectible | Ghost
+                       ] = arcade.check_for_collision_with_list(
             self.player, self.entity_list
         )
 

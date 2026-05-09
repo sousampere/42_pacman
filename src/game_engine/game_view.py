@@ -28,7 +28,6 @@ class GameView(arcade.View):
         self.config = config
         self.engine = engine
 
-        self.lives = config.lives
 
         # Scene setup
         self.current_maze = 0
@@ -42,7 +41,10 @@ class GameView(arcade.View):
         )  # List of generated mazes
         self.renderer = Renderer()  # Initialize renderer
 
-        self.level = 0  # Current level
+        self.lives = config.lives
+        self.level = 1  # Current level
+        self.xp = 0  # Current xp
+        self.time = config.max_time  # Current xp
 
     def on_draw(self) -> bool | None:
         """Function to draw on the screen"""
@@ -53,7 +55,7 @@ class GameView(arcade.View):
 
         # Render game from Rendere
         walls, paths, seed = self.maze_list[self.current_maze]
-        self.renderer.render_game(walls, paths, self.lives)
+        self.renderer.render_game(walls, paths, self.lives, self.time, self.xp, self.level)
 
         fps_text = f"FPS: {int(self.fps)}"
         arcade.draw_text(fps_text, 10, self.window.height - 10 - 18,

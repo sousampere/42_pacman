@@ -2,6 +2,7 @@ from turtle import width
 from typing import Any
 
 import arcade
+from arcade import texture
 from numpy.typing import NDArray
 
 
@@ -45,6 +46,9 @@ class Renderer:
         self.lvl_texture = arcade.load_texture(
             "assets/misc/level.png"
         )  # XP texture
+        self.time_texture = arcade.load_texture(
+            "assets/misc/time.png"
+        )  # Time texture
 
         self.maze_sprite_list: arcade.SpriteList[
             arcade.Sprite] = arcade.SpriteList()
@@ -55,9 +59,11 @@ class Renderer:
         # Cache
         self._cached_window_size: tuple[int, int] = (-1, -1)
 
-    def render_game(self, maze: NDArray[Any], path: NDArray[Any], lifes: int) -> None:
+    def render_game(self, maze: NDArray[Any], path: NDArray[Any],
+                    lifes: int, time: int, xp: int, level: int) -> None:
         """Draws the game to the screen"""
         CONTROL_TEXT = 'Escape: Pause       Space: Cheat       R: Next lvl'
+        attributes: list[dict[str, arcade.Texture | str]] = []
 
         window = arcade.get_window()
         tile_size = self.get_tile_size(maze, window)
@@ -89,26 +95,13 @@ class Renderer:
             arcade.draw_texture_rect(self.logo_title_texture,
                                     self.logo)
 
-        # Draw lifes
-        self.draw_attribute(window,
-                            self.life_texture,
-                            self.logo.x + self.logo.width / 2 + window.width * 0.01,
-                            self.logo.y,
-                            lifes)
+        # Draw attributes    
+        attributes.append({'texture': self.life_texture, 'value': str(lifes)})
+        attributes.append({'texture': self.xp_texture, 'value': str(xp)})
+        attributes.append({'texture': self.lvl_texture, 'value': str(level)})
+        attributes.append({'texture': self.time_texture, 'value': str(time)})
+        # for attribute in attributes:
 
-        # Draw XP
-        self.draw_attribute(window,
-                            self.xp_texture,
-                            self.attributes_sprites[-1].x + 150,
-                            self.logo.y,
-                            99)
-
-        # Draw level
-        self.draw_attribute(window,
-                            self.lvl_texture,
-                            self.attributes_sprites[-1].x + 150,
-                            self.logo.y,
-                            '1')
 
         # Draw controls
         arcade.draw_text(
@@ -121,46 +114,16 @@ class Renderer:
             anchor_x='center'
         )
 
-    def draw_attribute(
-        self,
-        window: arcade.Window,
-        icon: arcade.Texture,
-        x: int,
-        y: int,
-        value: str | int = 0,
-    ) -> None:
-        placeholder = self.create_attribute_placeholder(
-            window, x, y, 
-        )
-        arcade.draw_texture_rect(icon, placeholder)
-        text_y = y
-        arcade.draw_text(
-            value,
-            placeholder.x + placeholder.width / 2,
-            text_y - (24 / 2),
-            arcade.color.WHITE,
-            24,
-            font_name="Early GameBoy",
-        )
-        self.attributes_sprites.append(placeholder)
-
-    def create_attribute_placeholder(
-        self, window: arcade.Window, x: int, y: int, added_width: float = 0
-    ) -> arcade.Rect:
-        """Creates a layer that displays the lifes of the player"""
-        resize_factor = 0.05
-        width = window.height * resize_factor
-        rect = arcade.Rect(
-            x=x,
-            y=y,
-            width=width,
-            height=window.height * resize_factor,
-            left=0,
-            right=0,
-            bottom=0,
-            top=0,
-        )
-        return rect
+    # def draw_attributes(logo_rect: arcade.Rect,
+    #                     attributes: list[dict[str, arcade.Texture | str]],
+    #                     window: arcade.Window) -> None:
+    #     """Draw attributes to the screen"""
+    #     for index, attribute in enumerate(attributes):
+    #         # Draw pair attributes to the right
+    #         if index % 2 == 0:
+    #             attrib_rect = arcade.Rect(
+    #                 win
+    #             )
 
     def create_logo(self, window: arcade.Window) -> arcade.Rect:
         """Creates a layer that displays the logo of the game"""

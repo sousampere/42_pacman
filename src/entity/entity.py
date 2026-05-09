@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import arcade
+from numpy import ndarray
 
 
 class Entity(arcade.Sprite, ABC):
@@ -26,9 +27,11 @@ class Entity(arcade.Sprite, ABC):
 class Movable(ABC):
     def __init__(
         self,
+        maze_path: ndarray,
         speed: float = 0.0,
     ) -> None:
         self.speed: float = speed
+        self.maze_path = maze_path
 
     @abstractmethod
     def move(self, direction: tuple[float, float]) -> None:

@@ -1,4 +1,5 @@
 import arcade
+from numpy import ndarray
 from src.entity.entity import Entity, Movable
 
 SCALE: float = 0.5
@@ -8,9 +9,14 @@ WINDOWS_HEIGHT: int = 600
 
 
 class Player(Entity, Movable):
-    def __init__(self, spawn_point: tuple[int, int], speed: float = 10):
+    def __init__(
+        self,
+        spawn_point: tuple[int, int],
+        maze_path: ndarray,
+        speed: float = 10,
+    ):
         Entity.__init__(self, spawn_point, SCALE)
-        Movable.__init__(self, speed)
+        Movable.__init__(self, maze_path, speed)
         sheet = arcade.load_spritesheet("assets/entity/pacman.png")
         self.textures = sheet.get_texture_grid(
             size=(128, 128),
@@ -38,8 +44,6 @@ class Player(Entity, Movable):
             self.angle = -90
 
     def update(self, delta_time: float = 1 / 60):
-        self.center_x = self._x
-        self.center_y = self._y
         if self.right > WINDOWS_WIDTH:
             self._x = WINDOWS_WIDTH - self.width / 2
         if self.left < 0:

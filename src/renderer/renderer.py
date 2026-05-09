@@ -59,7 +59,7 @@ class Renderer:
         # Cache
         self._cached_window_size: tuple[int, int] = (-1, -1)
 
-    def render_game(self, maze: NDArray[Any], path: NDArray[Any],
+    def render_game(self, maze: NDArray[Any], path: NDArray[Any], entity_list: arcade.SpriteList[arcade.Sprite],
                     lifes: int, time: int, xp: int, level: int) -> None:
         """Draws the game to the screen"""
         CONTROL_TEXT = 'Escape: Pause       Space: Cheat       R: Next lvl'
@@ -86,6 +86,20 @@ class Renderer:
         self.maze_sprite_list = self.build_maze_walls(maze, path, tile_size, window)
         self.maze_sprite_list.draw()
 
+        maze_dimensions = self.calculate_maze_dimensions(maze)
+        for e in entity_list:
+            e.center_x = int(
+                e._x * tile_size
+                + window.width / 2
+                - (tile_size * 2 * maze_dimensions[0]) / 2
+            )
+            e.center_y = int(
+                e._y * tile_size
+                + window.height / 2
+                - (tile_size * 2 * maze_dimensions[1]) / 2
+            )
+        entity_list.draw()
+
         # Draw logo
         self.logo = self.create_logo(window)
         if self.cheat_mode:
@@ -100,8 +114,7 @@ class Renderer:
         attributes.append({'texture': self.xp_texture, 'value': str(xp)})
         attributes.append({'texture': self.lvl_texture, 'value': str(level)})
         attributes.append({'texture': self.time_texture, 'value': str(time)})
-        # for attribute in attributes:
-
+        self.draw_attributes(self.logo, attributes, window)
 
         # Draw controls
         arcade.draw_text(
@@ -114,16 +127,29 @@ class Renderer:
             anchor_x='center'
         )
 
-    # def draw_attributes(logo_rect: arcade.Rect,
-    #                     attributes: list[dict[str, arcade.Texture | str]],
-    #                     window: arcade.Window) -> None:
-    #     """Draw attributes to the screen"""
-    #     for index, attribute in enumerate(attributes):
-    #         # Draw pair attributes to the right
-    #         if index % 2 == 0:
-    #             attrib_rect = arcade.Rect(
-    #                 win
-    #             )
+    def draw_attributes(self, logo_rect: arcade.Rect,
+                        attributes: list[dict[str, arcade.Texture | str]],
+                        window: arcade.Window) -> None:
+        """Draw attributes to the screen"""
+        for index, attribute in enumerate(attributes):
+            # Draw pair attributes to the right
+            if index % 2 == 0:
+                x = window.width / 2 + logo_rect.width / 2 + window.width * 0.03 + window.width * index / 15
+            else:
+                x = window.width / 2 - logo_rect.width / 2 - window.width * 0.03 - window.width * index / 15
+            attrib_rect = arcade.Rect(
+                x=x,
+                y=logo_rect.y,
+                width=64,
+                height=64,
+                left=0,
+                right=0,
+                bottom=0,
+                top=0,
+            )
+            arcade.draw_texture_rect(attribute['texture'], attrib_rect)
+            text = arcade.Text(text=attribute['value'], x=attrib_rect.x + attrib_rect.width, y=attrib_rect.y, font_size=24, font_name='Early GameBoy', anchor_x='center', anchor_y='center', color=arcade.color.WHITE)
+            text.draw()
 
     def create_logo(self, window: arcade.Window) -> arcade.Rect:
         """Creates a layer that displays the logo of the game"""
@@ -167,6 +193,7 @@ class Renderer:
             self.save_blocs(self.cheat_maze_wall_texture, walls, tile_size, window, maze_dimensions)
             self.save_blocs(self.cheat_maze_path_texture, path, tile_size, window, maze_dimensions)
         else:
+            print(walls)
             self.save_blocs(self.maze_wall_texture, walls, tile_size, window, maze_dimensions)
             self.save_blocs(self.maze_path_texture, path, tile_size, window, maze_dimensions)
 

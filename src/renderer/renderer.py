@@ -55,7 +55,7 @@ class Renderer:
         # Cache
         self._cached_window_size: tuple[int, int] = (-1, -1)
 
-    def render_game(self, maze: NDArray[Any], path: NDArray[Any], lifes: int) -> None:
+    def render_game(self, maze: NDArray[Any], path: NDArray[Any], lifes: int, entity_list: arcade.SpriteList) -> None:
         """Draws the game to the screen"""
         CONTROL_TEXT = 'Escape: Pause       Space: Cheat       R: Next lvl'
 
@@ -79,6 +79,20 @@ class Renderer:
         # Draw maze
         self.maze_sprite_list = self.build_maze_walls(maze, path, tile_size, window)
         self.maze_sprite_list.draw()
+
+        maze_dimensions = self.calculate_maze_dimensions(maze)
+        for e in entity_list:
+            e.center_x = int(
+                e._x * tile_size
+                + window.width / 2
+                - (tile_size * 2 * maze_dimensions[0]) / 2
+            )
+            e.center_y = int(
+                e._y * tile_size
+                + window.height / 2
+                - (tile_size * 2 * maze_dimensions[1]) / 2
+            )
+        entity_list.draw()
 
         # Draw logo
         self.logo = self.create_logo(window)
@@ -120,6 +134,7 @@ class Renderer:
             font_name="Early GameBoy",
             anchor_x='center'
         )
+
 
     def draw_attribute(
         self,

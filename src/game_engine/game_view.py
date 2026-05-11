@@ -31,7 +31,6 @@ class GameView(arcade.View):
         self.config = config
         self.engine = engine
 
-        self.lives = config.lives
 
         # Scene setup
         self.current_maze = 0
@@ -45,7 +44,41 @@ class GameView(arcade.View):
         )  # List of generated mazes
         self.renderer = Renderer()  # Initialize renderer
 
-        self.level = 0  # Current level
+        self.lives = config.lives
+        self.level = 1  # Current level
+        self.xp = 0  # Current xp
+        self.time = config.max_time  # Current xp
+
+        self.entity = self.init_entity()
+
+    def init_entity(self) -> arcade.SpriteList:
+        entity: arcade.SpriteList = arcade.SpriteList()
+        pts = self.maze_list[self.current_maze][1]
+
+        center_point = pts.mean(axis=0)
+        distances = np.sum((pts - center_point)**2, axis=1)
+        closest_point = tuple(pts[np.argmin(distances)].tolist())
+        self.player = Player(closest_point, pts, 0.25)
+        entity.append(self.player)
+
+        min_x, min_y = pts.min(axis=0)
+        max_x, max_y = pts.max(axis=0)
+
+        corners = [
+            (min_x, min_y), (max_x, min_y), 
+            (min_x, max_y), (max_x, max_y)
+        ]
+
+        self.ghosts = []
+        for corner in corners:
+            dist_to_corner = np.sum((pts - corner)**2, axis=1)
+            ghost_pos = tuple(pts[np.argmin(dist_to_corner)].tolist())
+            
+            ghost = Ghost(ghost_pos, pts, 0.25)
+            self.ghosts.append(ghost)
+            entity.append(ghost)
+
+        return entity
 
         self.entity = self.init_entity()
 
@@ -87,7 +120,7 @@ class GameView(arcade.View):
 
         # Render game from Rendere
         walls, paths, seed = self.maze_list[self.current_maze]
-        self.renderer.render_game(walls, paths, self.lives, self.entity)
+        self.renderer.render_game(walls, paths, self.entity, self.lives, self.time, self.xp, self.level)
 
         fps_text = f"FPS: {int(self.fps)}"
         arcade.draw_text(fps_text, 10, self.window.height - 10 - 18,

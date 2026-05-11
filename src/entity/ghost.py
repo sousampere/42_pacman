@@ -22,13 +22,13 @@ class Ghost(Entity, Movable):
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
-        sheet = arcade.load_spritesheet("assets/entity/pacman.png")
+        sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
-            size=(128, 128),
-            columns=5,
-            count=5,
+            size=(396, 66),
+            columns=1,
+            count=6,
         )
-        self.texture = self.textures[4]
+        self.texture = self.textures[0]
         self.__is_edible: bool = False
         # self._chase_algorithm: Algorithms = chase_algorithm
 

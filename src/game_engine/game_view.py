@@ -31,7 +31,7 @@ class GameView(arcade.View):
         self.window = arcade.get_window()
         self.config = config
         self.engine = engine
-
+        self.key_history: list[int] = []
 
         # Scene setup
         self.current_maze = 0
@@ -105,17 +105,24 @@ class GameView(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         """Keyboard interactions events"""
-        # if self.on_key_press.history is None:
-        #     self.on_key_press.history = []
-        # else if:
-        #     self.on_key_press.history.append('')
+        KONAMI_CODE: list[int] = [
+            arcade.key.UP, arcade.key.UP,
+            arcade.key.DOWN, arcade.key.DOWN,
+            arcade.key.LEFT, arcade.key.RIGHT,
+            arcade.key.LEFT, arcade.key.RIGHT,
+            arcade.key.A, arcade.key.B]
+
+        # Check knoami code
+        self.key_history.append(symbol)
+        print(self.key_history)
+        if KONAMI_CODE[:len(self.key_history)] == self.key_history:
+            if self.key_history == KONAMI_CODE:
+                pub.sendMessage('enable_cheat')
+        else:
+            self.key_history = []
 
         if symbol == arcade.key.ESCAPE:
             pub.sendMessage('switch_pause')
-
-        # Dev feature to go to cheat mode
-        if symbol == arcade.key.SPACE:
-            pub.sendMessage('enable_cheat')
 
         # Dev feature to swich maze
         if symbol == arcade.key.R:

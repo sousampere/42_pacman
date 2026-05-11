@@ -1,4 +1,5 @@
 import arcade
+from pubsub import pub
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -77,7 +78,7 @@ class MenuView(arcade.View):
 
         # Switch to GameView if space is hit
         if symbol == arcade.key.SPACE:
-            self.engine.switch_game()
+            pub.sendMessage('switch_game')
 
         return None
 
@@ -91,11 +92,13 @@ class MenuView(arcade.View):
         for sprite in hits:
             # Start button interraction
             if sprite == self.start_button:
-                self.engine.switch_game()
+                pub.sendMessage('switch_game')
 
         return None
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
+        """Detect collision of the mouse with the start button, and
+        change the cursor if the mouse overlaps the start button"""
         if self.start_button.collides_with_point((x, y)):
             c = self.window.get_system_mouse_cursor(self.window.CURSOR_HAND)
             self.start_button.scale = 0.105

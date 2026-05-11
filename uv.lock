@@ -16,6 +16,7 @@ dependencies = [
     { name = "mazegenerator" },
     { name = "numpy" },
     { name = "pydantic" },
+    { name = "pypubsub" },
 ]
 
 [package.dev-dependencies]
@@ -32,6 +33,7 @@ requires-dist = [
     { name = "mazegenerator", path = "maze_gen/mazegenerator-00001-py3-none-any.whl" },
     { name = "numpy", specifier = ">=2.4.4" },
     { name = "pydantic", specifier = ">=2.13.3" },
+    { name = "pypubsub", specifier = ">=4.0.7" },
 ]
 
 [package.metadata.requires-dev]
@@ -525,6 +527,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c6/90/64ef000011f0c930b42354f0d91a07b4bc7f70819ec5b6034b84198bf53f/pymunk-6.9.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:65a9a93a51dbaf1c77efa4d2425549888a1eda9f5c9cd9a5a89b7ca66310968a", size = 1042493, upload-time = "2024-10-13T09:01:55.665Z" },
     { url = "https://files.pythonhosted.org/packages/e5/fb/6516bd5fe565ea51a88308869632dfc896ca6b05b2579b016ffa8047a8ec/pymunk-6.9.0-cp313-cp313-win32.whl", hash = "sha256:a78b37bb360e715657c76caedaf40cdaaf6dab354d497eda481a976cc5cab3d7", size = 315341, upload-time = "2024-10-13T09:01:58.049Z" },
     { url = "https://files.pythonhosted.org/packages/e0/7c/1542df7ffbff70a4523ccb02c9241c9fe4dc24c77b747e2c16fb94891156/pymunk-6.9.0-cp313-cp313-win_amd64.whl", hash = "sha256:d6419e1531df80ff0bb6f1f8215e044f57415514386b7b212dc148919ca629ed", size = 366673, upload-time = "2024-10-13T09:01:59.733Z" },
+]
+
+[[package]]
+name = "pypubsub"
+version = "4.0.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c9/ae/873ab0911ba6ae395f05a788cd509af4ade15585740e1f0bc7673775f469/pypubsub-4.0.7.tar.gz", hash = "sha256:ec8b5cb147624958320e992602380cc5d0e4b36b1c59844d05e425a3003c09dc", size = 179165, upload-time = "2025-12-08T05:35:21.402Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/47/bf/17587e7cdefbf66cb3f0bced126c11a6d4c0b9b78a3eb90bbd0a49963d58/pypubsub-4.0.7-py3-none-any.whl", hash = "sha256:89c3e274e634fea19de881bb45152815d9c1aaa0120215f85200ba56843372f4", size = 72280, upload-time = "2025-12-08T05:35:20.439Z" },
 ]
 
 [[package]]

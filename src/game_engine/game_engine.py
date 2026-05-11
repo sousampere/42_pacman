@@ -1,4 +1,5 @@
 import arcade
+from pubsub import pub
 
 from src.config.config_loader import Config
 from .menu_view import MenuView
@@ -25,10 +26,10 @@ class GameEngine:
         self.height = 720
         self.window = arcade.Window(
             width=self.width, height=self.height,
-            title="Pac-Man", resizable=True
+            title="Pac-Man", resizable=True, update_rate=1/61
         )
         self.config = config
-        self.window.set_minimum_size(1920, 1080)
+        self.window.set_minimum_size(720, 480)
         self.maze_adapter = None
         self.config_data = None
         self.is_configured = False  # Set to True when Views added
@@ -53,6 +54,12 @@ class GameEngine:
         # Save configuration as done to enable starting the game
         self.is_configured = True
 
+        pub.subscribe(self.switch_game, 'switch_game')
+        pub.subscribe(self.switch_menu, 'switch_menu')
+        pub.subscribe(self.switch_menu, 'switch_menu')
+        pub.subscribe(self.switch_pause, 'switch_pause')
+        pub.subscribe(self.switch_finish, 'switch_finish')
+
     def switch_menu(self) -> None:
         """Change the current to the menu view"""
         self.window.show_view(self.menu_view)
@@ -65,8 +72,9 @@ class GameEngine:
         """Change the current to the pause view"""
         self.window.show_view(self.pause_view)
 
-    def switch_finish(self) -> None:
+    def switch_finish(self, score: int) -> None:
         """Change the current view to the finish view"""
+        self.finish_view.score = score
         self.window.show_view(self.finish_view)
 
     def run(self) -> None:

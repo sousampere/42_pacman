@@ -63,6 +63,7 @@ class Renderer:
                     lifes: int, time: int, xp: int, level: int) -> None:
         """Draws the game to the screen"""
         CONTROL_TEXT = 'Escape: Pause       Space: Cheat       R: Next lvl'
+        
         attributes: list[dict[str, arcade.Texture | str]] = []
 
         window = arcade.get_window()
@@ -117,12 +118,13 @@ class Renderer:
         self.draw_attributes(self.logo, attributes, window)
 
         # Draw controls
+        font_size: int = int(window.height / 50)
         arcade.draw_text(
             CONTROL_TEXT,
             window.width / 2,
             window.height * 0.05,
             arcade.color.WHITE,
-            16,
+            font_size,
             font_name="Early GameBoy",
             anchor_x='center'
         )
@@ -137,18 +139,20 @@ class Renderer:
                 x = window.width / 2 + logo_rect.width / 2 + window.width * 0.03 + window.width * index / 15
             else:
                 x = window.width / 2 - logo_rect.width / 2 - window.width * 0.03 - window.width * index / 15
+            sprite_size: int = int(window.height / 20)
             attrib_rect = arcade.Rect(
                 x=x,
                 y=logo_rect.y,
-                width=64,
-                height=64,
+                width=sprite_size,
+                height=sprite_size,
                 left=0,
                 right=0,
                 bottom=0,
                 top=0,
             )
             arcade.draw_texture_rect(attribute['texture'], attrib_rect)
-            text = arcade.Text(text=attribute['value'], x=attrib_rect.x + attrib_rect.width, y=attrib_rect.y, font_size=24, font_name='Early GameBoy', anchor_x='center', anchor_y='center', color=arcade.color.WHITE)
+            text_size: int = int(window.height / 50)
+            text = arcade.Text(text=attribute['value'], x=attrib_rect.x + attrib_rect.width, y=attrib_rect.y, font_size=text_size, font_name='Early GameBoy', anchor_x='center', anchor_y='center', color=arcade.color.WHITE)
             text.draw()
 
     def create_logo(self, window: arcade.Window) -> arcade.Rect:
@@ -193,7 +197,6 @@ class Renderer:
             self.save_blocs(self.cheat_maze_wall_texture, walls, tile_size, window, maze_dimensions)
             self.save_blocs(self.cheat_maze_path_texture, path, tile_size, window, maze_dimensions)
         else:
-            print(walls)
             self.save_blocs(self.maze_wall_texture, walls, tile_size, window, maze_dimensions)
             self.save_blocs(self.maze_path_texture, path, tile_size, window, maze_dimensions)
 

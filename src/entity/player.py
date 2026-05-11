@@ -19,7 +19,7 @@ class Player(Entity, Movable):
         Movable.__init__(self, maze_path, speed)
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
-            size=(396, 66),
+            size=(66, 66),
             columns=1,
             count=6,
         )
@@ -28,30 +28,23 @@ class Player(Entity, Movable):
 
     def move(self, direction: tuple[float, float]) -> None:
         dx, dy = direction
-        self._x += dx * self.speed
-        self._y += dy * self.speed
+        new_x = self._x + dx * self.speed
+        new_y = self._y + dy * self.speed
+
+        if self.can_move_to(new_x, new_y):
+            self._x = new_x
+            self._y = new_y
+        else:
+            self._x = round(self._x)
+            self._y = round(self._y)
+
         if dx < 0:
-            self.texture = self.textures[0]
-            self.angle = 0
+            self.texture = self.textures[4]
         elif dx > 0:
-            self.texture = self.textures[0]
-            self.angle = 0
-        elif dy > 0:
-            self.texture = self.textures[0]
-            self.angle = -90
-        elif dy < 0:
-            self.texture = self.textures[0]
-            self.angle = -90
+            self.texture = self.textures[5]
 
     def update(self, delta_time: float = 1 / 60):
-        if self.right > WINDOWS_WIDTH:
-            self._x = WINDOWS_WIDTH - self.width / 2
-        if self.left < 0:
-            self._x = self.width / 2
-        if self.top > WINDOWS_HEIGHT:
-            self._y = WINDOWS_HEIGHT - self.height / 2
-        if self.bottom < 0:
-            self._y = self.height / 2
+        pass
 
     def die(self) -> None:
         self._lives -= 1

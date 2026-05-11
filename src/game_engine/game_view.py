@@ -1,8 +1,11 @@
+import random
+
 import numpy as np
 from numpy.typing import NDArray
 from pubsub import pub
 
 from src.entity.ghost import Ghost
+from src.entity.pacgum import Pacgum
 from src.entity.player import Player
 from src.renderer.renderer import Renderer
 
@@ -53,35 +56,62 @@ class GameView(arcade.View):
 
         self.entity = self.init_entity()
 
-        pub.subscribe(self.event_enable_cheat_mode, 'enable_cheat')
-        pub.subscribe(self.event_next_level, 'next_level')
+        pub.subscribe(self.event_enable_cheat_mode, "enable_cheat")
+        pub.subscribe(self.event_next_level, "next_level")
 
     def init_entity(self) -> arcade.SpriteList:
         entity: arcade.SpriteList = arcade.SpriteList()
         pts = self.maze_list[self.current_maze][1]
 
         center_point = pts.mean(axis=0)
-        distances = np.sum((pts - center_point)**2, axis=1)
+        distances = np.sum((pts - center_point) ** 2, axis=1)
         closest_point = tuple(pts[np.argmin(distances)].tolist())
-        self.player = Player(closest_point, pts, 0.25)
-        entity.append(self.player)
 
         min_x, min_y = pts.min(axis=0)
         max_x, max_y = pts.max(axis=0)
 
         corners = [
-            (min_x, min_y), (max_x, min_y), 
-            (min_x, max_y), (max_x, max_y)
+            (min_x, min_y),
+            (max_x, min_y),
+            (min_x, max_y),
+            (max_x, max_y),
         ]
 
         self.ghosts = []
         for corner in corners:
-            dist_to_corner = np.sum((pts - corner)**2, axis=1)
+            dist_to_corner = np.sum((pts - corner) ** 2, axis=1)
             ghost_pos = tuple(pts[np.argmin(dist_to_corner)].tolist())
-            
-            ghost = Ghost(ghost_pos, pts, 0.25)
+
+            ghost = Ghost(ghost_pos, pts, 1)
             self.ghosts.append(ghost)
             entity.append(ghost)
+
+        total_pacgum = random.randint(
+            int((len((pts) - 5) * 0.6)), (len(pts) - 5)
+        )
+        occupied_positions = [closest_point]
+        occupied_positions.extend(corners)
+
+        pac_gum_pts = pts.copy()
+
+        for pos in occupied_positions:
+            mask = ~np.all(pac_gum_pts == pos, axis=1)
+            pac_gum_pts = pac_gum_pts[mask]
+
+        num_to_spawn = min(total_pacgum, len(pac_gum_pts))
+
+        indices = np.random.choice(
+            len(pac_gum_pts), size=num_to_spawn, replace=False
+        )
+        pac_gum_spawn = pac_gum_pts[indices]
+        self.pacgum = []
+        for spawn in pac_gum_spawn:
+            pacgum = Pacgum(spawn)
+            self.pacgum.append(pacgum)
+            entity.append(pacgum)
+
+        self.player = Player(closest_point, pts, 1)
+        entity.append(self.player)
 
         return entity
 
@@ -94,43 +124,71 @@ class GameView(arcade.View):
 
         # Render game from Rendere
         walls, paths, seed = self.maze_list[self.current_maze]
-        self.renderer.render_game(walls, paths, self.entity, self.lives, self.time, self.xp, self.level)
+        self.renderer.render_game(
+            walls,
+            paths,
+            self.entity,
+            self.lives,
+            self.time,
+            self.xp,
+            self.level,
+        )
 
         fps_text = f"FPS: {int(self.fps)}"
         font_size: int = int(self.window.height / 50)
-        arcade.draw_text(fps_text, 10, self.window.height - 10 - 18,
-                         (50, 255, 50), font_size, font_name="Early GameBoy")
+        arcade.draw_text(
+            fps_text,
+            10,
+            self.window.height - 10 - 18,
+            (50, 255, 50),
+            font_size,
+            font_name="Early GameBoy",
+        )
 
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         """Keyboard interactions events"""
         KONAMI_CODE: list[int] = [
-            arcade.key.UP, arcade.key.UP,
-            arcade.key.DOWN, arcade.key.DOWN,
-            arcade.key.LEFT, arcade.key.RIGHT,
-            arcade.key.LEFT, arcade.key.RIGHT,
-            arcade.key.A, arcade.key.B]
+            arcade.key.UP,
+            arcade.key.UP,
+            arcade.key.DOWN,
+            arcade.key.DOWN,
+            arcade.key.LEFT,
+            arcade.key.RIGHT,
+            arcade.key.LEFT,
+            arcade.key.RIGHT,
+            arcade.key.A,
+            arcade.key.B,
+        ]
 
         # Check knoami code
         self.key_history.append(symbol)
         print(self.key_history)
-        if KONAMI_CODE[:len(self.key_history)] == self.key_history:
+        if KONAMI_CODE[: len(self.key_history)] == self.key_history:
             if self.key_history == KONAMI_CODE:
-                pub.sendMessage('enable_cheat')
+                pub.sendMessage("enable_cheat")
         else:
             self.key_history = []
 
         if symbol == arcade.key.ESCAPE:
-            pub.sendMessage('switch_pause')
+            pub.sendMessage("switch_pause")
 
         # Dev feature to skip current level
         if symbol == arcade.key.R:
-            pub.sendMessage('next_level')
+            pub.sendMessage("next_level")
 
         # Dev feature to switch easily to finish view
         if symbol == arcade.key.NUM_1:
-            pub.sendMessage('switch_finish', score=self.xp)
+            pub.sendMessage("switch_finish", score=self.xp)
+        if symbol == arcade.key.UP:
+            self.player.move((0, 1))
+        if symbol == arcade.key.DOWN:
+            self.player.move((0, -1))
+        if symbol == arcade.key.LEFT:
+            self.player.move((-1, 0))
+        if symbol == arcade.key.RIGHT:
+            self.player.move((1, 0))
 
         return None
 
@@ -159,4 +217,4 @@ class GameView(arcade.View):
 
         # Check if end of level
         if self.level == len(self.maze_list):
-            pub.sendMessage('switch_finish')
+            pub.sendMessage("switch_finish")

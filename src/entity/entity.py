@@ -32,6 +32,12 @@ class Movable(ABC):
     ) -> None:
         self.speed: float = speed
         self.maze_path = maze_path
+        self._path_set: frozenset[tuple[int, int]] = frozenset(
+            (int(x), int(y)) for x, y in maze_path
+        )
+
+    def can_move_to(self, x: float, y: float) -> bool:
+        return (round(x), round(y)) in self._path_set
 
     @abstractmethod
     def move(self, direction: tuple[float, float]) -> None:

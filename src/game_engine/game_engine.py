@@ -72,8 +72,9 @@ class GameEngine:
         """Change the current to the pause view"""
         self.window.show_view(self.pause_view)
 
-    def switch_finish(self) -> None:
+    def switch_finish(self, score: int) -> None:
         """Change the current view to the finish view"""
+        self.finish_view.score = score
         self.window.show_view(self.finish_view)
 
     def run(self) -> None:

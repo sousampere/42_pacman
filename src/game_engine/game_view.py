@@ -124,9 +124,13 @@ class GameView(arcade.View):
         if symbol == arcade.key.ESCAPE:
             pub.sendMessage('switch_pause')
 
-        # Dev feature to swich maze
+        # Dev feature to skip current level
         if symbol == arcade.key.R:
             pub.sendMessage('next_level')
+
+        # Dev feature to switch easily to finish view
+        if symbol == arcade.key.NUM_1:
+            pub.sendMessage('switch_finish', score=self.xp)
 
         return None
 

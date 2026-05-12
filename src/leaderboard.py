@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from numpy import sign
 from pydantic import BaseModel, ValidationError, model_validator
 import json
 
@@ -63,7 +64,11 @@ class ABSLeaderboardManager(ABC):
 
     @staticmethod
     @abstractmethod
-    def save_leaderboard(target: str, signature: str) -> None:
+    def save_score(username: str,
+                   score: int,
+                   target: str,
+                   signature: str,
+                   leaderboard: Leaderboard) -> None:
         """Save the leaderboard data to the given target"""
         pass
 
@@ -133,5 +138,31 @@ class LeaderboardManager(ABSLeaderboardManager):
 
     @staticmethod
     @abstractmethod
-    def save_leaderboard(target: str, signature: str) -> None:
-        pass
+    def save_score(username: str,
+                   score: int,
+                   target: str,
+                   signature: str,
+                   leaderboard: Leaderboard) -> None:
+        """Saves the score in the leaderboard"""
+        # Create update of current leaderboard
+        leaderboard.scores.append({
+            'username': username,
+            'score': score
+        })
+
+        # Open JSON target
+        with open(target, 'w') as f:
+            content = f.read()
+        json_data = json.loads(content)
+
+        # Edit JSON target by adding the new score
+        for data in json_data:
+            if data['signature'] == signature:
+                data = leaderboard.scores
+                # Save JSON
+                with open(target, 'w') as f:
+                    json.dump(json_data, f)
+                return None
+        
+        # Save as new signature since no corresponding signature found
+        json_data.append()

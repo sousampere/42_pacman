@@ -9,6 +9,10 @@
             {
                 "username": "kebertra",
                 "score": 42
+            },
+            {
+                "username": "john",
+                "score": 30
             }
         ]
     },
@@ -22,6 +26,15 @@
             {
                 "username": "kebertra",
                 "score": 765
+            }
+        ]
+    },
+    {
+        "signature": "abcde",
+        "scores": [
+            {
+                "username": "john",
+                "score": 30
             }
         ]
     }

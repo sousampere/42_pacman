@@ -22,7 +22,8 @@ def main():
         exit(1)
 
     # Load leaderboard
-    leaderboard = LeaderboardManager.load_leaderboard('leaderboard.json', 'abcd')
+    leaderboard = LeaderboardManager.load_leaderboard('leaderboard.json', 'abcde')
+    LeaderboardManager.save_score('john', 30, 'leaderboard.json', 'abcde', leaderboard)
 
     # Load game engine
     engine = GameEngine(config)

@@ -63,7 +63,11 @@ class ABSLeaderboardManager(ABC):
 
     @staticmethod
     @abstractmethod
-    def save_leaderboard(target: str, signature: str) -> None:
+    def save_score(username: str,
+                   score: int,
+                   target: str,
+                   signature: str,
+                   leaderboard: Leaderboard) -> None:
         """Save the leaderboard data to the given target"""
         pass
 
@@ -76,6 +80,7 @@ class LeaderboardManager(ABSLeaderboardManager):
     def load_leaderboard(source: str, signature: str) -> Leaderboard:
         """Load the given json file (path in source) and returns the
         leaderboard with the corresponding signature"""
+
         # Load the file
         try:
             with open(source, "r") as f:
@@ -133,5 +138,37 @@ class LeaderboardManager(ABSLeaderboardManager):
 
     @staticmethod
     @abstractmethod
-    def save_leaderboard(target: str, signature: str) -> None:
-        pass
+    def save_score(username: str,
+                   score: int,
+                   target: str,
+                   signature: str,
+                   leaderboard: Leaderboard) -> None:
+        """Saves the score in the leaderboard"""
+        # Create update of current leaderboard
+        leaderboard.scores.append({
+            'username': username,
+            'score': score
+        })
+
+        # Open JSON target
+        with open(target, 'r') as f:
+            content = f.read()
+        json_data = json.loads(content)
+
+        # Search for corresponding signature in data
+        for leaderboards in json_data:
+            if leaderboards['signature'] == signature:
+                # Erase this leaderboard's data with new leaderboard
+                leaderboards['scores'] = leaderboard.scores
+                with open(target, 'w') as f:
+                    json.dump(json_data, f, indent=4)
+                return None
+        
+        # No corresponding signature found. Creating new leaderboard
+        json_data.append({
+            'signature': leaderboard.signature,
+            'scores': leaderboard.scores
+        })
+        with open(target, 'w') as f:
+            json.dump(json_data, f, indent=4)
+        return None

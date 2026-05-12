@@ -1,5 +1,6 @@
 # Made by gtourdia & kebertra
 
+from src.leaderboard import Leaderboard, LeaderboardManager
 from src.config.config_loader import ConfigError, ConfigLoader
 from src.game_engine.game_engine import (
     GameEngine,
@@ -19,6 +20,10 @@ def main():
     except ConfigError:
         print("[Error] Could not read your configuration file. Aborting.")
         exit(1)
+
+    # Load leaderboard
+    # leaderboard = LeaderboardManager.load_leaderboard('leaderboard.json', 'abcde')
+    # LeaderboardManager.save_score('john', 30, 'leaderboard.json', 'abcde', leaderboard)
 
     # Load game engine
     engine = GameEngine(config)

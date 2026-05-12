@@ -2,6 +2,7 @@ import arcade
 from pubsub import pub
 
 from src.config.config_loader import Config
+from src.leaderboard import Leaderboard
 from .menu_view import MenuView
 from .game_view import GameView
 from .pause_view import PauseView

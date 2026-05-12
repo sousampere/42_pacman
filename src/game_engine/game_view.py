@@ -164,7 +164,6 @@ class GameView(arcade.View):
 
         # Check knoami code
         self.key_history.append(symbol)
-        print(self.key_history)
         if KONAMI_CODE[: len(self.key_history)] == self.key_history:
             if self.key_history == KONAMI_CODE:
                 pub.sendMessage("enable_cheat")

@@ -28,14 +28,5 @@
                 "score": 765
             }
         ]
-    },
-    {
-        "signature": "abcde",
-        "scores": [
-            {
-                "username": "john",
-                "score": 30
-            }
-        ]
     }
 ]

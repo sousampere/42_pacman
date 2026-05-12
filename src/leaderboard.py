@@ -80,6 +80,7 @@ class LeaderboardManager(ABSLeaderboardManager):
     def load_leaderboard(source: str, signature: str) -> Leaderboard:
         """Load the given json file (path in source) and returns the
         leaderboard with the corresponding signature"""
+
         # Load the file
         try:
             with open(source, "r") as f:

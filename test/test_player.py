@@ -2,7 +2,7 @@ from src.entity.player import Player
 
 
 class TestPlayer:
-    def test_player_move_down(self):
+    def test_player_move_down(self) -> None:
         player = Player(spawn_point=(100, 100), speed=1)
         player.move((0, 1))
 

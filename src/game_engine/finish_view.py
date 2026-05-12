@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 from pubsub import pub
 
-from src.leaderboard import Leaderboard, LeaderboardManager
+from src.event_bus.event_bus import EventBus
+from src.leaderboard import LeaderboardManager
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
@@ -19,7 +20,7 @@ class FinishView(arcade.View):
         self.background_color = arcade.color.GRAY
         self.score = 0
 
-        pub.subscribe(self.event_save_score, 'save_score')
+        pub.subscribe(self.event_save_score, "save_score")
 
         try:
             self.background = arcade.load_texture(
@@ -51,7 +52,7 @@ class FinishView(arcade.View):
 
         # Write "Welcome to Pac-Man"
         arcade.draw_text(
-            f"Game Over !",
+            "Game Over !",
             self.window.width / 2,
             self.window.height * 0.9,
             color=arcade.color.WHITE_SMOKE,
@@ -65,18 +66,21 @@ class FinishView(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == arcade.key.SPACE:
-            pub.sendMessage('save_score',
-                            username='REPLACE_ME', score=999,
-                            target='data/leaderboard.json',
-                            signature='SIGNATURE_EXAMPLE')
+            EventBus.broadcast_event(
+                "save_score",
+                username="REPLACE_ME",
+                score=999,
+                target="data/leaderboard.json",
+                signature="SIGNATURE_EXAMPLE",
+            )
 
     def event_save_score(
-            self,
-            username: str,
-            score: int,
-            target: str,
-            signature: str
+        self, username: str, score: int, target: str, signature: str
     ) -> None:
-        current_leaderboard = LeaderboardManager.load_leaderboard(target, signature=signature)
-        LeaderboardManager.save_score(username, score, target, signature, current_leaderboard)
+        current_leaderboard = LeaderboardManager.load_leaderboard(
+            target, signature=signature
+        )
+        LeaderboardManager.save_score(
+            username, score, target, signature, current_leaderboard
+        )
         return None

@@ -2,11 +2,11 @@ import random
 
 import numpy as np
 from numpy.typing import NDArray
-from pubsub import pub
 
 from src.entity.ghost import Ghost
 from src.entity.pacgum import Pacgum
 from src.entity.player import Player
+from src.event_bus.event_bus import EventBus
 from src.renderer.renderer import Renderer
 
 from ..maze_adapter.maze_adapter import MazeAdapter
@@ -56,9 +56,6 @@ class GameView(arcade.View):
 
         self.entity = self.init_entity()
 
-        pub.subscribe(self.event_enable_cheat_mode, "enable_cheat")
-        pub.subscribe(self.event_next_level, "next_level")
-
     def init_entity(self) -> arcade.SpriteList:
         entity: arcade.SpriteList = arcade.SpriteList()
         pts = self.maze_list[self.current_maze][1]
@@ -87,8 +84,7 @@ class GameView(arcade.View):
             entity.append(ghost)
 
         total_pacgum = random.randint(
-            int((len((pts) - 5) * 0.6)), (len(pts) - 5)
-        )
+            int((len((pts) - 5) * 0.6)), (len(pts) - 5))
         occupied_positions = [closest_point]
         occupied_positions.extend(corners)
 
@@ -101,8 +97,7 @@ class GameView(arcade.View):
         num_to_spawn = min(total_pacgum, len(pac_gum_pts))
 
         indices = np.random.choice(
-            len(pac_gum_pts), size=num_to_spawn, replace=False
-        )
+            len(pac_gum_pts), size=num_to_spawn, replace=False)
         pac_gum_spawn = pac_gum_pts[indices]
         self.pacgum = []
         for spawn in pac_gum_spawn:
@@ -166,20 +161,20 @@ class GameView(arcade.View):
         self.key_history.append(symbol)
         if KONAMI_CODE[: len(self.key_history)] == self.key_history:
             if self.key_history == KONAMI_CODE:
-                pub.sendMessage("enable_cheat")
+                EventBus.broadcast_event("enable_cheat")
         else:
             self.key_history = []
 
         if symbol == arcade.key.ESCAPE:
-            pub.sendMessage("switch_pause")
+            EventBus.broadcast_event("switch_pause")
 
         # Dev feature to skip current level
         if symbol == arcade.key.R:
-            pub.sendMessage("next_level")
+            EventBus.broadcast_event("next_level")
 
         # Dev feature to switch easily to finish view
         if symbol == arcade.key.NUM_1:
-            pub.sendMessage("switch_finish", score=self.xp)
+            EventBus.broadcast_event("switch_finish", score=1)
         if symbol == arcade.key.UP:
             self.player.move((0, 1))
         if symbol == arcade.key.DOWN:
@@ -225,4 +220,4 @@ class GameView(arcade.View):
 
         # Check if end of level
         if self.level == len(self.maze_list):
-            pub.sendMessage("switch_finish")
+            EventBus.broadcast_event("switch_finish")

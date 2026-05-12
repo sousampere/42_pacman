@@ -12,5 +12,5 @@ class Pacgum(Entity, Collectible):
         Collectible.__init__(self, score=SCORE)
         self.texture = arcade.load_texture("assets/entity/pacgum.png")
 
-    def activate_power(self):
-        return super().activate_power()
+    def activate_power(self) -> None:
+        pass

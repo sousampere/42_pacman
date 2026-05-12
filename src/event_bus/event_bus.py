@@ -1,0 +1,32 @@
+from typing import Any, Literal
+
+from pubsub import pub
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..game_engine.game_engine import GameEngine
+
+
+class EventBus:
+    @classmethod
+    def initialize(cls, game_engine: "GameEngine") -> None:
+        """Initialize events"""
+        # Init view switching
+        pub.subscribe(game_engine.switch_game, "switch_game")
+        pub.subscribe(game_engine.switch_menu, "switch_menu")
+        pub.subscribe(game_engine.switch_menu, "switch_menu")
+        pub.subscribe(game_engine.switch_pause, "switch_pause")
+        pub.subscribe(game_engine.switch_finish, "switch_finish")
+
+        # Init finish view events
+        pub.subscribe(game_engine.finish_view.event_save_score, "save_score")
+
+        # Init game events
+        pub.subscribe(
+            game_engine.game_view.event_enable_cheat_mode,
+            "enable_cheat")
+        pub.subscribe(game_engine.game_view.event_next_level, "next_level")
+
+    @staticmethod
+    def broadcast_event(event: str, **kwargs: Any) -> None:
+        pub.sendMessage(event, **kwargs)

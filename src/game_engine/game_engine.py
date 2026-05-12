@@ -1,8 +1,7 @@
 import arcade
-from pubsub import pub
 
 from src.config.config_loader import Config
-from src.leaderboard import Leaderboard
+from src.event_bus.event_bus import EventBus
 from .menu_view import MenuView
 from .game_view import GameView
 from .pause_view import PauseView
@@ -55,11 +54,9 @@ class GameEngine:
         # Save configuration as done to enable starting the game
         self.is_configured = True
 
-        pub.subscribe(self.switch_game, 'switch_game')
-        pub.subscribe(self.switch_menu, 'switch_menu')
-        pub.subscribe(self.switch_menu, 'switch_menu')
-        pub.subscribe(self.switch_pause, 'switch_pause')
-        pub.subscribe(self.switch_finish, 'switch_finish')
+        # Reload event bus
+        self.event_bus = EventBus()
+        self.event_bus.initialize(self)
 
     def switch_menu(self) -> None:
         """Change the current to the menu view"""

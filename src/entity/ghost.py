@@ -1,9 +1,7 @@
-from collections.abc import Callable
 
 import arcade
 from numpy import ndarray
 
-from src.algorithms.algorithms import Algorithms
 from src.entity.entity import Entity, Movable
 
 SCALE: float = 0.5

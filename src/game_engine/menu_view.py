@@ -2,6 +2,8 @@ import arcade
 from pubsub import pub
 from typing import TYPE_CHECKING
 
+from src.event_bus.event_bus import EventBus
+
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
 
@@ -78,7 +80,7 @@ class MenuView(arcade.View):
 
         # Switch to GameView if space is hit
         if symbol == arcade.key.SPACE:
-            pub.sendMessage('switch_game')
+            EventBus.broadcast_event('switch_game')
 
         return None
 
@@ -92,7 +94,7 @@ class MenuView(arcade.View):
         for sprite in hits:
             # Start button interraction
             if sprite == self.start_button:
-                pub.sendMessage('switch_game')
+                EventBus.broadcast_event('switch_game')
 
         return None
 

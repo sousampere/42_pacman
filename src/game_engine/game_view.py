@@ -77,7 +77,7 @@ class GameView(arcade.View):
             (max_x, max_y),
         ]
 
-        self.ghosts = []
+        self.ghosts: list[Ghost] = []
         for corner in corners:
             dist_to_corner = np.sum((pts - corner) ** 2, axis=1)
             ghost_pos = tuple(pts[np.argmin(dist_to_corner)].tolist())
@@ -196,6 +196,15 @@ class GameView(arcade.View):
         """Update sprites"""
         if delta_time > 0:
             self.fps = 1 / delta_time
+        if self.player.position in [g.position for g in self.ghosts]:
+            self.player.die()
+        for p in self.pacgum:
+            if p.position == self.player.position:
+                self.pacgum.remove(p)
+                self.entity.remove(p)
+        if len(self.pacgum) == 0:
+            self.event_next_level()
+
         return None
 
     def on_resize(self, width: int, height: int) -> bool | None:

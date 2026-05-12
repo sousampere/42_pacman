@@ -2,7 +2,6 @@ import random
 
 import numpy as np
 from numpy.typing import NDArray
-from pubsub import pub
 
 from src.entity.ghost import Ghost
 from src.entity.pacgum import Pacgum
@@ -84,7 +83,8 @@ class GameView(arcade.View):
             self.ghosts.append(ghost)
             entity.append(ghost)
 
-        total_pacgum = random.randint(int((len((pts) - 5) * 0.6)), (len(pts) - 5))
+        total_pacgum = random.randint(
+            int((len((pts) - 5) * 0.6)), (len(pts) - 5))
         occupied_positions = [closest_point]
         occupied_positions.extend(corners)
 
@@ -96,7 +96,8 @@ class GameView(arcade.View):
 
         num_to_spawn = min(total_pacgum, len(pac_gum_pts))
 
-        indices = np.random.choice(len(pac_gum_pts), size=num_to_spawn, replace=False)
+        indices = np.random.choice(
+            len(pac_gum_pts), size=num_to_spawn, replace=False)
         pac_gum_spawn = pac_gum_pts[indices]
         self.pacgum = []
         for spawn in pac_gum_spawn:

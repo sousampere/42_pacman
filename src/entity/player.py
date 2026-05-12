@@ -43,7 +43,7 @@ class Player(Entity, Movable):
         elif dx > 0:
             self.texture = self.textures[5]
 
-    def update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60) -> None:
         pass
 
     def die(self) -> None:

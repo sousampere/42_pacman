@@ -1,6 +1,6 @@
 import numpy as np
 
-from mazegenerator.mazegenerator import MazeGenerator  # type: ignore
+from mazegenerator.mazegenerator import MazeGenerator
 from numpy.typing import NDArray
 
 DEFAULT_SEED: int = 42
@@ -40,7 +40,7 @@ class MazeAdapter:
 
     def get_multiple_maze(
         self, levels: list[dict[str, int]], seed: int = DEFAULT_SEED
-    ):
+    ) -> list[tuple[NDArray, NDArray, int]]:
         maze_list: list[tuple[NDArray, NDArray, int]] = []
         for i, level in enumerate(levels):
             size = (level.get("width", 20), level.get("height", 10))
@@ -78,7 +78,7 @@ class MazeAdapter:
 
         wall_coords = np.unique(np.concatenate(all_segments), axis=0)
 
-        def row_diff(A, B):
+        def row_diff(A: NDArray, B: NDArray) -> np.ndarray:
             A = np.ascontiguousarray(A).astype(np.int32)
             B = np.ascontiguousarray(B).astype(np.int32)
 

@@ -1,7 +1,7 @@
-from typing import Any, Literal
+
 
 from pubsub import pub
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine

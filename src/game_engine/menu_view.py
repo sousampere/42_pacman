@@ -1,5 +1,4 @@
 import arcade
-from pubsub import pub
 from typing import TYPE_CHECKING
 
 from src.event_bus.event_bus import EventBus

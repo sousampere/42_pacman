@@ -15,7 +15,7 @@ class Ghost(Entity, Movable):
         self,
         spawn_point: tuple[int, int],
         maze_path: ndarray,
-        speed,
+        speed: float,
         # chase_algorithm: Algorithms,
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
@@ -51,7 +51,7 @@ class Ghost(Entity, Movable):
         #     self.angle = -90
         pass
 
-    def update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60) -> None:
         if self.right > WINDOWS_WIDTH:
             self._x = WINDOWS_WIDTH - self.width / 2
         if self.left < 0:

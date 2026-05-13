@@ -221,7 +221,7 @@ class GameView(arcade.View):
 
         # Check if end of level
         if self.level == len(self.maze_list):
-            EventBus.broadcast_event("switch_finish")
+            EventBus.broadcast_event("switch_finish", score=self.xp)
 
     def event_add_pacgum_point(self) -> None:
         """Add a pacgum point to the player"""

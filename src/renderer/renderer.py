@@ -39,7 +39,7 @@ class Renderer:
 
         # Load background texture
         self.bg_texture = arcade.load_texture(
-            "assets/background/background_2.png"
+            "assets/background/background_5.png"
         )  # Background texture
         self.bg_texture_cheat = arcade.load_texture(
             "assets/background/background_cheat.png"
@@ -80,7 +80,7 @@ class Renderer:
         level: int,
     ) -> None:
         """Draws the game to the screen"""
-        CONTROL_TEXT = "Escape: Pause       Space: Cheat       R: Next lvl"
+        CONTROL_TEXT = "Escape: Pause"
 
         attributes: list[dict[str, arcade.Texture | str]] = []
 
@@ -94,7 +94,7 @@ class Renderer:
             shadow = 220
         else:
             arcade.draw_texture_rect(self.bg_texture, bg_rect)
-            shadow = 150
+            shadow = 200
 
         # Apply a soft shadow on the screen
         arcade.draw_lbwh_rectangle_filled(

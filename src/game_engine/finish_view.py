@@ -2,6 +2,7 @@ import arcade
 
 from typing import TYPE_CHECKING
 
+from arcade import text
 from pubsub import pub
 
 from src.event_bus.event_bus import EventBus
@@ -19,6 +20,7 @@ class FinishView(arcade.View):
         self.engine = engine
         self.background_color = arcade.color.GRAY
         self.score = 0
+        self.username: str = '---------'
 
         pub.subscribe(self.event_save_score, "save_score")
 
@@ -61,10 +63,48 @@ class FinishView(arcade.View):
             anchor_y="center",
             font_name="Early GameBoy",
         )
+        
+        username_text = arcade.Text(
+            self.username,
+            self.window.width / 2,
+            200,
+            color=arcade.color.WHITE_SMOKE,
+            font_size=42,
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Early GameBoy",
+        )
+        username_text.draw()
 
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        """Keyboard interaction"""
+
+        # Switch to GameView if space is hit
+
+        return None
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.SPACE:
+            EventBus.broadcast_event(
+                "save_score",
+                username="REPLACE_ME",
+                score=999,
+                target="data/leaderboard.json",
+                signature="SIGNATURE_EXAMPLE",
+            )
+
+        # Entering username
+        if ((symbol >= arcade.key.A and symbol <= arcade.key.Z)
+            and len(self.username) <= 9):
+            self.username = (self.username.replace('-', '') + chr(symbol)).ljust(9, '-')
+        if ((symbol >= arcade.key.NUM_0 and symbol <= arcade.key.NUM_9) and len(self.username) <= 9):
+            self.username = (self.username.replace('-', '') + str(symbol - arcade.key.NUM_0)).ljust(9, '-')
+        if symbol == arcade.key.BACKSPACE:
+            self.username = self.username.replace('-', '')[:-1].ljust(9, '-')
+
+        # 
         if symbol == arcade.key.SPACE:
             EventBus.broadcast_event(
                 "save_score",

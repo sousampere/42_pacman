@@ -84,6 +84,7 @@ class MenuView(arcade.View):
                     color = arcade.color.BRONZE
                 case _:
                     color = arcade.color.GRAY
+
             texts.append(arcade.Text(
                 f'{index + 1}. {score['username']} - {score['score']}',
                 self.window.width / 2,
@@ -145,3 +146,9 @@ class MenuView(arcade.View):
             self.start_button.scale = 0.1
             self.window.set_mouse_cursor(c)
         return super().on_mouse_motion(x, y, dx, dy)
+
+    def on_show_view(self) -> None:
+        # Refresh leaderboard
+        self.leaderboard = LeaderboardManager.load_leaderboard(
+            self.engine.config.highscore_filename,
+            self.engine.config.signature)

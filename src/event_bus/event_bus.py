@@ -28,6 +28,9 @@ class EventBus:
         pub.subscribe(game_engine.game_view.event_next_level, "next_level")
         pub.subscribe(game_engine.game_view.event_add_pacgum_point, "add_pacgum_point")
 
+        # Init GameEngine events
+        pub.subscribe(game_engine.event_reload_views, "reload_views")
+
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:
         pub.sendMessage(event, **kwargs)

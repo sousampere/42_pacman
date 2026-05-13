@@ -83,3 +83,11 @@ class GameEngine:
             )
         arcade.run()
         return None
+
+    def event_reload_views(self) -> None:
+        self.set_views(
+            menu=MenuView(self),
+            game=GameView(self.config, self),
+            pause=PauseView(self),
+            finish=FinishView(self),
+        )

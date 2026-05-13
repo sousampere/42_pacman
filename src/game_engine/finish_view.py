@@ -124,6 +124,7 @@ class FinishView(arcade.View):
                 target=self.leaderboard_output,
                 signature=self.conf_signature,
             )
+            EventBus.broadcast_event('reload_views')
             EventBus.broadcast_event('switch_menu')
 
     def event_save_score(

@@ -27,8 +27,8 @@ class Leaderboard(BaseModel):
     def validate_data(self) -> "Leaderboard":
         """Validate input data before storing it"""
         # Check if too many scores
-        if len(self.scores) > 10:
-            raise LeaderboardError("Too many scores in the leaderboard")
+        # if len(self.scores) > 10:
+        #     raise LeaderboardError("Too many scores in the leaderboard")
 
         # Check each score
         for score in self.scores:

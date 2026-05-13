@@ -2,6 +2,7 @@ import arcade
 from typing import TYPE_CHECKING
 
 from src.event_bus.event_bus import EventBus
+from src.leaderboard import LeaderboardManager
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
@@ -27,6 +28,11 @@ class MenuView(arcade.View):
                 "assets/background/background_4.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
+        self.leaderboard = LeaderboardManager.load_leaderboard(
+            self.engine.config.highscore_filename,
+            self.engine.config.signature)
+        
+        # self.player = Player(closest_point, pts, 1)
 
     def on_draw(self) -> bool | None:
         """Method for drawing at screen"""
@@ -48,7 +54,7 @@ class MenuView(arcade.View):
 
         # Apply a soft shadow on the screen
         arcade.draw_lbwh_rectangle_filled(
-            0, 0, self.window.width, self.window.height, (0, 0, 0, 128)
+            0, 0, self.window.width, self.window.height, (0, 0, 0, 200)
         )
 
         # Write "Welcome to Pac-Man"
@@ -64,9 +70,37 @@ class MenuView(arcade.View):
         )
         title_text.draw()
 
+        # Print leaderboard
+        texts: list[arcade.Text] = []
+        self.leaderboard.scores = sorted(self.leaderboard.scores, key=lambda s: s['score'], reverse=True)
+        self.leaderboard.scores = self.leaderboard.scores[:10]
+        for index, score in enumerate(self.leaderboard.scores):
+            match index:
+                case 0:
+                    color = arcade.color.GOLD
+                case 1:
+                    color = arcade.color.SILVER
+                case 2:
+                    color = arcade.color.BRONZE
+                case _:
+                    color = arcade.color.GRAY
+            texts.append(arcade.Text(
+                f'{index + 1}. {score['username']} - {score['score']}',
+                self.window.width / 2,
+                title_text.bottom - self.window.height / 10 - (self.window.height / 20) * index,
+                color=color,
+                font_size=min(self.window.width * 0.02, self.window.height * 0.02),
+                anchor_x="center",
+                anchor_y="center",
+                font_name="Early GameBoy",
+            ))
+        for text in texts:
+            text.draw()
 
         self.start_button.center_x = self.window.width / 2
         self.start_button.center_y = self.window.height * 0.33
+
+        self.start_button.center_y = texts[-1].y - self.start_button.height
 
         # Draw sprites
         self.sprite_list.draw()

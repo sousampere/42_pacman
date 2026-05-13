@@ -119,7 +119,7 @@ class FinishView(arcade.View):
         if symbol == arcade.key.ENTER:
             EventBus.broadcast_event(
                 "save_score",
-                username=self.username,
+                username=self.username.replace('-', ''),
                 score=self.engine.game_view.xp,
                 target=self.leaderboard_output,
                 signature=self.conf_signature,

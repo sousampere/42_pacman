@@ -1,6 +1,7 @@
 import arcade
 from typing import TYPE_CHECKING
 
+from src.entity.player import Player
 from src.event_bus.event_bus import EventBus
 from src.leaderboard import LeaderboardManager
 
@@ -31,8 +32,19 @@ class MenuView(arcade.View):
         self.leaderboard = LeaderboardManager.load_leaderboard(
             self.engine.config.highscore_filename,
             self.engine.config.signature)
-        
-        # self.player = Player(closest_point, pts, 1)
+
+        # Create a player sprite that will be at the bottom
+        sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
+        self.textures = sheet.get_texture_grid(
+            size=(66, 66),
+            columns=1,
+            count=6,
+        )
+        self.player_texture: arcade.Texture = self.textures[4]
+        self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+        self.player_pos = 0
+        self.player_direction = 1
+
 
     def on_draw(self) -> bool | None:
         """Method for drawing at screen"""
@@ -105,10 +117,33 @@ class MenuView(arcade.View):
 
         # Draw sprites
         self.sprite_list.draw()
+
+        # Draw player
+        player_rect = arcade.Rect(
+            x=self.player_pos + self.player_texture.width / 2,
+            y=0 + self.player_texture.height / 2,
+            width=self.player_texture.width,
+            height=self.player_texture.height,
+            left=0,
+            right=0,
+            bottom=0,
+            top=0,
+        )
+        arcade.draw_texture_rect(self.player_texture, player_rect)
+
         return None
 
     def on_update(self, delta_time: float) -> bool | None:
         self.sprite_list.update()
+
+        # Bottom player movement
+        self.player_pos += 3 * self.player_direction
+        if self.player_pos > self.window.width:
+            self.player_direction = -1
+            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+        if self.player_pos < -self.player_texture.width:
+            self.player_direction = 1
+            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
         return super().on_update(delta_time)
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:

@@ -19,14 +19,15 @@ class FinishView(arcade.View):
         super().__init__()
         self.engine = engine
         self.background_color = arcade.color.GRAY
-        self.score = 0
-        self.username: str = '---------'
 
-        pub.subscribe(self.event_save_score, "save_score")
+        # Game data
+        self.username: str = '----------'
+        self.leaderboard_output = engine.config.highscore_filename
+        self.conf_signature = self.engine.config.signature
 
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_2.png")
+                "assets/background/background_3.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 
@@ -49,32 +50,48 @@ class FinishView(arcade.View):
 
         # Apply a soft shadow on the screen
         arcade.draw_lbwh_rectangle_filled(
-            0, 0, self.window.width, self.window.height, (0, 0, 0, 128)
+            0, 0, self.window.width, self.window.height, (0, 0, 0, 200)
         )
 
-        # Write "Welcome to Pac-Man"
-        arcade.draw_text(
+        # Write "Game Over !"
+        game_over_text = arcade.Text(
             "Game Over !",
             self.window.width / 2,
             self.window.height * 0.9,
             color=arcade.color.WHITE_SMOKE,
-            font_size=42,
+            font_size=min(self.window.width * 0.05, self.window.height * 0.05),
             anchor_x="center",
             anchor_y="center",
             font_name="Early GameBoy",
         )
         
-        username_text = arcade.Text(
-            self.username,
+        # Guide the user enter username and press Enter
+        helper_text = arcade.Text(
+            "Enter your username and press Enter",
             self.window.width / 2,
-            200,
+            self.window.height * 0.7,
             color=arcade.color.WHITE_SMOKE,
-            font_size=42,
+            font_size=min(self.window.width * 0.02, self.window.height * 0.02),
             anchor_x="center",
             anchor_y="center",
             font_name="Early GameBoy",
         )
+
+        # Field to enter username
+        username_text = arcade.Text(
+            self.username,
+            self.window.width / 2,
+            self.height * 0.6,
+            color=arcade.color.YELLOW,
+            font_size=min(self.window.width * 0.03, self.window.height * 0.03),
+            anchor_x="center",
+            anchor_y="center",
+            font_name="Early GameBoy",
+        )
+
         username_text.draw()
+        game_over_text.draw()
+        helper_text.draw()
 
         return None
 
@@ -86,16 +103,9 @@ class FinishView(arcade.View):
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
-        if symbol == arcade.key.SPACE:
-            EventBus.broadcast_event(
-                "save_score",
-                username="REPLACE_ME",
-                score=999,
-                target="data/leaderboard.json",
-                signature="SIGNATURE_EXAMPLE",
-            )
 
         # Entering username
+        self.username = self.username.replace('-', '')
         if ((symbol >= arcade.key.A and symbol <= arcade.key.Z)
             and len(self.username) <= 9):
             self.username = (self.username.replace('-', '') + chr(symbol)).ljust(9, '-')
@@ -103,16 +113,18 @@ class FinishView(arcade.View):
             self.username = (self.username.replace('-', '') + str(symbol - arcade.key.NUM_0)).ljust(9, '-')
         if symbol == arcade.key.BACKSPACE:
             self.username = self.username.replace('-', '')[:-1].ljust(9, '-')
+        self.username = self.username.ljust(10, '-')
 
-        # 
-        if symbol == arcade.key.SPACE:
+        # Save to leaderboard
+        if symbol == arcade.key.ENTER:
             EventBus.broadcast_event(
                 "save_score",
-                username="REPLACE_ME",
-                score=999,
-                target="data/leaderboard.json",
-                signature="SIGNATURE_EXAMPLE",
+                username=self.username,
+                score=self.engine.game_view.xp,
+                target=self.leaderboard_output,
+                signature=self.conf_signature,
             )
+            EventBus.broadcast_event('switch_menu')
 
     def event_save_score(
         self, username: str, score: int, target: str, signature: str

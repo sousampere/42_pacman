@@ -193,7 +193,7 @@ class Renderer:
                 y=attrib_rect.y,
                 font_size=text_size,
                 font_name="Early GameBoy",
-                anchor_x="center",
+                # anchor_x="center",
                 anchor_y="center",
                 color=arcade.color.WHITE,
             )

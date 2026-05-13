@@ -196,6 +196,7 @@ class GameView(arcade.View):
             if p.position == self.player.position:
                 self.pacgum.remove(p)
                 self.entity.remove(p)
+                EventBus.broadcast_event('add_pacgum_point')
         if len(self.pacgum) == 0:
             self.event_next_level()
 
@@ -221,3 +222,7 @@ class GameView(arcade.View):
         # Check if end of level
         if self.level == len(self.maze_list):
             EventBus.broadcast_event("switch_finish")
+
+    def event_add_pacgum_point(self) -> None:
+        """Add a pacgum point to the player"""
+        self.xp += self.config.pacgum_points

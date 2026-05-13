@@ -24,7 +24,7 @@ class MenuView(arcade.View):
         # Load background
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_2.png")
+                "assets/background/background_4.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 
@@ -52,16 +52,18 @@ class MenuView(arcade.View):
         )
 
         # Write "Welcome to Pac-Man"
-        arcade.draw_text(
+        title_text = arcade.Text(
             "Pac-Man",
             self.window.width / 2,
             self.window.height * 0.9,
             color=arcade.color.WHITE_SMOKE,
-            font_size=42,
+            font_size=min(self.window.width * 0.05, self.window.height * 0.05),
             anchor_x="center",
             anchor_y="center",
             font_name="Early GameBoy",
         )
+        title_text.draw()
+
 
         self.start_button.center_x = self.window.width / 2
         self.start_button.center_y = self.window.height * 0.33

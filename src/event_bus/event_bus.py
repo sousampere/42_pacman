@@ -26,6 +26,7 @@ class EventBus:
             game_engine.game_view.event_enable_cheat_mode,
             "enable_cheat")
         pub.subscribe(game_engine.game_view.event_next_level, "next_level")
+        pub.subscribe(game_engine.game_view.event_add_pacgum_point, "add_pacgum_point")
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

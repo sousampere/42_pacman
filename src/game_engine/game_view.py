@@ -105,7 +105,7 @@ class GameView(arcade.View):
             self.pacgum.append(pacgum)
             entity.append(pacgum)
 
-        self.player = Player(closest_point, pts, 1)
+        self.player = Player(closest_point, pts, 0.3)
         entity.append(self.player)
 
         return entity
@@ -176,13 +176,13 @@ class GameView(arcade.View):
         if symbol == arcade.key.NUM_1:
             EventBus.broadcast_event("switch_finish", score=1)
         if symbol == arcade.key.UP:
-            self.player.move((0, 1))
+            self.player.dir = (0, 1)
         if symbol == arcade.key.DOWN:
-            self.player.move((0, -1))
+            self.player.dir = (0, -1)
         if symbol == arcade.key.LEFT:
-            self.player.move((-1, 0))
+            self.player.dir = (-1, 0)
         if symbol == arcade.key.RIGHT:
-            self.player.move((1, 0))
+            self.player.dir = (1, 0)
 
         return None
 
@@ -190,6 +190,7 @@ class GameView(arcade.View):
         """Update sprites"""
         if delta_time > 0:
             self.fps = 1 / delta_time
+        self.player.update()
         if self.player.position in [g.position for g in self.ghosts]:
             self.player.die()
         for p in self.pacgum:
@@ -199,7 +200,6 @@ class GameView(arcade.View):
                 EventBus.broadcast_event('add_pacgum_point')
         if len(self.pacgum) == 0:
             self.event_next_level()
-
         return None
 
     def on_resize(self, width: int, height: int) -> bool | None:

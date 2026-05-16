@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 import arcade
 from numpy import ndarray
@@ -6,9 +7,7 @@ from numpy import ndarray
 
 class Entity(arcade.Sprite, ABC):
     def __init__(self, spawn_point: tuple[int, int], scale: float) -> None:
-        arcade.Sprite.__init__(
-            self, scale=scale
-        )
+        arcade.Sprite.__init__(self, scale=scale)
         self.spawn_point: tuple[int, int] = spawn_point
         self._x: float = float(spawn_point[0])
         self._y: float = float(spawn_point[1])
@@ -28,24 +27,26 @@ class Movable(ABC):
     def __init__(
         self,
         maze_path: ndarray,
-        speed: float = 0.0,
+        speed: float
     ) -> None:
-        self.speed: float = speed
         self.maze_path = maze_path
         self._path_set: frozenset[tuple[int, int]] = frozenset(
             (int(x), int(y)) for x, y in maze_path
         )
+        self.dir: tuple[float, float] = (0, 0)
+        self.speed: float = speed
 
-    def can_move_to(self, x: float, y: float) -> bool:
-        return (round(x), round(y)) in self._path_set
+    def can_move_to(
+        self, x: float, y: float, size: tuple[float, float]
+    ) -> bool:
+        return (round(x + size[0]), round(y + size[1])) in self._path_set and (
+            round(x - size[0]),
+            round(y - size[1]),
+        ) in self._path_set
 
     @abstractmethod
     def move(self, direction: tuple[float, float]) -> None:
         pass
-
-    @property
-    def get_speed(self) -> float:
-        return self.speed
 
 
 class Collectible(ABC):

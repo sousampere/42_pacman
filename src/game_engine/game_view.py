@@ -54,6 +54,11 @@ class GameView(arcade.View):
         self.xp = 0  # Current xp
         self.time = config.max_time  # Current xp
 
+        # Init cheat toggle variables
+        self.cheat_mode = False
+        self.invincibility = False
+        self.freeze_ghosts = False
+
         self.entity = self.init_entity()
 
     def init_entity(self) -> arcade.SpriteList:
@@ -169,7 +174,7 @@ class GameView(arcade.View):
             EventBus.broadcast_event("switch_pause")
 
         # Dev feature to skip current level
-        if symbol == arcade.key.R:
+        if symbol == arcade.key.NUM_3 and self.cheat_mode:
             EventBus.broadcast_event("next_level")
 
         # Dev feature to switch easily to finish view
@@ -193,6 +198,7 @@ class GameView(arcade.View):
         self.player.update()
         if self.player.position in [g.position for g in self.ghosts]:
             self.player.die()
+            EventBus.broadcast_event('remove_life')
         for p in self.pacgum:
             if p.position == self.player.position:
                 self.pacgum.remove(p)
@@ -210,6 +216,7 @@ class GameView(arcade.View):
     def event_enable_cheat_mode(self) -> None:
         """Turn on cheat mode and reset cache"""
         self.renderer.cheat_mode = True
+        self.cheat_mode = True
         self.renderer.reset_cache()
 
     def event_next_level(self) -> None:
@@ -226,3 +233,25 @@ class GameView(arcade.View):
     def event_add_pacgum_point(self) -> None:
         """Add a pacgum point to the player"""
         self.xp += self.config.pacgum_points
+
+    def event_add_life(self) -> None:
+        """Adds a life to the player"""
+        self.lives += 1
+
+    def event_remove_life(self) -> None:
+        """Removes a life to the player"""
+        self.lives -= 1
+
+    def event_toggle_freeze_ghosts(self) -> None:
+        """Toggle freezing the ghosts"""
+        if self.freeze_ghosts:
+            self.freeze_ghosts = False
+        else:
+            self.freeze_ghosts = True
+
+    def event_toggle_invincibility(self) -> None:
+        """Toggles the invincibility of the player"""
+        if self.invincibility:
+            self.invincibility = False
+        else:
+            self.invincibility = True

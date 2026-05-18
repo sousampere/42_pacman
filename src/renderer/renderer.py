@@ -80,7 +80,14 @@ class Renderer:
         level: int,
     ) -> None:
         """Draws the game to the screen"""
-        CONTROL_TEXT = "Escape: Pause"
+        if self.cheat_mode:
+            CONTROL_TEXT = "Escape: Pause      "\
+            "1:Invincibility      "\
+            "2:Get a life      "\
+            "3:Complete lvl      "\
+            "4:Freeze ghosts"
+        else:
+            CONTROL_TEXT = "Escape: Pause"
 
         attributes: list[dict[str, arcade.Texture | str]] = []
 
@@ -140,7 +147,7 @@ class Renderer:
         self.draw_attributes(self.logo, attributes, window)
 
         # Draw controls
-        font_size: int = int(window.height / 50)
+        font_size: int = int(window.height / 100)
         arcade.draw_text(
             CONTROL_TEXT,
             window.width / 2,

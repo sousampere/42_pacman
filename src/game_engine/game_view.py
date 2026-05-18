@@ -3,6 +3,7 @@ import random
 import numpy as np
 from numpy.typing import NDArray
 
+from src.algorithms.heat_map import HeatMap
 from src.entity.ghost import Ghost
 from src.entity.pacgum import Pacgum
 from src.entity.player import Player
@@ -74,17 +75,9 @@ class GameView(arcade.View):
             (max_x, max_y),
         ]
 
-        self.ghosts: list[Ghost] = []
-        for corner in corners:
-            dist_to_corner = np.sum((pts - corner) ** 2, axis=1)
-            ghost_pos = tuple(pts[np.argmin(dist_to_corner)].tolist())
-
-            ghost = Ghost(ghost_pos, pts, 1)
-            self.ghosts.append(ghost)
-            entity.append(ghost)
-
         total_pacgum = random.randint(
-            int((len((pts) - 5) * 0.6)), (len(pts) - 5))
+            int((len((pts) - 5) * 0.6)), (len(pts) - 5)
+        )
         occupied_positions = [closest_point]
         occupied_positions.extend(corners)
 
@@ -97,7 +90,8 @@ class GameView(arcade.View):
         num_to_spawn = min(total_pacgum, len(pac_gum_pts))
 
         indices = np.random.choice(
-            len(pac_gum_pts), size=num_to_spawn, replace=False)
+            len(pac_gum_pts), size=num_to_spawn, replace=False
+        )
         pac_gum_spawn = pac_gum_pts[indices]
         self.pacgum = []
         for spawn in pac_gum_spawn:
@@ -105,9 +99,20 @@ class GameView(arcade.View):
             self.pacgum.append(pacgum)
             entity.append(pacgum)
 
+        self.ghosts: list[Ghost] = []
+        for corner in corners:
+            dist_to_corner = np.sum((pts - corner) ** 2, axis=1)
+            ghost_pos = tuple(pts[np.argmin(dist_to_corner)].tolist())
+
+            ghost = Ghost(ghost_pos, pts, 0.3)
+            self.ghosts.append(ghost)
+            entity.append(ghost)
+
         self.player = Player(closest_point, pts, 0.3)
         entity.append(self.player)
 
+        self.heat_map_manager = HeatMap(pts)
+        self.heat_map = self.heat_map_manager.grid
         return entity
 
     def on_draw(self) -> bool | None:
@@ -191,13 +196,23 @@ class GameView(arcade.View):
         if delta_time > 0:
             self.fps = 1 / delta_time
         self.player.update()
+        self.heat_map = self.heat_map_manager.update_heat_map(
+            (int(self.player._x), int(self.player._y))
+        )
         if self.player.position in [g.position for g in self.ghosts]:
             self.player.die()
         for p in self.pacgum:
             if p.position == self.player.position:
                 self.pacgum.remove(p)
                 self.entity.remove(p)
-                EventBus.broadcast_event('add_pacgum_point')
+                EventBus.broadcast_event("add_pacgum_point")
+        for g in self.ghosts:
+            g.update(
+                delta_time,
+                self.heat_map,
+                self.heat_map_manager.max_x,
+                self.heat_map_manager.max_y,
+            )
         if len(self.pacgum) == 0:
             self.event_next_level()
         return None

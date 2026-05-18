@@ -1,7 +1,6 @@
 import arcade
 from numpy import ndarray
 from src.entity.entity import Entity, Movable
-from typing import Optional
 
 SCALE: float = 0.5
 LIVES: int = 3

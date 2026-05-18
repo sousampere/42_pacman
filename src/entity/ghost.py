@@ -1,7 +1,9 @@
+from typing import Callable
 
 import arcade
 from numpy import ndarray
 
+from src.algorithms.algorithms import Algorithms
 from src.entity.entity import Entity, Movable
 
 SCALE: float = 0.5
@@ -28,38 +30,30 @@ class Ghost(Entity, Movable):
         )
         self.texture = self.textures[0]
         self.__is_edible: bool = False
-        # self._chase_algorithm: Algorithms = chase_algorithm
+        # self._chase_algorithm: Callable = Algorithms.process
+        self.move_cooldown = 0.0
 
     def move(self, direction: tuple[float, float]) -> None:
-        # dx, dy = self._chase_algorithm.process(
-        #     (self.center_x, self.center_y), direction
-        # )
+        dx, dy = direction
+        new_x = dx
+        new_y = dy
 
-        # self._x += dx * self.speed
-        # self._y += dy * self.speed
-        # if dx < 0:
-        #     self.texture = self.textures[0]
-        #     self.angle = 0
-        # elif dx > 0:
-        #     self.texture = self.textures[0]
-        #     self.angle = 0
-        # elif dy > 0:
-        #     self.texture = self.textures[0]
-        #     self.angle = -90
-        # elif dy < 0:
-        #     self.texture = self.textures[0]
-        #     self.angle = -90
-        pass
+        if self.can_move_to(new_x, new_y, self.scale):
+            self._y = new_y
+            self._x = new_x
+        else:
+            self._x = round(self._x)
+            self._y = round(self._y)
+            self.cache_dir = (0, 0)
 
-    def update(self, delta_time: float = 1 / 60) -> None:
-        if self.right > WINDOWS_WIDTH:
-            self._x = WINDOWS_WIDTH - self.width / 2
-        if self.left < 0:
-            self._x = self.width / 2
-        if self.top > WINDOWS_HEIGHT:
-            self._y = WINDOWS_HEIGHT - self.height / 2
-        if self.bottom < 0:
-            self._y = self.height / 2
+    def update(self, delta_time: float, heat_map, max_x, max_y) -> None:
+        self.move_cooldown += delta_time
+
+        if self.move_cooldown >= self.speed:
+            next_case = Algorithms.process((int(self._x), int(self._y)), (int(self._x), int(self._y)), heat_map, max_x, max_y)
+            print(next_case)
+            self.move(next_case)
+            self.move_cooldown = 0.0
 
     def die(self) -> None:
         if self.__is_edible:

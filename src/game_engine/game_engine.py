@@ -99,3 +99,4 @@ class GameEngine:
             self.window.set_fullscreen(False)
         else:
             self.window.set_fullscreen(True)
+        self.window.set_minimum_size(720, 480)

@@ -18,7 +18,7 @@ class Ghost(Entity, Movable):
         spawn_point: tuple[int, int],
         maze_path: ndarray,
         speed: float,
-        # chase_algorithm: Algorithms,
+        ghost_id: int,
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
@@ -30,8 +30,8 @@ class Ghost(Entity, Movable):
         )
         self.texture = self.textures[0]
         self.__is_edible: bool = False
-        # self._chase_algorithm: Callable = Algorithms.process
         self.move_cooldown = 0.0
+        self._id: int = ghost_id
 
     def move(self, direction: tuple[float, float]) -> None:
         dx, dy = direction
@@ -50,8 +50,13 @@ class Ghost(Entity, Movable):
         self.move_cooldown += delta_time
 
         if self.move_cooldown >= self.speed:
-            next_case = Algorithms.process((int(self._x), int(self._y)), (int(self._x), int(self._y)), heat_map, max_x, max_y)
-            print(next_case)
+            next_case = Algorithms.process(
+                (int(self._x), int(self._y)),
+                (int(self._x), int(self._y)),
+                heat_map[self._id],
+                max_x,
+                max_y,
+            )
             self.move(next_case)
             self.move_cooldown = 0.0
 

@@ -100,11 +100,11 @@ class GameView(arcade.View):
             entity.append(pacgum)
 
         self.ghosts: list[Ghost] = []
-        for corner in corners:
+        for i, corner in enumerate(corners):
             dist_to_corner = np.sum((pts - corner) ** 2, axis=1)
             ghost_pos = tuple(pts[np.argmin(dist_to_corner)].tolist())
 
-            ghost = Ghost(ghost_pos, pts, 0.3)
+            ghost = Ghost(ghost_pos, pts, 0.3, i)
             self.ghosts.append(ghost)
             entity.append(ghost)
 
@@ -112,8 +112,23 @@ class GameView(arcade.View):
         entity.append(self.player)
 
         self.heat_map_manager = HeatMap(pts)
-        self.heat_map = self.heat_map_manager.grid
+        self.heat_map = [self.heat_map_manager.grid.copy() for _ in range(4)]
+        self.rand_target = [self.get_random_target() for _ in range(2)]
+        self.heat_map[1] = self.heat_map_manager.update_heat_map(
+            self.rand_target[0]
+        )
+        self.heat_map[3] = self.heat_map_manager.update_heat_map(
+            self.rand_target[1]
+        )
+
         return entity
+
+    def get_random_target(self) -> tuple[int, int]:
+        new_coord = np.random.default_rng().choice(
+            self.maze_list[self.current_maze][1]
+        )
+
+        return (int(new_coord[0]), int(new_coord[1]))
 
     def on_draw(self) -> bool | None:
         """Function to draw on the screen"""
@@ -196,9 +211,19 @@ class GameView(arcade.View):
         if delta_time > 0:
             self.fps = 1 / delta_time
         self.player.update()
-        self.heat_map = self.heat_map_manager.update_heat_map(
+        self.heat_map[0] = self.heat_map_manager.update_heat_map(
+            self.rand_target[0]
+        )
+        self.heat_map[1] = self.heat_map_manager.update_heat_map(
             (int(self.player._x), int(self.player._y))
         )
+        self.heat_map[2] = self.heat_map_manager.update_heat_map(
+            (int(self.player._x), int(self.player._y))
+        )
+        self.heat_map[3] = self.heat_map_manager.update_heat_map(
+            self.rand_target[1]
+        )
+        print()
         if self.player.position in [g.position for g in self.ghosts]:
             self.player.die()
         for p in self.pacgum:
@@ -206,7 +231,11 @@ class GameView(arcade.View):
                 self.pacgum.remove(p)
                 self.entity.remove(p)
                 EventBus.broadcast_event("add_pacgum_point")
-        for g in self.ghosts:
+        for idx, g in enumerate(self.ghosts):
+            if idx == 0 and (g._x, g._y) == self.rand_target[0]:
+                self.rand_target[0] = self.get_random_target()
+            if idx == 3 and (g._x, g._y) == self.rand_target[1]:
+                self.rand_target[1] = self.get_random_target()
             g.update(
                 delta_time,
                 self.heat_map,

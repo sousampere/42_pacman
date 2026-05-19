@@ -1,7 +1,6 @@
 import arcade
 from numpy import ndarray
 from src.entity.entity import Entity, Movable
-from typing import Optional
 
 SCALE: float = 0.5
 LIVES: int = 3
@@ -25,7 +24,6 @@ class Player(Entity, Movable):
             count=6,
         )
         self.texture = self.textures[4]
-        self._lives: int = LIVES
         self.move_cooldown = 0.0
 
     def move(self, direction: tuple[float, float]) -> None:
@@ -56,9 +54,6 @@ class Player(Entity, Movable):
             self.move_cooldown = 0.0
 
     def die(self) -> None:
-        self._lives -= 1
-        if self._lives == 0:
-            raise NotImplementedError("GAME OVER A IMPLEMENTER")
         self.respawn()
 
     def respawn(self) -> None:

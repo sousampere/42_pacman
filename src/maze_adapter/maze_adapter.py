@@ -20,7 +20,6 @@ class MazeAdapter:
         nb_level: int = DEFAULT_NB_LEVEL,
     ) -> None:
         self.__initial_signature: str = signature
-        self.__nb_level: int = nb_level
 
     def __hash_to_int(self, hex_str: str) -> int:
         try:
@@ -94,5 +93,3 @@ class MazeAdapter:
         path_coords = row_diff(allcoords, wall_coords)
 
         return wall_coords, path_coords
-
-    from datetime import datetime

@@ -132,6 +132,7 @@ class GameView(arcade.View):
             self.time,
             self.xp,
             self.level,
+            self
         )
 
         fps_text = f"FPS: {int(self.fps)}"
@@ -181,7 +182,7 @@ class GameView(arcade.View):
         if symbol == arcade.key.NUM_3 and self.cheat_mode:
             EventBus.broadcast_event("next_level")
         if symbol == arcade.key.NUM_4 and self.cheat_mode:
-            EventBus.broadcast_event("freeze_ghosts")
+            EventBus.broadcast_event("toggle_freeze_ghosts")
 
         # Control keys
         if symbol == arcade.key.UP:
@@ -204,7 +205,8 @@ class GameView(arcade.View):
             self.fps = 1 / delta_time
         self.player.update()
         if self.player.position in [g.position for g in self.ghosts]:
-            self.player.die()
+            if self.invincibility is False:
+                self.player.die()
             EventBus.broadcast_event('remove_life')
         for p in self.pacgum:
             if p.position == self.player.position:
@@ -253,7 +255,8 @@ class GameView(arcade.View):
 
     def event_remove_life(self) -> None:
         """Removes a life to the player"""
-        self.lives -= 1
+        if self.invincibility is False:
+            self.lives -= 1
 
         # Update finish message if player is game over
         if self.lives <= 0:
@@ -263,10 +266,12 @@ class GameView(arcade.View):
 
     def event_toggle_freeze_ghosts(self) -> None:
         """Toggle freezing the ghosts"""
+        print('test')
         if self.freeze_ghosts:
             self.freeze_ghosts = False
         else:
             self.freeze_ghosts = True
+        raise NotImplementedError('WIP freeze ghosts not implemented yet')
 
     def event_toggle_invincibility(self) -> None:
         """Toggles the invincibility of the player"""

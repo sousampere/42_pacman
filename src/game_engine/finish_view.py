@@ -24,6 +24,7 @@ class FinishView(arcade.View):
         self.username: str = '----------'
         self.leaderboard_output = engine.config.highscore_filename
         self.conf_signature = self.engine.config.signature
+        self.end_game_status = 'Finished !'
 
         try:
             self.background = arcade.load_texture(
@@ -55,7 +56,7 @@ class FinishView(arcade.View):
 
         # Write "Game Over !"
         game_over_text = arcade.Text(
-            "Game Over !",
+            self.end_game_status,
             self.window.width / 2,
             self.window.height * 0.9,
             color=arcade.color.WHITE_SMOKE,

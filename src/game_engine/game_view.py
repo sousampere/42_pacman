@@ -177,9 +177,7 @@ class GameView(arcade.View):
         if symbol == arcade.key.NUM_3 and self.cheat_mode:
             EventBus.broadcast_event("next_level")
 
-        # Dev feature to switch easily to finish view
-        if symbol == arcade.key.NUM_1:
-            EventBus.broadcast_event("switch_finish", score=1)
+        # Control keys
         if symbol == arcade.key.UP:
             self.player.dir = (0, 1)
         if symbol == arcade.key.DOWN:
@@ -241,6 +239,12 @@ class GameView(arcade.View):
     def event_remove_life(self) -> None:
         """Removes a life to the player"""
         self.lives -= 1
+
+        # Update finish message if player is game over
+        if self.lives <= 0:
+            self.engine.finish_view.end_game_status = 'Game Over :L'
+        else:
+            self.engine.finish_view.end_game_status = 'Finished !'
 
     def event_toggle_freeze_ghosts(self) -> None:
         """Toggle freezing the ghosts"""

@@ -187,6 +187,9 @@ class GameView(arcade.View):
         if symbol == arcade.key.RIGHT:
             self.player.dir = (1, 0)
 
+        if symbol == arcade.key.F11:
+            EventBus.broadcast_event('toggle_fullscreen')
+
         return None
 
     def on_update(self, delta_time: float) -> bool | None:

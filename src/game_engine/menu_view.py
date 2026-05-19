@@ -156,6 +156,9 @@ class MenuView(arcade.View):
         if symbol == arcade.key.SPACE:
             EventBus.broadcast_event('switch_game')
 
+        if symbol == arcade.key.F11:
+            EventBus.broadcast_event('toggle_fullscreen')
+
         return None
 
     def on_mouse_press(

@@ -34,6 +34,7 @@ class EventBus:
 
         # Init GameEngine events
         pub.subscribe(game_engine.event_reload_views, "reload_views")
+        pub.subscribe(game_engine.event_toggle_fullscreen, "toggle_fullscreen")
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

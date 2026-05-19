@@ -97,13 +97,6 @@ class FinishView(arcade.View):
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
-        """Keyboard interaction"""
-
-        # Switch to GameView if space is hit
-
-        return None
-
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
 
         # Entering username
         self.username = self.username.replace('-', '')
@@ -127,6 +120,9 @@ class FinishView(arcade.View):
             )
             EventBus.broadcast_event('reload_views')
             EventBus.broadcast_event('switch_menu')
+        
+        if symbol == arcade.key.F11:
+            EventBus.broadcast_event('toggle_fullscreen')
 
     def event_save_score(
         self, username: str, score: int, target: str, signature: str

@@ -173,9 +173,15 @@ class GameView(arcade.View):
         if symbol == arcade.key.ESCAPE:
             EventBus.broadcast_event("switch_pause")
 
-        # Dev feature to skip current level
+        # Cheat features
+        if symbol == arcade.key.NUM_1 and self.cheat_mode:
+            EventBus.broadcast_event("toggle_invincibility")
+        if symbol == arcade.key.NUM_2 and self.cheat_mode:
+            EventBus.broadcast_event("add_life")
         if symbol == arcade.key.NUM_3 and self.cheat_mode:
             EventBus.broadcast_event("next_level")
+        if symbol == arcade.key.NUM_4 and self.cheat_mode:
+            EventBus.broadcast_event("freeze_ghosts")
 
         # Control keys
         if symbol == arcade.key.UP:
@@ -238,6 +244,12 @@ class GameView(arcade.View):
     def event_add_life(self) -> None:
         """Adds a life to the player"""
         self.lives += 1
+
+        # Update finish message if player is game over
+        if self.lives <= 0:
+            self.engine.finish_view.end_game_status = 'Game Over :L'
+        else:
+            self.engine.finish_view.end_game_status = 'Finished !'
 
     def event_remove_life(self) -> None:
         """Removes a life to the player"""

@@ -30,35 +30,28 @@ class Ghost(Entity, Movable):
         )
         self.texture = self.textures[0]
         self.__is_edible: bool = False
-        self.move_cooldown = 0.0
         self._id: int = ghost_id
 
-    def move(self, direction: tuple[float, float]) -> None:
-        dx, dy = direction
-        new_x = dx
-        new_y = dy
-
-        if self.can_move_to(new_x, new_y, self.scale):
-            self._y = new_y
-            self._x = new_x
-        else:
-            self._x = round(self._x)
-            self._y = round(self._y)
-            self.cache_dir = (0, 0)
-
-    def update(self, delta_time: float, heat_map, max_x, max_y) -> None:
-        self.move_cooldown += delta_time
-
-        if self.move_cooldown >= self.speed:
-            next_case = Algorithms.process(
-                (int(self._x), int(self._y)),
-                (int(self._x), int(self._y)),
+    def update(
+        self,
+        delta_time: float,
+        heat_map,
+        max_x,
+        max_y,
+        occupied: frozenset[tuple[int, int]] = frozenset(),
+    ) -> None:
+        arrived = self._move_toward_target(delta_time)
+        if arrived:
+            next_pos = Algorithms.process(
+                (round(self._x), round(self._y)),
+                (round(self._x), round(self._y)),
                 heat_map[self._id],
                 max_x,
                 max_y,
+                excluded=occupied,
             )
-            self.move(next_case)
-            self.move_cooldown = 0.0
+            if next_pos is not None:
+                self._target = (float(next_pos[0]), float(next_pos[1]))
 
     def die(self) -> None:
         if self.__is_edible:

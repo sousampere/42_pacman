@@ -13,20 +13,26 @@ class Algorithms:
         target: tuple[float, float],
         heat_map: ndarray,
         max_x,
-        max_y
+        max_y,
+        excluded: frozenset[tuple[int, int]] = frozenset(),
     ) -> tuple[float, float]:
 
         best_move = None
         best_dist = float('inf')
+        fallback_move = None
+        fallback_dist = float('inf')
 
         for dx, dy in cls.movements:
             neighbour = (ghost_pos[0] + dx, ghost_pos[1] + dy)
-            # On vérifie que le neighbour est bien sur la carte
             if 0 <= neighbour[0] < max_x and 0 <= neighbour[1] < max_y:
                 dist_neighbour = heat_map[neighbour]
-                # Si c'est un chemin (-1 = mur) et que c'est plus près de Pacman
-                if dist_neighbour != -1 and dist_neighbour < best_dist:
+                if dist_neighbour == -1:
+                    continue
+                if dist_neighbour < fallback_dist:
+                    fallback_dist = dist_neighbour
+                    fallback_move = neighbour
+                if neighbour not in excluded and dist_neighbour < best_dist:
                     best_dist = dist_neighbour
                     best_move = neighbour
 
-        return best_move
+        return best_move if best_move is not None else fallback_move

@@ -34,18 +34,32 @@ class Movable(ABC):
         )
         self.dir: tuple[float, float] = (0, 0)
         self.speed: float = speed
+        self._target: tuple[float, float] | None = None
+        self._x: float
+        self._y: float
 
-    def can_move_to(
-        self, x: float, y: float, size: tuple[float, float]
-    ) -> bool:
+    def can_move_to(self, x: float, y: float, size: tuple[int, int]) -> bool:
         return (round(x + size[0]), round(y + size[1])) in self._path_set and (
             round(x - size[0]),
             round(y - size[1]),
         ) in self._path_set
 
-    @abstractmethod
-    def move(self, direction: tuple[float, float]) -> None:
-        pass
+    def _move_toward_target(self, delta_time: float) -> bool:
+        """Interpolates toward _target. Returns True when arrived."""
+        if self._target is None:
+            return True
+        tx, ty = self._target
+        step = delta_time / self.speed
+        dx = tx - self._x
+        dy = ty - self._y
+        dist = (dx ** 2 + dy ** 2) ** 0.5
+        if dist <= step:
+            self._x, self._y = float(tx), float(ty)
+            self._target = None
+            return True
+        self._x += dx / dist * step
+        self._y += dy / dist * step
+        return False
 
 
 class Collectible(ABC):

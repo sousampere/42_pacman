@@ -24,40 +24,24 @@ class Player(Entity, Movable):
             count=6,
         )
         self.texture = self.textures[4]
-        self.move_cooldown = 0.0
-
-    def move(self, direction: tuple[float, float]) -> None:
-        dx, dy = direction
-        new_x = self._x + dx
-        new_y = self._y + dy
-
-        if self.can_move_to(new_x, new_y, self.scale):
-            if direction[0] == 0:
-                self._y = new_y
-            if direction[1] == 0:
-                self._x = new_x
-        else:
-            self._x = round(self._x)
-            self._y = round(self._y)
-            self.cache_dir = (0, 0)
-
-        if dx < 0:
-            self.texture = self.textures[4]
-        elif dx > 0:
-            self.texture = self.textures[5]
-
     def update(self, delta_time: float = 1 / 60) -> None:
-        self.move_cooldown += delta_time
-
-        if self.move_cooldown >= self.speed:
-            self.move(self.dir)
-            self.move_cooldown = 0.0
+        arrived = self._move_toward_target(delta_time)
+        if arrived and self.dir != (0, 0):
+            dx, dy = self.dir
+            new_x = round(self._x) + dx
+            new_y = round(self._y) + dy
+            if self.can_move_to(new_x, new_y, self.scale):
+                self._target = (float(new_x), float(new_y))
+                if dx < 0:
+                    self.texture = self.textures[4]
+                elif dx > 0:
+                    self.texture = self.textures[5]
 
     def die(self) -> None:
         self.respawn()
 
     def respawn(self) -> None:
         self._x, self._y = self.spawn_point
-
+        self._target = None
         self.center_x = self._x
         self.center_y = self._y

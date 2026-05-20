@@ -1,4 +1,5 @@
 import arcade
+from numpy import full
 
 from src.config.config_loader import Config
 from src.event_bus.event_bus import EventBus
@@ -91,3 +92,11 @@ class GameEngine:
             pause=PauseView(self),
             finish=FinishView(self),
         )
+    
+    def event_toggle_fullscreen(self) -> None:
+        """Toggle full screen when event is triggered"""
+        if self.window.fullscreen:
+            self.window.set_fullscreen(False)
+        else:
+            self.window.set_fullscreen(True)
+        self.window.set_minimum_size(720, 480)

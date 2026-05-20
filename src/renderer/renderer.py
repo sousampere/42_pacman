@@ -78,13 +78,14 @@ class Renderer:
         time: int,
         xp: int,
         level: int,
+        fps: int,
+        game_view: "GameView"
     ) -> None:
         """Draws the game to the screen"""
-        CONTROL_TEXT = "Escape: Pause"
+        window = arcade.get_window()
 
         attributes: list[dict[str, arcade.Texture | str]] = []
 
-        window = arcade.get_window()
         tile_size = self.get_tile_size(maze, window)
 
         # Draw background
@@ -139,17 +140,48 @@ class Renderer:
         attributes.append({"texture": self.time_texture, "value": str(time)})
         self.draw_attributes(self.logo, attributes, window)
 
+
         # Draw controls
+        control_list: list[tuple[str, bool]] = []
+        if self.cheat_mode:
+            control_list.append(("Escape: Pause", False))
+            control_list.append(("1:Invincibility", game_view.invincibility))
+            control_list.append(("2:Get a life", False))
+            control_list.append(("3:Complete lvl", False))
+            control_list.append(("4:Freeze ghosts", game_view.freeze_ghosts))
+        else:
+            control_list.append(("Escape: Pause", False))
+        
+        font_size: int = int(min(window.height / 100, window.width / 100))
+        texts = []
+        for i, control_text in enumerate(control_list):
+            if (len(control_list) == 1):
+                x = window.width / 2
+            else:
+                x = window.width / 2 + (window.width * 0.2) * i - (len(control_text) * (window.width * 0.2))
+            text_obj = arcade.Text(
+                control_text[0],
+                x,
+                window.height * (0.05 - 1 * 0.03),
+                arcade.color.GREEN if control_text[1] else arcade.color.WHITE,
+                font_size,
+                font_name="Early GameBoy",
+                anchor_x="center",
+            )
+            texts.append(text_obj)
+        for text in texts:
+            text.draw()
+
         font_size: int = int(window.height / 50)
-        arcade.draw_text(
-            CONTROL_TEXT,
-            window.width / 2,
-            window.height * 0.05,
-            arcade.color.WHITE,
+        fps_text = arcade.Text(
+            f"FPS: {int(fps)}",
+            10,
+            window.height - 10 - 18,
+            (50, 255, 50),
             font_size,
             font_name="Early GameBoy",
-            anchor_x="center",
         )
+        fps_text.draw()
 
     def draw_attributes(
         self,

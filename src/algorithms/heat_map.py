@@ -15,7 +15,10 @@ class HeatMap:
     def update_heat_map(self, pos_pacman):
         heat_map = self.grid.copy()
 
-        if heat_map[pos_pacman] == -1:
+        try:
+            if heat_map[pos_pacman] == -1:
+                return heat_map
+        except IndexError:
             return heat_map
 
         heat_map[pos_pacman] = 0

@@ -2,9 +2,6 @@ import arcade
 
 from typing import TYPE_CHECKING
 
-from arcade import text
-from pubsub import pub
-
 from src.event_bus.event_bus import EventBus
 from src.leaderboard import LeaderboardManager
 
@@ -24,6 +21,8 @@ class FinishView(arcade.View):
         self.username: str = '----------'
         self.leaderboard_output = engine.config.highscore_filename
         self.conf_signature = self.engine.config.signature
+        self.end_game_status = 'Finished !'
+        self.score: int
 
         try:
             self.background = arcade.load_texture(
@@ -55,7 +54,7 @@ class FinishView(arcade.View):
 
         # Write "Game Over !"
         game_over_text = arcade.Text(
-            "Game Over !",
+            self.end_game_status,
             self.window.width / 2,
             self.window.height * 0.9,
             color=arcade.color.WHITE_SMOKE,
@@ -96,13 +95,6 @@ class FinishView(arcade.View):
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
-        """Keyboard interaction"""
-
-        # Switch to GameView if space is hit
-
-        return None
-
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
 
         # Entering username
         self.username = self.username.replace('-', '')
@@ -126,6 +118,9 @@ class FinishView(arcade.View):
             )
             EventBus.broadcast_event('reload_views')
             EventBus.broadcast_event('switch_menu')
+        
+        if symbol == arcade.key.F11:
+            EventBus.broadcast_event('toggle_fullscreen')
 
     def event_save_score(
         self, username: str, score: int, target: str, signature: str

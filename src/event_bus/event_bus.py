@@ -25,11 +25,16 @@ class EventBus:
         pub.subscribe(
             game_engine.game_view.event_enable_cheat_mode,
             "enable_cheat")
-        pub.subscribe(game_engine.game_view.event_next_level, "next_level")
         pub.subscribe(game_engine.game_view.event_add_pacgum_point, "add_pacgum_point")
+        pub.subscribe(game_engine.game_view.event_next_level, "next_level")
+        pub.subscribe(game_engine.game_view.event_add_life, "add_life")
+        pub.subscribe(game_engine.game_view.event_remove_life, "remove_life")
+        pub.subscribe(game_engine.game_view.event_toggle_freeze_ghosts, "toggle_freeze_ghosts")
+        pub.subscribe(game_engine.game_view.event_toggle_invincibility, "toggle_invincibility")
 
         # Init GameEngine events
         pub.subscribe(game_engine.event_reload_views, "reload_views")
+        pub.subscribe(game_engine.event_toggle_fullscreen, "toggle_fullscreen")
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

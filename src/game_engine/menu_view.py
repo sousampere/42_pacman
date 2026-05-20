@@ -113,7 +113,10 @@ class MenuView(arcade.View):
         self.start_button.center_x = self.window.width / 2
         self.start_button.center_y = self.window.height * 0.33
 
-        self.start_button.center_y = texts[-1].y - self.start_button.height
+        if len(texts) != 0:
+            self.start_button.center_y = texts[-1].y - self.start_button.height
+        else:
+            self.start_button.center_y = self.window.height / 2 + self.start_button.height
 
         # Draw sprites
         self.sprite_list.draw()
@@ -152,6 +155,9 @@ class MenuView(arcade.View):
         # Switch to GameView if space is hit
         if symbol == arcade.key.SPACE:
             EventBus.broadcast_event('switch_game')
+
+        if symbol == arcade.key.F11:
+            EventBus.broadcast_event('toggle_fullscreen')
 
         return None
 

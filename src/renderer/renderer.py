@@ -78,6 +78,7 @@ class Renderer:
         time: int,
         xp: int,
         level: int,
+        fps: int,
         game_view: "GameView"
     ) -> None:
         """Draws the game to the screen"""
@@ -170,6 +171,17 @@ class Renderer:
             texts.append(text_obj)
         for text in texts:
             text.draw()
+
+        font_size: int = int(window.height / 50)
+        fps_text = arcade.Text(
+            f"FPS: {int(fps)}",
+            10,
+            window.height - 10 - 18,
+            (50, 255, 50),
+            font_size,
+            font_name="Early GameBoy",
+        )
+        fps_text.draw()
 
     def draw_attributes(
         self,

@@ -54,6 +54,7 @@ class GameView(arcade.View):
         self.level = 1  # Current level
         self.xp = 0  # Current xp
         self.time = config.max_time  # Current xp
+        self.fps = 0
 
         # Init cheat toggle variables
         self.cheat_mode = False
@@ -142,7 +143,7 @@ class GameView(arcade.View):
             self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
         )
 
-        # Render game from Rendere
+        # Render game from Renderer
         walls, paths, seed = self.maze_list[self.current_maze]
         self.renderer.render_game(
             walls,
@@ -152,18 +153,8 @@ class GameView(arcade.View):
             self.time,
             self.xp,
             self.level,
+            int(self.fps),
             self
-        )
-
-        fps_text = f"FPS: {int(self.fps)}"
-        font_size: int = int(self.window.height / 50)
-        arcade.draw_text(
-            fps_text,
-            10,
-            self.window.height - 10 - 18,
-            (50, 255, 50),
-            font_size,
-            font_name="Early GameBoy",
         )
 
         return None
@@ -221,8 +212,11 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time: float) -> bool | None:
         """Update sprites"""
+        # Update fps count
         if delta_time > 0:
             self.fps = 1 / delta_time
+        
+        # Update heatmaps
         self.heat_map[0] = self.heat_map_manager.update_heat_map(
             self.rand_target[0]
         )
@@ -235,35 +229,41 @@ class GameView(arcade.View):
         self.heat_map[3] = self.heat_map_manager.update_heat_map(
             self.rand_target[1]
         )
+
+        # Check for collision between player and ghost
         if self.player.position in [g.position for g in self.ghosts]:
             if self.invincibility is False:
                 self.player.die()
             EventBus.broadcast_event('remove_life')
+
+        # Check for collision between player and pacgum
         for p in self.pacgum:
             if p.position == self.player.position:
                 self.pacgum.remove(p)
                 self.entity.remove(p)
                 EventBus.broadcast_event("add_pacgum_point")
-        for idx, g in enumerate(self.ghosts):
-            if idx == 0 and (g._x, g._y) == self.rand_target[0]:
-                self.rand_target[0] = self.get_random_target()
-            if idx == 3 and (g._x, g._y) == self.rand_target[1]:
-                self.rand_target[1] = self.get_random_target()
-            g.update(
-                delta_time,
-                self.heat_map,
-                self.heat_map_manager.max_x,
-                self.heat_map_manager.max_y,
-            )
+
+        # Update ghosts
+        if not self.freeze_ghosts:
+            for idx, g in enumerate(self.ghosts):
+                if idx == 0 and (g._x, g._y) == self.rand_target[0]:
+                    self.rand_target[0] = self.get_random_target()
+                if idx == 3 and (g._x, g._y) == self.rand_target[1]:
+                    self.rand_target[1] = self.get_random_target()
+                g.update(
+                    delta_time,
+                    self.heat_map,
+                    self.heat_map_manager.max_x,
+                    self.heat_map_manager.max_y,
+                )
+
+        # Trigger next level if all pacgums eatten
         if len(self.pacgum) == 0:
-            self.event_next_level()
+            EventBus.broadcast_event('next_level')
+
+        # Update player
         self.player.update()
         return None
-
-    def on_resize(self, width: int, height: int) -> bool | None:
-        """Function executed when the window is resized"""
-
-        return super().on_resize(width, height)
 
     def event_enable_cheat_mode(self) -> None:
         """Turn on cheat mode and reset cache"""
@@ -314,7 +314,6 @@ class GameView(arcade.View):
             self.freeze_ghosts = False
         else:
             self.freeze_ghosts = True
-        raise NotImplementedError('WIP freeze ghosts not implemented yet')
 
     def event_toggle_invincibility(self) -> None:
         """Toggles the invincibility of the player"""

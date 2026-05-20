@@ -22,6 +22,7 @@ class FinishView(arcade.View):
         self.leaderboard_output = engine.config.highscore_filename
         self.conf_signature = self.engine.config.signature
         self.end_game_status = 'Finished !'
+        self.score: int
 
         try:
             self.background = arcade.load_texture(

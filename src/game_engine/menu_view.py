@@ -1,7 +1,6 @@
 import arcade
 from typing import TYPE_CHECKING
 
-from src.entity.player import Player
 from src.event_bus.event_bus import EventBus
 from src.leaderboard import LeaderboardManager
 
@@ -16,8 +15,9 @@ class MenuView(arcade.View):
         super().__init__()
         self.engine = engine
         self.background_color = (0, 8, 20)  # Soft black background
-        self.sprite_list: arcade.SpriteList[
-            arcade.Sprite] = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList[arcade.Sprite] = (
+            arcade.SpriteList()
+        )
 
         # -- Load sprites --
         # Load play button :
@@ -26,12 +26,13 @@ class MenuView(arcade.View):
         # Load background
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_4.png")
+                "assets/background/background_4.png"
+            )
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
         self.leaderboard = LeaderboardManager.load_leaderboard(
-            self.engine.config.highscore_filename,
-            self.engine.config.signature)
+            self.engine.config.highscore_filename, self.engine.config.signature
+        )
 
         # Create a player sprite that will be at the bottom
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
@@ -41,10 +42,11 @@ class MenuView(arcade.View):
             count=6,
         )
         self.player_texture: arcade.Texture = self.textures[4]
-        self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+        self.player_texture = arcade.Texture.flip_horizontally(
+            self.player_texture
+        )
         self.player_pos = 0
         self.player_direction = 1
-
 
     def on_draw(self) -> bool | None:
         """Method for drawing at screen"""
@@ -84,7 +86,9 @@ class MenuView(arcade.View):
 
         # Print leaderboard
         texts: list[arcade.Text] = []
-        self.leaderboard.scores = sorted(self.leaderboard.scores, key=lambda s: s['score'], reverse=True)
+        self.leaderboard.scores = sorted(
+            self.leaderboard.scores, key=lambda s: s["score"], reverse=True
+        )
         self.leaderboard.scores = self.leaderboard.scores[:10]
         for index, score in enumerate(self.leaderboard.scores):
             match index:
@@ -97,16 +101,22 @@ class MenuView(arcade.View):
                 case _:
                     color = arcade.color.GRAY
 
-            texts.append(arcade.Text(
-                f'{index + 1}. {score['username']} - {score['score']}',
-                self.window.width / 2,
-                title_text.bottom - self.window.height / 10 - (self.window.height / 20) * index,
-                color=color,
-                font_size=min(self.window.width * 0.02, self.window.height * 0.02),
-                anchor_x="center",
-                anchor_y="center",
-                font_name="Early GameBoy",
-            ))
+            texts.append(
+                arcade.Text(
+                    f"{index + 1}. {score['username']} - {score['score']}",
+                    self.window.width / 2,
+                    title_text.bottom
+                    - self.window.height / 10
+                    - (self.window.height / 20) * index,
+                    color=color,
+                    font_size=min(
+                        self.window.width * 0.02, self.window.height * 0.02
+                    ),
+                    anchor_x="center",
+                    anchor_y="center",
+                    font_name="Early GameBoy",
+                )
+            )
         for text in texts:
             text.draw()
 
@@ -116,7 +126,9 @@ class MenuView(arcade.View):
         if len(texts) != 0:
             self.start_button.center_y = texts[-1].y - self.start_button.height
         else:
-            self.start_button.center_y = self.window.height / 2 + self.start_button.height
+            self.start_button.center_y = (
+                self.window.height / 2 + self.start_button.height
+            )
 
         # Draw sprites
         self.sprite_list.draw()
@@ -143,10 +155,14 @@ class MenuView(arcade.View):
         self.player_pos += 3 * self.player_direction
         if self.player_pos > self.window.width:
             self.player_direction = -1
-            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+            self.player_texture = arcade.Texture.flip_horizontally(
+                self.player_texture
+            )
         if self.player_pos < -self.player_texture.width:
             self.player_direction = 1
-            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+            self.player_texture = arcade.Texture.flip_horizontally(
+                self.player_texture
+            )
         return super().on_update(delta_time)
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
@@ -154,10 +170,10 @@ class MenuView(arcade.View):
 
         # Switch to GameView if space is hit
         if symbol == arcade.key.SPACE:
-            EventBus.broadcast_event('switch_game')
+            EventBus.broadcast_event("switch_game")
 
         if symbol == arcade.key.F11:
-            EventBus.broadcast_event('toggle_fullscreen')
+            EventBus.broadcast_event("toggle_fullscreen")
 
         return None
 
@@ -171,7 +187,7 @@ class MenuView(arcade.View):
         for sprite in hits:
             # Start button interraction
             if sprite == self.start_button:
-                EventBus.broadcast_event('switch_game')
+                EventBus.broadcast_event("switch_game")
 
         return None
 
@@ -191,5 +207,5 @@ class MenuView(arcade.View):
     def on_show_view(self) -> None:
         # Refresh leaderboard
         self.leaderboard = LeaderboardManager.load_leaderboard(
-            self.engine.config.highscore_filename,
-            self.engine.config.signature)
+            self.engine.config.highscore_filename, self.engine.config.signature
+        )

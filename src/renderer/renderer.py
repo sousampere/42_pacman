@@ -12,8 +12,7 @@ from src.entity.super_pacgum import SuperPacgum
 class Renderer:
     def __init__(self) -> None:
         """Initialize the renderer"""
-        self.cheat_mode: bool = False  # Cheat mode enabled or not
-        self.fps = 0  # To calculate FPS\
+        self.fps = 0
 
         # Load maze related textures
         self.cheat_maze_wall_texture = arcade.load_texture(
@@ -66,8 +65,8 @@ class Renderer:
         # List containing attributes (lifes, score, etc.)
         self.attributes_sprites: list[arcade.Rect] = []
 
-        # Cache
-        self._cached_window_size: tuple[int, int] = (-1, -1)
+        # Cache key: (window_size, maze_array_id, cheat_mode)
+        self._cache_key: tuple = ()
 
     def render_game(
         self,
@@ -79,7 +78,9 @@ class Renderer:
         xp: int,
         level: int,
         fps: int,
-        game_view: "GameView"
+        cheat_mode: bool,
+        invincibility: bool,
+        freeze_ghosts: bool,
     ) -> None:
         """Draws the game to the screen"""
         window = arcade.get_window()
@@ -90,7 +91,7 @@ class Renderer:
 
         # Draw background
         bg_rect = self.get_background(window)
-        if self.cheat_mode:
+        if cheat_mode:
             arcade.draw_texture_rect(self.bg_texture_cheat, bg_rect)
             shadow = 220
         else:
@@ -104,21 +105,21 @@ class Renderer:
 
         # Draw maze
         self.maze_sprite_list = self.build_maze_walls(
-            maze, path, tile_size, window
+            maze, path, tile_size, window, cheat_mode
         )
         self.maze_sprite_list.draw()
 
         maze_dimensions = self.calculate_maze_dimensions(maze)
         for e in entity_list:
             if isinstance(e, Pacgum):
-                e.size = (int(tile_size*0.5), int(tile_size*0.5))
+                e.size = (int(tile_size * 0.5), int(tile_size * 0.5))
             else:
                 e.size = (tile_size, tile_size)
-            e.center_x = (int(
+            e.center_x = int(
                 e._x * tile_size
                 + window.width / 2
                 - (tile_size * 2 * maze_dimensions[0]) / 2
-            ))
+            )
             e.center_y = int(
                 e._y * tile_size
                 + window.height / 2
@@ -128,7 +129,7 @@ class Renderer:
 
         # Draw logo
         self.logo = self.create_logo(window)
-        if self.cheat_mode:
+        if cheat_mode:
             arcade.draw_texture_rect(self.logo_title_texture_cheat, self.logo)
         else:
             arcade.draw_texture_rect(self.logo_title_texture, self.logo)
@@ -140,25 +141,28 @@ class Renderer:
         attributes.append({"texture": self.time_texture, "value": str(time)})
         self.draw_attributes(self.logo, attributes, window)
 
-
         # Draw controls
         control_list: list[tuple[str, bool]] = []
-        if self.cheat_mode:
+        if cheat_mode:
             control_list.append(("Escape: Pause", False))
-            control_list.append(("1:Invincibility", game_view.invincibility))
+            control_list.append(("1:Invincibility", invincibility))
             control_list.append(("2:Get a life", False))
             control_list.append(("3:Complete lvl", False))
-            control_list.append(("4:Freeze ghosts", game_view.freeze_ghosts))
+            control_list.append(("4:Freeze ghosts", freeze_ghosts))
         else:
             control_list.append(("Escape: Pause", False))
-        
+
         font_size: int = int(min(window.height / 100, window.width / 100))
         texts = []
         for i, control_text in enumerate(control_list):
-            if (len(control_list) == 1):
+            if len(control_list) == 1:
                 x = window.width / 2
             else:
-                x = window.width / 2 + (window.width * 0.2) * i - (len(control_text) * (window.width * 0.2))
+                x = (
+                    window.width / 2
+                    + (window.width * 0.2) * i
+                    - (len(control_text) * (window.width * 0.2))
+                )
             text_obj = arcade.Text(
                 control_text[0],
                 x,
@@ -262,20 +266,16 @@ class Renderer:
         path: NDArray[Any],
         tile_size: int,
         window: arcade.Window,
+        cheat_mode: bool,
     ) -> arcade.SpriteList[arcade.Sprite]:
-        """Returns a list of sprites corresponding to each bloc composing the
-        given maze.
-
-        The sprites have a size of (tile_size) which is calculated depending
-        on the window dimensions,
-        so that the maze always let at least a 20% margin on each window side
-        """
-        if self._cached_window_size == window.get_size():
+        cache_key = (window.get_size(), id(walls), cheat_mode)
+        if self._cache_key == cache_key:
             return self.maze_sprite_list
+        self._cache_key = cache_key
         maze_dimensions = self.calculate_maze_dimensions(walls)
 
         self.maze_sprite_list = arcade.SpriteList()
-        if self.cheat_mode:
+        if cheat_mode:
             self.save_blocs(
                 self.cheat_maze_wall_texture,
                 walls,
@@ -305,8 +305,6 @@ class Renderer:
                 window,
                 maze_dimensions,
             )
-
-        self._cached_window_size = window.get_size()
 
         return self.maze_sprite_list
 
@@ -358,6 +356,3 @@ class Renderer:
             top=0,
         )
         return rect
-
-    def reset_cache(self) -> None:
-        self._cached_window_size = (-1, -1)

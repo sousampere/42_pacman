@@ -24,7 +24,7 @@ class Config(BaseModel):
         description="Leaderboard input/output source",
     )
     level: list[dict[str, int]] = Field(
-        default=[{"width": 20, "height": 20}] * 10,
+        default=[{"width": 10, "height": 10}] * 10,
         description="List of levels dimensions (width,height)",
     )
     lives: int = Field(

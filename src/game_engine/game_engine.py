@@ -1,8 +1,12 @@
 import arcade
-from numpy import full
 
 from src.config.config_loader import Config
 from src.event_bus.event_bus import EventBus
+from src.event_bus.score_manager import ScoreManager
+from src.event_bus.cheat_manager import CheatManager
+from src.event_bus.game_manager import GameManager
+from src.maze_adapter.maze_adapter import MazeAdapter
+from src.game_engine.game_state import GameState
 from .menu_view import MenuView
 from .game_view import GameView
 from .pause_view import PauseView
@@ -26,22 +30,37 @@ class GameEngine:
         self.width = 1280
         self.height = 720
         self.window = arcade.Window(
-            width=self.width, height=self.height,
-            title="Pac-Man", resizable=True, update_rate=1/61
+            width=self.width,
+            height=self.height,
+            title="Pac-Man",
+            resizable=True,
+            update_rate=1 / 61,
         )
         self.config = config
         self.window.set_minimum_size(720, 480)
         self.maze_adapter = None
         self.config_data = None
         self.is_configured = False  # Set to True when Views added
+        self.score_manager = ScoreManager(
+            config.pacgum_points, config.super_pacgum_points
+        )
+        self.cheat_manager = CheatManager()
+        self.game_manager = GameManager(config.lives, len(config.level))
+        self.maze_list = MazeAdapter().get_multiple_maze(config.level)
+        self.game_state = GameState(
+            self.maze_list[self.game_manager.current_maze]
+        )
         try:
             arcade.load_font("assets/fonts/Early GameBoy.ttf")
         except (FileNotFoundError, PermissionError):
             pass
 
     def set_views(
-        self, menu: MenuView, game: GameView,
-        pause: PauseView, finish: FinishView
+        self,
+        menu: MenuView,
+        game: GameView,
+        pause: PauseView,
+        finish: FinishView,
     ) -> None:
         """Initialize the menu, game, pause and finish views."""
         self.menu_view = menu
@@ -71,10 +90,20 @@ class GameEngine:
         """Change the current to the pause view"""
         self.window.show_view(self.pause_view)
 
-    def switch_finish(self, score: int) -> None:
+    def switch_finish(self) -> None:
         """Change the current view to the finish view"""
-        self.finish_view.score = score
+        self.finish_view.score = self.score_manager.xp
         self.window.show_view(self.finish_view)
+
+    def event_game_over(self) -> None:
+        self.finish_view.end_game_status = "Game Over :L"
+        self.switch_finish()
+
+    def event_next_level(self) -> None:
+        if self.game_manager.current_maze < len(self.maze_list):
+            self.game_state = GameState(
+                self.maze_list[self.game_manager.current_maze]
+            )
 
     def run(self) -> None:
         """Run the game after"""
@@ -86,13 +115,24 @@ class GameEngine:
         return None
 
     def event_reload_views(self) -> None:
+        self.score_manager = ScoreManager(
+            self.config.pacgum_points, self.config.super_pacgum_points
+        )
+        self.cheat_manager = CheatManager()
+        self.game_manager = GameManager(
+            self.config.lives, len(self.config.level)
+        )
+        self.maze_list = MazeAdapter().get_multiple_maze(self.config.level)
+        self.game_state = GameState(
+            self.maze_list[self.game_manager.current_maze]
+        )
         self.set_views(
             menu=MenuView(self),
             game=GameView(self.config, self),
             pause=PauseView(self),
             finish=FinishView(self),
         )
-    
+
     def event_toggle_fullscreen(self) -> None:
         """Toggle full screen when event is triggered"""
         if self.window.fullscreen:

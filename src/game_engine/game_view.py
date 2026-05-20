@@ -223,20 +223,18 @@ class GameView(arcade.View):
         """Update sprites"""
         if delta_time > 0:
             self.fps = 1 / delta_time
-        self.player.update()
         self.heat_map[0] = self.heat_map_manager.update_heat_map(
             self.rand_target[0]
         )
         self.heat_map[1] = self.heat_map_manager.update_heat_map(
-            (int(self.player._x), int(self.player._y))
+            (int(self.player._y), int(self.player._x))
         )
         self.heat_map[2] = self.heat_map_manager.update_heat_map(
-            (int(self.player._x), int(self.player._y))
+            (int(self.player._y), int(self.player._x))
         )
         self.heat_map[3] = self.heat_map_manager.update_heat_map(
             self.rand_target[1]
         )
-        print()
         if self.player.position in [g.position for g in self.ghosts]:
             if self.invincibility is False:
                 self.player.die()
@@ -259,6 +257,7 @@ class GameView(arcade.View):
             )
         if len(self.pacgum) == 0:
             self.event_next_level()
+        self.player.update()
         return None
 
     def on_resize(self, width: int, height: int) -> bool | None:

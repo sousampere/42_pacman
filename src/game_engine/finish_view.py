@@ -2,9 +2,6 @@ import arcade
 
 from typing import TYPE_CHECKING
 
-from arcade import text
-from pubsub import pub
-
 from src.event_bus.event_bus import EventBus
 from src.leaderboard import LeaderboardManager
 

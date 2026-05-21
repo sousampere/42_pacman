@@ -50,8 +50,10 @@ class EventBus:
         pub.subscribe(game_engine.event_game_over, "game_over")
         pub.subscribe(game_engine.switch_finish, "switch_finish")
 
-        # player related events
+        # player and ghost related events
         pub.subscribe(game_engine.game_state.player.switch_to_cheat_texture, "enable_cheat")
+        for g in game_engine.game_state.ghosts:
+            pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

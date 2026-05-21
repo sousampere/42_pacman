@@ -18,7 +18,7 @@ class Ghost(Entity, Movable):
         spawn_point: tuple[int, int],
         maze_path: ndarray,
         speed: float,
-        ghost_id: int,
+        ghost_id: int
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
@@ -28,7 +28,7 @@ class Ghost(Entity, Movable):
             columns=4,
             count=12,
         )
-        self.texture = self.textures[9]
+        self.texture = self.textures[ghost_id]
         self.__is_edible: bool = False
         self._id: int = ghost_id
 
@@ -70,3 +70,7 @@ class Ghost(Entity, Movable):
     @is_edible.setter
     def is_edible(self, value: bool) -> None:
         self.__is_edible = value
+
+    def switch_to_cheat_texture(self) -> None:
+        """Changes the texture of the player to cheat textures"""
+        self.texture = self.textures[self._id + 4]

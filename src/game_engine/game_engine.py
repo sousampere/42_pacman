@@ -45,7 +45,7 @@ class GameEngine:
             config.pacgum_points, config.super_pacgum_points
         )
         self.cheat_manager = CheatManager()
-        self.game_manager = GameManager(config.lives, len(config.level))
+        self.game_manager = GameManager(config.lives, len(config.level), config.max_time)
         self.maze_list = MazeAdapter().get_multiple_maze(config.level)
         self.game_state = GameState(
             self.maze_list[self.game_manager.current_maze], self.cheat_manager
@@ -120,7 +120,7 @@ class GameEngine:
         )
         self.cheat_manager = CheatManager()
         self.game_manager = GameManager(
-            self.config.lives, len(self.config.level)
+            self.config.lives, len(self.config.level), self.config.max_time
         )
         self.maze_list = MazeAdapter().get_multiple_maze(self.config.level)
         self.game_state = GameState(

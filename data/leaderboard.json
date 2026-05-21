@@ -172,5 +172,30 @@
                 "score": 90
             }
         ]
+    },
+    {
+        "signature": "c8f208dba0e000b7a1cf0d53d378789f82d76bac1ab3a7955a25006bd6584b41",
+        "scores": [
+            {
+                "username": "jeanpetit",
+                "score": 75
+            },
+            {
+                "username": "rw",
+                "score": 105
+            },
+            {
+                "username": "gregre",
+                "score": 90
+            },
+            {
+                "username": "test",
+                "score": 150
+            },
+            {
+                "username": "testt",
+                "score": 30
+            }
+        ]
     }
 ]

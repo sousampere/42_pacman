@@ -3,6 +3,8 @@ from numpy import ndarray
 from src.entity.entity import Entity, Movable
 import time
 
+from src.event_bus import cheat_manager
+
 SCALE: float = 0.5
 LIVES: int = 3
 WINDOWS_WIDTH: int = 800
@@ -14,7 +16,8 @@ class Player(Entity, Movable):
         self,
         spawn_point: tuple[int, int],
         maze_path: ndarray,
-        speed: float
+        speed: float,
+        cheat_enabled: bool
     ):
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
@@ -31,6 +34,9 @@ class Player(Entity, Movable):
         self.right_texture_closed = self.textures[8]
         self.left_texture_closed = self.right_texture_closed.flip_horizontally()
         self.texture = self.right_texture
+
+        if cheat_enabled:
+            self.switch_to_cheat_texture()
 
         # sprite change timer accumulation
         self.__animation_time: int = 0
@@ -54,7 +60,7 @@ class Player(Entity, Movable):
                         self.texture = self.left_texture
                     else:
                         self.texture = self.left_texture_closed
-                elif dx > 0:
+                if dx > 0:
                     if self.__animation_time > 1 / 2:
                         self.texture = self.right_texture
                     else:

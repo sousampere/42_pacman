@@ -18,7 +18,8 @@ class Ghost(Entity, Movable):
         spawn_point: tuple[int, int],
         maze_path: ndarray,
         speed: float,
-        ghost_id: int
+        ghost_id: int,
+        cheat_enabled: bool = False
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
@@ -31,6 +32,9 @@ class Ghost(Entity, Movable):
         self.texture = self.textures[ghost_id]
         self.__is_edible: bool = False
         self._id: int = ghost_id
+        if cheat_enabled:
+            self.switch_to_cheat_texture()
+
 
     def update(
         self,

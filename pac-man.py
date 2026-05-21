@@ -14,12 +14,10 @@ from src.game_engine.game_engine import (
 def main():
     """Runs the game"""
 
-    print(cheat_manager.CheatManager.cheat_mode)
-
     # Load config
     try:
         config = ConfigLoader.load_config("data/config.json")
-    except ConfigError:
+    except ConfigError as e:
         print("[Error] Could not read your configuration file. Aborting.")
         exit(1)
 

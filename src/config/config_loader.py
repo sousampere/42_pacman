@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from json import JSONDecodeError
+from typing import List
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
 
@@ -24,7 +25,7 @@ class Config(BaseModel):
         description="Leaderboard input/output source",
     )
     level: list[dict[str, int]] = Field(
-        default=[{"width": 10, "height": 10}] * 10,
+        default=[{"width": 14, "height": 10}] * 10,
         description="List of levels dimensions (width,height)",
     )
     lives: int = Field(
@@ -58,7 +59,7 @@ class Config(BaseModel):
 
         # Verify there is enough levels
         if len(self.level) < 10:
-            raise ConfigError("Not enough levels in config(must be >= 10)")
+            raise ConfigError("Not enough levels in config (must be >= 10)")
 
         # Create signature
         signature_str = (
@@ -66,11 +67,12 @@ class Config(BaseModel):
             f"{self.ghost_points}{self.seed}{self.max_time}"
         )
         for i in range(len(self.level)):
-            signature_str = (
-                signature_str
-                + str(self.level[i]["width"])
-                + str(self.level[i]["height"])
-            )
+            if 'width' in self.level[i].keys() and 'height' in self.level[i].keys():
+                signature_str = (
+                    signature_str
+                    + str(self.level[i]["width"])
+                    + str(self.level[i]["height"])
+                )
         hash_obj = hashlib.sha256(signature_str.encode("utf-8"))
         self.signature = hash_obj.hexdigest()
 
@@ -100,10 +102,16 @@ class ConfigLoader(ABCConfigLoader):
 
     @staticmethod
     def warn_invalid_key(key: str) -> None:
-        print(
-            f"[Warning] Invalid value for {key} in your config. "
-            "Continuing with default values."
-        )
+        if key == 'level':
+            print(
+                f"[Warning] Invalid value for {key} in your config. "
+                "Skipping this invalid level."
+            )
+        else:
+            print(
+                f"[Warning] Invalid value for {key} in your config. "
+                "Continuing with default values."
+            )
 
     @staticmethod
     def remove_comments(input_str: str) -> str:
@@ -155,7 +163,7 @@ class ConfigLoader(ABCConfigLoader):
             if isinstance(data, dict) and param not in data.keys():
                 print(
                     f"[Warning] No value set for {param} in your config."
-                    f"Continuing with default values."
+                    f" Continuing with default values."
                 )
 
         # Verify every data type. Remove it if invalid
@@ -179,20 +187,16 @@ class ConfigLoader(ABCConfigLoader):
         # Verify 'level' key validity. Remove it if invalid
         if "level" in data.keys():
             if type(data["level"]) is not list:
-                ConfigLoader.warn_missing_key("level")
+                # ConfigLoader.warn_missing_key("level")
+                raise ConfigFileError('Invalid level in configuration file.')
                 data.pop("level")
-        if "level" in data.keys():
             for lvl in data["level"]:
                 if (
                     type(lvl) is not dict
                     or "width" not in lvl.keys()
                     or "height" not in lvl.keys()
                 ):
-                    print(
-                        "[Warning] Removed an invalid " "level in your config."
-                    )
                     ConfigLoader.warn_invalid_key("level")
-                    data.pop("level")
                     data["level"].remove(lvl)
                 else:
                     if (

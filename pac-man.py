@@ -1,6 +1,7 @@
 # Made by gtourdia & kebertra
 
 from src.config.config_loader import ConfigError, ConfigLoader
+from src.event_bus import cheat_manager
 from src.game_engine.game_engine import (
     GameEngine,
     MenuView,
@@ -12,6 +13,8 @@ from src.game_engine.game_engine import (
 
 def main():
     """Runs the game"""
+
+    print(cheat_manager.CheatManager.cheat_mode)
 
     # Load config
     try:

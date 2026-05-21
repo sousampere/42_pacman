@@ -19,18 +19,22 @@ class Ghost(Entity, Movable):
         maze_path: ndarray,
         speed: float,
         ghost_id: int,
+        cheat_enabled: bool = False
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
-            size=(66, 66),
-            columns=1,
-            count=6,
+            size=(64, 64),
+            columns=4,
+            count=12,
         )
-        self.texture = self.textures[0]
+        self.texture = self.textures[ghost_id]
         self.__is_edible: bool = False
         self._id: int = ghost_id
+        if cheat_enabled:
+            self.switch_to_cheat_texture()
+
 
     def update(
         self,
@@ -70,3 +74,7 @@ class Ghost(Entity, Movable):
     @is_edible.setter
     def is_edible(self, value: bool) -> None:
         self.__is_edible = value
+
+    def switch_to_cheat_texture(self) -> None:
+        """Changes the texture of the player to cheat textures"""
+        self.texture = self.textures[self._id + 4]

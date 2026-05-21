@@ -8,6 +8,7 @@ from src.algorithms.heat_map import HeatMap
 from src.entity.ghost import Ghost
 from src.entity.pacgum import Pacgum
 from src.entity.player import Player
+from src.event_bus import cheat_manager
 from src.event_bus.event_bus import EventBus
 
 PLAYER_SPEED: float = 0.28
@@ -15,9 +16,10 @@ GHOST_SPEED: float = 0.3
 
 
 class GameState:
-    def __init__(self, maze_data: tuple[NDArray, NDArray, int]) -> None:
+    def __init__(self, maze_data: tuple[NDArray, NDArray, int], cheat_mng: cheat_manager.CheatManager) -> None:
         pts: NDArray = maze_data[1]
         self._pts = pts
+        self.cheat_mng = cheat_mng
 
         center_point = pts.mean(axis=0)
         distances = np.sum((pts - center_point) ** 2, axis=1)
@@ -64,12 +66,12 @@ class GameState:
         for i, corner in enumerate(corners):
             dist = np.sum((pts - corner) ** 2, axis=1)
             ghost_pos = tuple(pts[np.argmin(dist)].tolist())
-            g = Ghost(ghost_pos, pts, GHOST_SPEED, i)
+            g = Ghost(ghost_pos, pts, GHOST_SPEED, i, self.cheat_mng.cheat_mode)
             self.ghosts.append(g)
             self.entity.append(g)
 
     def _init_player(self, closest_point: tuple, pts: NDArray) -> None:
-        self.player = Player(closest_point, pts, PLAYER_SPEED)
+        self.player = Player(closest_point, pts, PLAYER_SPEED, self.cheat_mng.cheat_mode)
         self.entity.append(self.player)
 
     def _init_heatmaps(self, pts: NDArray) -> None:

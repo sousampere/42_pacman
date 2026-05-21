@@ -144,6 +144,10 @@
             {
                 "username": "asd",
                 "score": 45
+            },
+            {
+                "username": "",
+                "score": 150
             }
         ]
     }

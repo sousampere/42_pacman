@@ -37,14 +37,14 @@ class MenuView(arcade.View):
         # Create a player sprite that will be at the bottom
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
-            size=(66, 66),
-            columns=1,
-            count=6,
+            size=(64, 64),
+            columns=4,
+            count=12,
         )
-        self.player_texture: arcade.Texture = self.textures[4]
-        self.player_texture = arcade.Texture.flip_horizontally(
-            self.player_texture
-        )
+        self.player_texture: arcade.Texture = self.textures[10]
+        # self.player_texture = arcade.Texture.flip_horizontally(
+        #     self.player_texture
+        # )
         self.player_pos = 0
         self.player_direction = 1
 

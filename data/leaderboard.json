@@ -150,5 +150,61 @@
                 "score": 150
             }
         ]
+    },
+    {
+        "signature": "14f18db82f15decdb4acf58b2e4843fc3a7793af0cd304e2ccb8173467b75962",
+        "scores": [
+            {
+                "username": "test",
+                "score": 60
+            },
+            {
+                "username": "90",
+                "score": 90
+            }
+        ]
+    },
+    {
+        "signature": "4b6218503c1a9e6e2421807aca1e7999d9d5c0e5de8bf6d0099aa94c558e9a48",
+        "scores": [
+            {
+                "username": "noob",
+                "score": 90
+            }
+        ]
+    },
+    {
+        "signature": "c8f208dba0e000b7a1cf0d53d378789f82d76bac1ab3a7955a25006bd6584b41",
+        "scores": [
+            {
+                "username": "jeanpetit",
+                "score": 75
+            },
+            {
+                "username": "rw",
+                "score": 105
+            },
+            {
+                "username": "gregre",
+                "score": 90
+            },
+            {
+                "username": "test",
+                "score": 150
+            },
+            {
+                "username": "testt",
+                "score": 30
+            }
+        ]
+    },
+    {
+        "signature": "3e9960054d741568d165737cec0fe8bd767b8253721905f282000ac94e294519",
+        "scores": [
+            {
+                "username": "kevin",
+                "score": 120
+            }
+        ]
     }
 ]

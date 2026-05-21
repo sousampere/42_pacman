@@ -25,7 +25,7 @@ class PauseView(arcade.View):
         )
 
         # Write "Paused..."
-        arcade.draw_text(
+        text = arcade.Text(
             "Paused...",
             self.window.width / 2,
             self.window.height / 2,
@@ -35,6 +35,7 @@ class PauseView(arcade.View):
             anchor_y="center",
             font_name="Early GameBoy",
         )
+        text.draw()
         return None
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:

@@ -1,5 +1,7 @@
 import arcade
+import time
 
+from src.event_bus import event_bus
 from src.event_bus.event_bus import EventBus
 from src.renderer.renderer import Renderer
 
@@ -32,7 +34,7 @@ class GameView(arcade.View):
         self.engine = engine
         self.key_history: list[int] = []
         self.renderer = Renderer()
-        self.time = config.max_time
+        self.config = config
         self.fps = 0
 
     def on_draw(self) -> bool | None:
@@ -44,12 +46,15 @@ class GameView(arcade.View):
             self.engine.game_manager.current_maze
         ]
         cheat = self.engine.cheat_manager
+        remaining_time: int = int(self.engine.game_manager.start_time + self.config.max_time - int(time.time()))
+        if remaining_time == 0:
+            EventBus.broadcast_event("game_over")
         self.renderer.render_game(
             walls,
             paths,
             self.engine.game_state.entity,
             self.engine.game_manager.lives,
-            self.time,
+            remaining_time,
             self.engine.score_manager.xp,
             self.engine.game_manager.level,
             self.fps,
@@ -79,6 +84,7 @@ class GameView(arcade.View):
                 EventBus.broadcast_event("add_life")
             if symbol == arcade.key.NUM_3:
                 EventBus.broadcast_event("next_level")
+                EventBus.broadcast_event("reset_time")
             if symbol == arcade.key.NUM_4:
                 EventBus.broadcast_event("toggle_freeze_ghosts")
 
@@ -105,3 +111,6 @@ class GameView(arcade.View):
             delta_time, cheat.freeze_ghosts, cheat.invincibility
         )
         return None
+
+    def on_show_view(self) -> None:
+        EventBus.broadcast_event("reset_time")

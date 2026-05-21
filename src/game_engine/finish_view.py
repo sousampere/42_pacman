@@ -29,6 +29,11 @@ class FinishView(arcade.View):
                 "assets/background/background_3.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
+        try:
+            self.background = arcade.load_texture(
+                "assets/background/background_3.png")
+        except (FileNotFoundError, PermissionError):
+            raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 
     def on_draw(self) -> bool | None:
         self.clear()

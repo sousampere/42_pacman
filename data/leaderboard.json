@@ -197,5 +197,14 @@
                 "score": 30
             }
         ]
+    },
+    {
+        "signature": "3e9960054d741568d165737cec0fe8bd767b8253721905f282000ac94e294519",
+        "scores": [
+            {
+                "username": "kevin",
+                "score": 120
+            }
+        ]
     }
 ]

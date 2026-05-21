@@ -5,7 +5,7 @@
   "super_pacgum_points": 50,
   "ghost_points": 150,
   "seed": "forty-two",
-  "max_time": 20,
+  "max_time": 90,
   "level": [
     {
       "width": 18,

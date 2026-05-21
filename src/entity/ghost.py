@@ -24,11 +24,11 @@ class Ghost(Entity, Movable):
         Movable.__init__(self, maze_path, speed)
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
-            size=(66, 66),
-            columns=1,
-            count=6,
+            size=(64, 64),
+            columns=4,
+            count=12,
         )
-        self.texture = self.textures[0]
+        self.texture = self.textures[9]
         self.__is_edible: bool = False
         self._id: int = ghost_id
 

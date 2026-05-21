@@ -1,6 +1,7 @@
 from pubsub import pub
 from typing import TYPE_CHECKING, Any
 
+
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
 
@@ -48,6 +49,9 @@ class EventBus:
         pub.subscribe(game_engine.event_toggle_fullscreen, "toggle_fullscreen")
         pub.subscribe(game_engine.event_game_over, "game_over")
         pub.subscribe(game_engine.switch_finish, "switch_finish")
+
+        # player related events
+        pub.subscribe(game_engine.game_state.player.switch_to_cheat_texture, "enable_cheat")
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

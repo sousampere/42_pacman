@@ -42,6 +42,7 @@ class EventBus:
         pub.subscribe(game_engine.game_manager.event_add_life, "add_life")
         pub.subscribe(game_engine.game_manager.event_remove_life, "remove_life")
         pub.subscribe(game_engine.game_manager.event_next_level, "next_level")
+        pub.subscribe(game_engine.game_view.reset_start_time, "next_level")
 
         # Init GameEngine events
         pub.subscribe(game_engine.event_next_level, "next_level")

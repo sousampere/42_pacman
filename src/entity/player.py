@@ -32,12 +32,6 @@ class Player(Entity, Movable):
         self.left_texture_closed = self.right_texture_closed.flip_horizontally()
         self.texture = self.right_texture
 
-        self.right_texture_cheat = self.textures[11]
-        self.left_texture_cheat = self.right_texture_cheat.flip_horizontally()
-        self.right_texture_closed_cheat = self.textures[10]
-        self.left_texture_closed_cheat = self.right_texture_closed_cheat.flip_horizontally()
-        self.texture_cheat = self.right_texture
-
         # sprite change timer accumulation
         self.__animation_time: int = 0
 

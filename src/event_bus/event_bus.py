@@ -50,11 +50,22 @@ class EventBus:
         pub.subscribe(game_engine.event_toggle_fullscreen, "toggle_fullscreen")
         pub.subscribe(game_engine.event_game_over, "game_over")
         pub.subscribe(game_engine.switch_finish, "switch_finish")
+        pub.subscribe(game_engine.event_transition_view, "switch_transition")
 
         # player and ghost related events
         pub.subscribe(game_engine.game_state.player.switch_to_cheat_texture, "enable_cheat")
         for g in game_engine.game_state.ghosts:
             pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
+
+        # Sound events
+        pub.subscribe(game_engine.sound_mng.event_play_game_music, 'play_game_music')
+        pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'play_menu_music')
+        pub.subscribe(game_engine.sound_mng.event_play_end_music, 'switch_finish')
+        pub.subscribe(game_engine.sound_mng.event_stop_music, 'stop_music')
+        pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'switch_menu')
+        pub.subscribe(game_engine.sound_mng.event_play_die_sound, 'remove_life')
+        pub.subscribe(game_engine.sound_mng.event_play_pacgum_sound, 'play_pacgum_sound')
+        pub.subscribe(game_engine.sound_mng.event_play_super_pacgum_sound, 'play_super_pacgum_sound')
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

@@ -78,14 +78,14 @@ class GameView(arcade.View):
 
         # Cheat shortcuts
         if self.engine.cheat_manager.cheat_mode:
-            if symbol == arcade.key.NUM_1:
+            if symbol == arcade.key.NUM_1 or symbol == arcade.key.KEY_1:
                 EventBus.broadcast_event("toggle_invincibility")
-            if symbol == arcade.key.NUM_2:
+            if symbol == arcade.key.NUM_2 or symbol == arcade.key.KEY_2:
                 EventBus.broadcast_event("add_life")
-            if symbol == arcade.key.NUM_3:
+            if symbol == arcade.key.NUM_3 or symbol == arcade.key.KEY_3:
                 EventBus.broadcast_event("next_level")
                 EventBus.broadcast_event("reset_time")
-            if symbol == arcade.key.NUM_4:
+            if symbol == arcade.key.NUM_4 or symbol == arcade.key.KEY_4:
                 EventBus.broadcast_event("toggle_freeze_ghosts")
 
         # Movement
@@ -114,3 +114,4 @@ class GameView(arcade.View):
 
     def on_show_view(self) -> None:
         EventBus.broadcast_event("reset_time")
+

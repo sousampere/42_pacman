@@ -220,6 +220,14 @@
             {
                 "username": "yes",
                 "score": 2730
+            },
+            {
+                "username": "few",
+                "score": 165
+            },
+            {
+                "username": "yeah",
+                "score": 75
             }
         ]
     }

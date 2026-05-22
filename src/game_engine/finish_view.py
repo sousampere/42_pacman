@@ -148,3 +148,4 @@ class FinishView(arcade.View):
             username, score, target, signature, current_leaderboard
         )
         return None
+

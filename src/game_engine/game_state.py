@@ -146,6 +146,7 @@ class GameState:
                 self.pacgum.remove(p)
                 self.entity.remove(p)
                 EventBus.broadcast_event("add_pacgum_point")
+                EventBus.broadcast_event("play_pacgum_sound")
 
     def _update_ghosts(self, delta_time: float, freeze_ghosts: bool) -> None:
         if freeze_ghosts:

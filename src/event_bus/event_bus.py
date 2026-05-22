@@ -59,10 +59,11 @@ class EventBus:
         # Sound events
         pub.subscribe(game_engine.sound_mng.event_play_game_music, 'play_game_music')
         pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'play_menu_music')
+        pub.subscribe(game_engine.sound_mng.event_play_end_music, 'switch_finish')
         pub.subscribe(game_engine.sound_mng.event_stop_music, 'stop_music')
-        # pub.subscribe(game_engine.sound_mng.event_play_game_music, 'switch_game')
-        # pub.subscribe(game_engine.sound_mng.event_play_game_music, 'next_level')
         pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'switch_menu')
+        pub.subscribe(game_engine.sound_mng.event_play_die_sound, 'remove_life')
+        pub.subscribe(game_engine.sound_mng.event_play_pacgum_sound, 'play_pacgum_sound')
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

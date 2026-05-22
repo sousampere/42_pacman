@@ -5,6 +5,7 @@ from src.event_bus.event_bus import EventBus
 from src.event_bus.score_manager import ScoreManager
 from src.event_bus.cheat_manager import CheatManager
 from src.event_bus.game_manager import GameManager
+from src.event_bus.sound_manager import SoundManager
 from src.maze_adapter.maze_adapter import MazeAdapter
 from src.game_engine.game_state import GameState
 from .menu_view import MenuView
@@ -50,6 +51,7 @@ class GameEngine:
         self.game_state = GameState(
             self.maze_list[self.game_manager.current_maze], self.cheat_manager
         )
+        self.sound_mng = SoundManager()
         try:
             arcade.load_font("assets/fonts/Early GameBoy.ttf")
         except (FileNotFoundError, PermissionError):
@@ -68,15 +70,17 @@ class GameEngine:
         self.pause_view = pause
         self.finish_view = finish
 
+        # Reload event bus
+        self.event_bus = EventBus()
+        self.event_bus.initialize(self)
+
         # Switch to menu view by default
         self.switch_menu()
 
         # Save configuration as done to enable starting the game
         self.is_configured = True
 
-        # Reload event bus
-        self.event_bus = EventBus()
-        self.event_bus.initialize(self)
+
 
     def switch_menu(self) -> None:
         """Change the current to the menu view"""
@@ -85,6 +89,9 @@ class GameEngine:
     def switch_game(self) -> None:
         """Change the current to the game view"""
         self.window.show_view(self.game_view)
+        speed=1 + self.game_manager.current_maze / len(self.maze_list)
+        EventBus.broadcast_event('stop_music')
+        EventBus.broadcast_event('play_game_music', speed=speed)
 
     def switch_pause(self) -> None:
         """Change the current to the pause view"""
@@ -104,6 +111,9 @@ class GameEngine:
             self.game_state = GameState(
                 self.maze_list[self.game_manager.current_maze], self.cheat_manager
             )
+            speed=1 + self.game_manager.current_maze / len(self.maze_list)
+            EventBus.broadcast_event('stop_music')
+            EventBus.broadcast_event('play_game_music', speed=speed)
 
     def run(self) -> None:
         """Run the game after"""

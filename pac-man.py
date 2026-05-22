@@ -1,5 +1,7 @@
 # Made by gtourdia & kebertra
 
+import arcade
+
 from src.config.config_loader import ConfigError, ConfigLoader
 from src.event_bus import cheat_manager
 from src.game_engine.game_engine import (

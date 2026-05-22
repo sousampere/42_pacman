@@ -56,6 +56,14 @@ class EventBus:
         for g in game_engine.game_state.ghosts:
             pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
 
+        # Sound events
+        pub.subscribe(game_engine.sound_mng.event_play_game_music, 'play_game_music')
+        pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'play_menu_music')
+        pub.subscribe(game_engine.sound_mng.event_stop_music, 'stop_music')
+        # pub.subscribe(game_engine.sound_mng.event_play_game_music, 'switch_game')
+        # pub.subscribe(game_engine.sound_mng.event_play_game_music, 'next_level')
+        pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'switch_menu')
+
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:
         pub.sendMessage(event, **kwargs)

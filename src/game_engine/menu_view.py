@@ -1,6 +1,9 @@
 import arcade
 from typing import TYPE_CHECKING
 
+from arcade import sound
+
+from src.event_bus import event_bus
 from src.event_bus.event_bus import EventBus
 from src.leaderboard import LeaderboardManager
 
@@ -209,3 +212,5 @@ class MenuView(arcade.View):
         self.leaderboard = LeaderboardManager.load_leaderboard(
             self.engine.config.highscore_filename, self.engine.config.signature
         )
+        EventBus.broadcast_event('stop_music')
+        EventBus.broadcast_event('play_menu_music')

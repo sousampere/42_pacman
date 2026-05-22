@@ -64,6 +64,7 @@ class EventBus:
         pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'switch_menu')
         pub.subscribe(game_engine.sound_mng.event_play_die_sound, 'remove_life')
         pub.subscribe(game_engine.sound_mng.event_play_pacgum_sound, 'play_pacgum_sound')
+        pub.subscribe(game_engine.sound_mng.event_play_super_pacgum_sound, 'play_super_pacgum_sound')
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

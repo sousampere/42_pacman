@@ -51,7 +51,7 @@ class SoundManager:
     def event_play_super_pacgum_sound(self) -> None:
         """Plays a super pacgum sound"""
         try:
-            arcade.play_sound(self.super_pacgum_sound, volume=0.8)
+            arcade.play_sound(self.super_pacgum_sound, volume=3)
         except RuntimeError:
             # Ignore error if sound already playng
             pass

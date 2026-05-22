@@ -11,6 +11,7 @@ from src.game_engine.game_engine import (
     PauseView,
     FinishView,
 )
+from src.game_engine.transition_view import TransitionView
 
 
 def main():
@@ -32,6 +33,7 @@ def main():
         game=GameView(config, engine),
         pause=PauseView(engine),
         finish=FinishView(engine),
+        transition=TransitionView(engine)
     )
 
     # Start game engine

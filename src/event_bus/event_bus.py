@@ -50,6 +50,7 @@ class EventBus:
         pub.subscribe(game_engine.event_toggle_fullscreen, "toggle_fullscreen")
         pub.subscribe(game_engine.event_game_over, "game_over")
         pub.subscribe(game_engine.switch_finish, "switch_finish")
+        pub.subscribe(game_engine.event_transition_view, "switch_transition")
 
         # player and ghost related events
         pub.subscribe(game_engine.game_state.player.switch_to_cheat_texture, "enable_cheat")

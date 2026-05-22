@@ -173,7 +173,8 @@ class MenuView(arcade.View):
 
         # Switch to GameView if space is hit
         if symbol == arcade.key.SPACE:
-            EventBus.broadcast_event("switch_game")
+                EventBus.broadcast_event('switch_transition', message='Loading...', after_event='switch_game')
+                # EventBus.broadcast_event("switch_game")
 
         if symbol == arcade.key.F11:
             EventBus.broadcast_event("toggle_fullscreen")
@@ -190,7 +191,8 @@ class MenuView(arcade.View):
         for sprite in hits:
             # Start button interraction
             if sprite == self.start_button:
-                EventBus.broadcast_event("switch_game")
+                EventBus.broadcast_event('switch_transition', message='Loading...', after_event='switch_game')
+                # EventBus.broadcast_event("switch_game")
 
         return None
 

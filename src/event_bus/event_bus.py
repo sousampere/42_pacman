@@ -1,7 +1,6 @@
 from pubsub import pub
 from typing import TYPE_CHECKING, Any
 
-
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
 
@@ -25,6 +24,10 @@ class EventBus:
             "add_pacgum_point",
         )
 
+        pub.subscribe(
+            game_engine.score_manager.event_add_super_pacgum_point,
+            "add_super_pacgum_point",
+        )
         # Init cheat events
         pub.subscribe(
             game_engine.cheat_manager.event_enable_cheat_mode, "enable_cheat"
@@ -40,9 +43,14 @@ class EventBus:
 
         # Init game manager events (state changes)
         pub.subscribe(game_engine.game_manager.event_add_life, "add_life")
-        pub.subscribe(game_engine.game_manager.event_remove_life, "remove_life")
+        pub.subscribe(
+            game_engine.game_manager.event_remove_life, "remove_life"
+        )
         pub.subscribe(game_engine.game_manager.event_next_level, "next_level")
-        pub.subscribe(game_engine.game_manager.event_reset_start_time, "reset_time")
+        pub.subscribe(
+            game_engine.game_manager.event_reset_start_time, "reset_time"
+        )
+        pub.subscribe(game_engine.game_manager.event_is_edible, "is_edible")
 
         # Init GameEngine events
         pub.subscribe(game_engine.event_next_level, "next_level")
@@ -52,7 +60,10 @@ class EventBus:
         pub.subscribe(game_engine.switch_finish, "switch_finish")
 
         # player and ghost related events
-        pub.subscribe(game_engine.game_state.player.switch_to_cheat_texture, "enable_cheat")
+        pub.subscribe(
+            game_engine.game_state.player.switch_to_cheat_texture,
+            "enable_cheat",
+        )
         for g in game_engine.game_state.ghosts:
             pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
 

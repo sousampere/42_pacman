@@ -1,5 +1,3 @@
-import random 
-
 from numpy import ndarray
 
 
@@ -18,9 +16,9 @@ class Algorithms:
     ) -> tuple[float, float]:
 
         best_move = None
-        best_dist = float('inf')
+        best_dist = float("inf")
         fallback_move = None
-        fallback_dist = float('inf')
+        fallback_dist = float("inf")
 
         for dx, dy in cls.movements:
             neighbour = (ghost_pos[0] + dx, ghost_pos[1] + dy)

@@ -45,10 +45,14 @@ class GameEngine:
             config.pacgum_points, config.super_pacgum_points
         )
         self.cheat_manager = CheatManager()
-        self.game_manager = GameManager(config.lives, len(config.level), config.max_time)
+        self.game_manager = GameManager(
+            config.lives, len(config.level), config.max_time
+        )
         self.maze_list = MazeAdapter().get_multiple_maze(config.level)
         self.game_state = GameState(
-            self.maze_list[self.game_manager.current_maze], self.cheat_manager
+            self.maze_list[self.game_manager.current_maze],
+            self.cheat_manager,
+            self.game_manager,
         )
         try:
             arcade.load_font("assets/fonts/Early GameBoy.ttf")
@@ -102,7 +106,9 @@ class GameEngine:
     def event_next_level(self) -> None:
         if self.game_manager.current_maze < len(self.maze_list):
             self.game_state = GameState(
-                self.maze_list[self.game_manager.current_maze], self.cheat_manager
+                self.maze_list[self.game_manager.current_maze],
+                self.cheat_manager,
+                self.game_manager,
             )
 
     def run(self) -> None:
@@ -124,7 +130,9 @@ class GameEngine:
         )
         self.maze_list = MazeAdapter().get_multiple_maze(self.config.level)
         self.game_state = GameState(
-            self.maze_list[self.game_manager.current_maze], self.cheat_manager
+            self.maze_list[self.game_manager.current_maze],
+            self.cheat_manager,
+            self.game_manager,
         )
         self.set_views(
             menu=MenuView(self),

@@ -8,6 +8,9 @@ class ScoreManager:
     def event_add_pacgum_point(self) -> None:
         self.__xp += self.__pacgum_pts
 
+    def event_add_super_pacgum_point(self) -> None:
+        self.__xp += self.__super_pacgum_pts
+
     @property
     def xp(self) -> int:
         return self.__xp

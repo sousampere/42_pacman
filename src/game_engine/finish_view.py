@@ -3,6 +3,7 @@ import arcade
 from typing import TYPE_CHECKING
 
 from src.event_bus.event_bus import EventBus
+from src.game_engine import game_state
 from src.leaderboard import LeaderboardManager
 
 if TYPE_CHECKING:
@@ -141,11 +142,17 @@ class FinishView(arcade.View):
     def event_save_score(
         self, username: str, score: int, target: str, signature: str
     ) -> None:
-        current_leaderboard = LeaderboardManager.load_leaderboard(
-            target, signature=signature
-        )
-        LeaderboardManager.save_score(
-            username, score, target, signature, current_leaderboard
-        )
+        if not self.engine.game_state.cheat_mng.cheat_mode:
+            current_leaderboard = LeaderboardManager.load_leaderboard(
+                target, signature=signature
+            )
+            LeaderboardManager.save_score(
+                username, score, target, signature, current_leaderboard
+            )
         return None
+    
+    def on_show_view(self) -> None:
+        EventBus.broadcast_event('stop_music')
+
+        return super().on_show_view()
 

@@ -70,7 +70,7 @@ class GameEngine:
         game: GameView,
         pause: PauseView,
         finish: FinishView,
-        transition: TransitionView
+        transition: TransitionView,
     ) -> None:
         """Initialize the menu, game, pause and finish views."""
         self.menu_view = menu
@@ -89,8 +89,6 @@ class GameEngine:
         # Save configuration as done to enable starting the game
         self.is_configured = True
 
-
-
     def switch_menu(self) -> None:
         """Change the current to the menu view"""
         self.window.show_view(self.menu_view)
@@ -102,9 +100,9 @@ class GameEngine:
     def switch_game(self) -> None:
         """Change the current to the game view"""
         self.window.show_view(self.game_view)
-        speed=1 + self.game_manager.current_maze / len(self.maze_list)
-        EventBus.broadcast_event('stop_music')
-        EventBus.broadcast_event('play_game_music', speed=speed)
+        speed = 1 + self.game_manager.current_maze / len(self.maze_list)
+        EventBus.broadcast_event("stop_music")
+        EventBus.broadcast_event("play_game_music", speed=speed)
 
     def switch_pause(self) -> None:
         """Change the current to the pause view"""
@@ -119,12 +117,17 @@ class GameEngine:
         self.finish_view.end_game_status = "Game Over !"
         self.switch_finish()
 
-    def event_transition_view(self, message: str = 'Transition',
-                              after_event: str = 'switch_menu',
-                              transition_time: int = 2) -> None:
+    def event_transition_view(
+        self,
+        message: str = "Transition",
+        after_event: str = "switch_menu",
+        transition_time: int = 2,
+    ) -> None:
         self.transition_view.text = message
         self.transition_view.event_after_transition = after_event
-        self.transition_view.transition_end_time = time.time() + transition_time
+        self.transition_view.transition_end_time = (
+            time.time() + transition_time
+        )
         self.switch_transition()
 
     def event_next_level(self) -> None:
@@ -134,12 +137,15 @@ class GameEngine:
                 self.cheat_manager,
                 self.game_manager,
             )
-            speed=1 + self.game_manager.current_maze / len(self.maze_list)
-            EventBus.broadcast_event('stop_music')
-            EventBus.broadcast_event('switch_transition', after_event='switch_game',
-                                     transition_time=2,
-                                     message=f'Level {self.game_manager.current_maze + 1}.')
-            EventBus.broadcast_event('play_game_music', speed=speed)
+            speed = 1 + self.game_manager.current_maze / len(self.maze_list)
+            EventBus.broadcast_event("stop_music")
+            EventBus.broadcast_event(
+                "switch_transition",
+                after_event="switch_game",
+                transition_time=2,
+                message=f"Level {self.game_manager.current_maze + 1}.",
+            )
+            EventBus.broadcast_event("play_game_music", speed=speed)
 
     def run(self) -> None:
         """Run the game after"""
@@ -169,7 +175,7 @@ class GameEngine:
             game=GameView(self.config, self),
             pause=PauseView(self),
             finish=FinishView(self),
-            transition=TransitionView(self)
+            transition=TransitionView(self),
         )
 
     def event_toggle_fullscreen(self) -> None:

@@ -220,6 +220,7 @@ class GameState:
                 self.pacgum.remove(p)
                 self.entity.remove(p)
                 EventBus.broadcast_event("add_pacgum_point")
+                EventBus.broadcast_event("play_pacgum_sound")
         for p in self.super_pacgum[:]:
             if (round(p._x), round(p._y)) == player_pos:
                 self.super_pacgum.remove(p)

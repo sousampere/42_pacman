@@ -1,5 +1,7 @@
 # Made by gtourdia & kebertra
 
+import arcade
+
 from src.config.config_loader import ConfigError, ConfigLoader
 from src.event_bus import cheat_manager
 from src.game_engine.game_engine import (
@@ -9,6 +11,7 @@ from src.game_engine.game_engine import (
     PauseView,
     FinishView,
 )
+from src.game_engine.transition_view import TransitionView
 
 
 def main():
@@ -30,6 +33,7 @@ def main():
         game=GameView(config, engine),
         pause=PauseView(engine),
         finish=FinishView(engine),
+        transition=TransitionView(engine)
     )
 
     # Start game engine

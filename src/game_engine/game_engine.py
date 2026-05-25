@@ -128,6 +128,8 @@ class GameEngine:
         self.transition_view.transition_end_time = (
             time.time() + transition_time
         )
+        EventBus.broadcast_event('play_transition_sound')
+        EventBus.broadcast_event('stop_music')
         self.switch_transition()
 
     def event_next_level(self) -> None:
@@ -145,7 +147,6 @@ class GameEngine:
                 transition_time=2,
                 message=f"Level {self.game_manager.current_maze + 1}.",
             )
-            # EventBus.broadcast_event("play_game_music", speed=speed)
 
     def run(self) -> None:
         """Run the game after"""

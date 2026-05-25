@@ -1,5 +1,3 @@
-from typing import Callable
-
 import arcade
 from numpy import ndarray
 
@@ -19,7 +17,7 @@ class Ghost(Entity, Movable):
         maze_path: ndarray,
         speed: float,
         ghost_id: int,
-        cheat_enabled: bool = False
+        cheat_enabled: bool = False,
     ) -> None:
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
@@ -32,23 +30,27 @@ class Ghost(Entity, Movable):
         self.texture = self.textures[ghost_id]
         self.__is_edible: bool = False
         self._id: int = ghost_id
+        self._is_dead: bool = False
         if cheat_enabled:
             self.switch_to_cheat_texture()
 
-
     def update(
         self,
-        delta_time: float,
         heat_map,
         max_x,
         max_y,
-        occupied: frozenset[tuple[int, int]] = frozenset(),
+        occupied: frozenset[tuple[int, int]],
+        delta_time: float = 1 / 60,
     ) -> None:
         arrived = self._move_toward_target(delta_time)
         if arrived:
+            pos = (round(self._x), round(self._y))
+            if self._is_dead and pos == self.spawn_point:
+                self.respawn()
+                return
             next_pos = Algorithms.process(
-                (round(self._x), round(self._y)),
-                (round(self._x), round(self._y)),
+                pos,
+                pos,
                 heat_map[self._id],
                 max_x,
                 max_y,
@@ -58,12 +60,11 @@ class Ghost(Entity, Movable):
                 self._target = (float(next_pos[0]), float(next_pos[1]))
 
     def die(self) -> None:
-        if self.__is_edible:
-            self.respawn()
+        self._is_dead = True
 
     def respawn(self) -> None:
+        self._is_dead = False
         self._x, self._y = self.spawn_point
-
         self.center_x = self._x
         self.center_y = self._y
 

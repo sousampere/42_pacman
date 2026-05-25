@@ -46,7 +46,11 @@ class GameView(arcade.View):
             self.engine.game_manager.current_maze
         ]
         cheat = self.engine.cheat_manager
-        remaining_time: int = int(self.engine.game_manager.start_time + self.config.max_time - int(time.time()))
+        remaining_time: int = int(
+            self.engine.game_manager.start_time
+            + self.config.max_time
+            - int(time.time())
+        )
         if remaining_time == 0:
             EventBus.broadcast_event("game_over")
         self.renderer.render_game(

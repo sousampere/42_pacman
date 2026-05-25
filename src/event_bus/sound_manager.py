@@ -15,17 +15,17 @@ class SoundManager:
     def event_play_menu_music(self, speed: float = 1) -> None:
         """Starts playing the menu music"""
         self.event_stop_music()
-        self.music_player = arcade.play_sound(self.menu_music, speed=speed, loop=True, volume=0.6)
+        self.music_player = arcade.play_sound(self.menu_music, speed=speed, loop=True, volume=0.3)
 
     def event_play_game_music(self, speed: float = 1) -> None:
         """Starts playing the game music"""
         self.event_stop_music()
-        self.music_player = arcade.play_sound(self.game_music, speed=speed, loop=True, volume=0.6)
+        self.music_player = arcade.play_sound(self.game_music, speed=speed, loop=True, volume=0.2)
 
     def event_play_end_music(self, speed: float = 1) -> None:
         """Starts playing the game music"""
         self.event_stop_music()
-        self.music_player = arcade.play_sound(self.end_screen_music, speed=speed, loop=True, volume=0.6)
+        self.music_player = arcade.play_sound(self.end_screen_music, speed=speed, loop=True, volume=0.3)
 
     def event_stop_music(self) -> None:
         """Stops music if playing"""

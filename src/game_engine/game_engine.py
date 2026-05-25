@@ -145,7 +145,7 @@ class GameEngine:
                 transition_time=2,
                 message=f"Level {self.game_manager.current_maze + 1}.",
             )
-            EventBus.broadcast_event("play_game_music", speed=speed)
+            # EventBus.broadcast_event("play_game_music", speed=speed)
 
     def run(self) -> None:
         """Run the game after"""

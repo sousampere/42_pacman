@@ -1,22 +1,25 @@
-from sched import Event
 import time
 
 import arcade
 
 from src.event_bus.event_bus import EventBus
 
+
 class TransitionView(arcade.View):
     def __init__(self, engine: "GameEngine") -> None:
         super().__init__()
         self.engine = engine
         self.background_color = arcade.color.BLACK
-        self.text = 'Transition'
+        self.text = "Transition"
         self.transition_end_time = time.time() + 2
-        self.event_after_transition = 'switch_menu' # Event executed after transition
+        self.event_after_transition = (
+            "switch_menu"  # Event executed after transition
+        )
 
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_2.png")
+                "assets/background/background_2.png"
+            )
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 
@@ -55,22 +58,25 @@ class TransitionView(arcade.View):
             font_size=min(self.window.width * 0.05, self.window.height * 0.05),
             anchor_x="center",
             anchor_y="center",
-            font_name="Early GameBoy",)
+            font_name="Early GameBoy",
+        )
         text_time = arcade.Text(
-            f'{remaining_seconds}',
+            f"{remaining_seconds}",
             window.width / 2,
             window.height / 3,
             arcade.color.YELLOW,
             font_size=min(self.window.width * 0.05, self.window.height * 0.05),
             anchor_x="center",
             anchor_y="center",
-            font_name="Early GameBoy",)
+            font_name="Early GameBoy",
+        )
 
         text.draw()
         text_time.draw()
         return None
-    
+
     def on_update(self, delta_time: float) -> bool | None:
         if time.time() >= self.transition_end_time:
             # Execute event if time is elapsed
             EventBus.broadcast_event(self.event_after_transition)
+        return None

@@ -19,20 +19,22 @@ class FinishView(arcade.View):
         self.background_color = arcade.color.GRAY
 
         # Game data
-        self.username: str = '----------'
+        self.username: str = "----------"
         self.leaderboard_output = engine.config.highscore_filename
         self.conf_signature = self.engine.config.signature
-        self.end_game_status = 'Finished !'
+        self.end_game_status = "Finished !"
         self.score: int
 
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_3.png")
+                "assets/background/background_3.png"
+            )
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
         try:
             self.background = arcade.load_texture(
-                "assets/background/background_3.png")
+                "assets/background/background_3.png"
+            )
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
 
@@ -102,40 +104,36 @@ class FinishView(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         # Entering username
-        self.username = self.username.replace('-', '')
-        if (
-            arcade.key.A <= symbol <= arcade.key.Z
-            and len(self.username) <= 9
-        ):
+        self.username = self.username.replace("-", "")
+        if arcade.key.A <= symbol <= arcade.key.Z and len(self.username) <= 9:
             self.username = (
-                self.username.replace('-', '') + chr(symbol)
-            ).ljust(9, '-')
+                self.username.replace("-", "") + chr(symbol)
+            ).ljust(9, "-")
         if (
             arcade.key.NUM_0 <= symbol <= arcade.key.NUM_9
             and len(self.username) <= 9
         ):
             self.username = (
-                self.username.replace('-', '')
-                + str(symbol - arcade.key.NUM_0)
-            ).ljust(9, '-')
+                self.username.replace("-", "") + str(symbol - arcade.key.NUM_0)
+            ).ljust(9, "-")
         if symbol == arcade.key.BACKSPACE:
-            self.username = self.username.replace('-', '')[:-1].ljust(9, '-')
-        self.username = self.username.ljust(10, '-')
+            self.username = self.username.replace("-", "")[:-1].ljust(9, "-")
+        self.username = self.username.ljust(10, "-")
 
         # Save to leaderboard
         if symbol == arcade.key.ENTER:
             EventBus.broadcast_event(
                 "save_score",
-                username=self.username.replace('-', ''),
+                username=self.username.replace("-", ""),
                 score=self.engine.score_manager.xp,
                 target=self.leaderboard_output,
                 signature=self.conf_signature,
             )
-            EventBus.broadcast_event('reload_views')
-            EventBus.broadcast_event('switch_menu')
+            EventBus.broadcast_event("reload_views")
+            EventBus.broadcast_event("switch_menu")
 
         if symbol == arcade.key.F11:
-            EventBus.broadcast_event('toggle_fullscreen')
+            EventBus.broadcast_event("toggle_fullscreen")
 
         return None
 
@@ -150,9 +148,8 @@ class FinishView(arcade.View):
                 username, score, target, signature, current_leaderboard
             )
         return None
-    
+
     def on_show_view(self) -> None:
-        EventBus.broadcast_event('stop_music')
+        EventBus.broadcast_event("stop_music")
 
         return super().on_show_view()
-

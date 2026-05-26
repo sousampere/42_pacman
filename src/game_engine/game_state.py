@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import arcade
 from numpy.typing import NDArray
@@ -13,6 +15,8 @@ from src.event_bus.event_bus import EventBus
 PLAYER_SPEED: float = 0.28
 GHOST_SPEED: float = 0.3
 
+SUPER_PACGUM_TIME: int = 10
+
 
 class GameState:
     def __init__(
@@ -20,11 +24,17 @@ class GameState:
         maze_data: tuple[NDArray, NDArray, int],
         cheat_mng: cheat_manager.CheatManager,
         game_mng: game_manager.GameManager,
+        max_time: int,
     ) -> None:
         pts: NDArray = maze_data[1]
         self._pts = pts
         self.cheat_mng = cheat_mng
         self.game_mng = game_mng
+        self.max_time = max_time
+
+        self.remaining_time: int = self.max_time
+        self.start_edible_time: int = 0
+        self.stop_edible_time: int = 0
 
         center_point = pts.mean(axis=0)
         distances = np.sum((pts - center_point) ** 2, axis=1)
@@ -94,10 +104,8 @@ class GameState:
             self._random_target(),
         ]
 
-        # One slot per ghost (index == ghost._id)
         self.heat_map = [self.heat_map_manager.grid.copy() for _ in range(4)]
 
-        # Static spawn heatmaps: each ghost navigates back to its own spawn
         self._spawn_heat_maps = [
             self.heat_map_manager.update_heat_map(g.spawn_point)
             for g in self.ghosts
@@ -151,6 +159,15 @@ class GameState:
         self._check_pacgum_collision()
         self._update_ghosts(delta_time, freeze_ghosts)
         self.player.update()
+        self.remaining_time = int(
+            self.game_mng.start_time + self.max_time - int(time.time())
+        )
+        if (
+            self.remaining_time
+            == self.start_edible_time - self.stop_edible_time
+        ):
+            self.stop_edible_time = 0
+            EventBus.broadcast_event("is_edible")
 
         if len(self.pacgum) == 0:
             EventBus.broadcast_event("next_level")
@@ -209,6 +226,7 @@ class GameState:
                 continue
             if self.game_mng.is_edible:
                 g.die()
+                EventBus.broadcast_event("add_ghost_point")
             elif not invincibility:
                 self.player.die()
                 EventBus.broadcast_event("remove_life")
@@ -225,8 +243,14 @@ class GameState:
             if (round(p._x), round(p._y)) == player_pos:
                 self.super_pacgum.remove(p)
                 self.entity.remove(p)
+                if (
+                    self.stop_edible_time == 0
+                ):
+                    self.start_edible_time = self.remaining_time
+                    EventBus.broadcast_event("is_edible")
+                self.stop_edible_time += SUPER_PACGUM_TIME
+                print(self.stop_edible_time)
                 EventBus.broadcast_event("add_super_pacgum_point")
-                EventBus.broadcast_event("is_edible")
                 EventBus.broadcast_event("play_super_pacgum_sound")
 
     def _update_ghosts(self, delta_time: float, freeze_ghosts: bool) -> None:

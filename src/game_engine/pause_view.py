@@ -49,5 +49,5 @@ class PauseView(arcade.View):
         return None
 
     def on_show_view(self) -> None:
-        EventBus.broadcast_event('stop_music')
+        EventBus.broadcast_event("stop_music")
         return super().on_show_view()

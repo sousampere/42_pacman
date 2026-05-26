@@ -12,9 +12,8 @@ from src.entity.super_pacgum import SuperPacgum
 from src.event_bus import cheat_manager, game_manager
 from src.event_bus.event_bus import EventBus
 
-PLAYER_SPEED: float = 0.28
+PLAYER_SPEED: float = 0.25
 GHOST_SPEED: float = 0.3
-
 SUPER_PACGUM_TIME: int = 10
 
 
@@ -193,6 +192,7 @@ class GameState:
                     if not g._is_dead:
                         self.heat_map[i] = flee_map
         else:
+            EventBus.broadcast_event('is_not_edible')
             if not self.ghosts[0]._is_dead:
                 self.heat_map[0] = self.heat_map_manager.update_heat_map(
                     self._rand_target[0]
@@ -227,6 +227,8 @@ class GameState:
             if self.game_mng.is_edible:
                 g.die()
                 EventBus.broadcast_event("add_ghost_point")
+                EventBus.broadcast_event('play_ghost_death_sound')
+                # g.switch_to_death_texture()
             elif not invincibility:
                 self.player.die()
                 EventBus.broadcast_event("remove_life")
@@ -249,7 +251,6 @@ class GameState:
                     self.start_edible_time = self.remaining_time
                     EventBus.broadcast_event("is_edible")
                 self.stop_edible_time += SUPER_PACGUM_TIME
-                print(self.stop_edible_time)
                 EventBus.broadcast_event("add_super_pacgum_point")
                 EventBus.broadcast_event("play_super_pacgum_sound")
 
@@ -286,3 +287,13 @@ class GameState:
                 occupied,
                 delta_time,
             )
+
+    @staticmethod
+    def event_make_ghosts_slow() -> None:
+        global GHOST_SPEED
+        GHOST_SPEED = 0.4
+
+    @staticmethod
+    def event_make_ghosts_fast() -> None:
+        global GHOST_SPEED
+        GHOST_SPEED = 0.3

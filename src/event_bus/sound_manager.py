@@ -74,7 +74,7 @@ class SoundManager:
     def event_play_ghost_death_sound(self) -> None:
         """Plays a ghost death sound"""
         try:
-            arcade.play_sound(self.ghost_death, volume=0)
+            arcade.play_sound(self.ghost_death, volume=1)
         except RuntimeError:
             # Ignore error if sound already playng
             pass

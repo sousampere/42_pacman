@@ -72,6 +72,8 @@ class EventBus:
         )
         for g in game_engine.game_state.ghosts:
             pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
+            pub.subscribe(g.switch_to_edible_texture, 'is_edible')
+            pub.subscribe(g.switch_to_normal_texture, 'is_not_edible')
 
         # Sound events
         pub.subscribe(
@@ -99,7 +101,7 @@ class EventBus:
         )
         pub.subscribe(
             game_engine.sound_mng.event_play_ghost_death_sound,
-            "play_super_pacgum_sound",
+            "play_ghost_death_sound",
         )
         pub.subscribe(
             game_engine.sound_mng.event_play_transition_sound,

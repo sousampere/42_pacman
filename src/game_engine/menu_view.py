@@ -18,9 +18,7 @@ class MenuView(arcade.View):
         super().__init__()
         self.engine = engine
         self.background_color = (0, 8, 20)  # Soft black background
-        self.sprite_list: arcade.SpriteList[arcade.Sprite] = (
-            arcade.SpriteList()
-        )
+        self.sprite_list: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
 
         # -- Load sprites --
         # Load play button :
@@ -28,9 +26,7 @@ class MenuView(arcade.View):
         self.sprite_list.append(self.start_button)
         # Load background
         try:
-            self.background = arcade.load_texture(
-                "assets/background/background_4.png"
-            )
+            self.background = arcade.load_texture("assets/background/background_4.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
         self.leaderboard = LeaderboardManager.load_leaderboard(
@@ -42,9 +38,9 @@ class MenuView(arcade.View):
         self.textures = sheet.get_texture_grid(
             size=(64, 64),
             columns=4,
-            count=12,
+            count=22,
         )
-        self.player_texture: arcade.Texture = self.textures[10]
+        self.player_texture: arcade.Texture = self.textures[0]
         # self.player_texture = arcade.Texture.flip_horizontally(
         #     self.player_texture
         # )
@@ -112,9 +108,7 @@ class MenuView(arcade.View):
                     - self.window.height / 10
                     - (self.window.height / 20) * index,
                     color=color,
-                    font_size=min(
-                        self.window.width * 0.02, self.window.height * 0.02
-                    ),
+                    font_size=min(self.window.width * 0.02, self.window.height * 0.02),
                     anchor_x="center",
                     anchor_y="center",
                     font_name="Early GameBoy",
@@ -171,14 +165,10 @@ class MenuView(arcade.View):
         self.player_pos += 3 * self.player_direction
         if self.player_pos > self.window.width:
             self.player_direction = -1
-            self.player_texture = arcade.Texture.flip_horizontally(
-                self.player_texture
-            )
+            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
         if self.player_pos < -self.player_texture.width:
             self.player_direction = 1
-            self.player_texture = arcade.Texture.flip_horizontally(
-                self.player_texture
-            )
+            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
         return super().on_update(delta_time)
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:

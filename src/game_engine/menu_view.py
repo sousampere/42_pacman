@@ -1,7 +1,7 @@
 import arcade
 from typing import TYPE_CHECKING
 
-from arcade import sound
+from arcade import Text, sound
 
 from src.event_bus import event_bus
 from src.event_bus.event_bus import EventBus
@@ -132,6 +132,21 @@ class MenuView(arcade.View):
             self.start_button.center_y = (
                 self.window.height / 2 + self.start_button.height
             )
+
+        # Add control description text
+        ctrl_text = 'Use control arrows to move. Don\'t die to win.'
+        ctrl_text_obj = Text(
+            ctrl_text,
+            self.window.width / 2,
+            5,
+            color=arcade.color.YELLOW,
+            font_size=min(
+                self.window.width * 0.02, self.window.height * 0.02
+            ),
+            anchor_x="center",
+            # anchor_y="",
+            font_name="Early GameBoy",
+        ).draw()
 
         # Draw sprites
         self.sprite_list.draw()

@@ -1,6 +1,8 @@
 import arcade
 from typing import TYPE_CHECKING
 
+from src.event_bus.event_bus import EventBus
+
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
 
@@ -45,3 +47,7 @@ class PauseView(arcade.View):
             self.engine.switch_game()
 
         return None
+
+    def on_show_view(self) -> None:
+        EventBus.broadcast_event('stop_music')
+        return super().on_show_view()

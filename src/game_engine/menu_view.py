@@ -134,15 +134,13 @@ class MenuView(arcade.View):
             )
 
         # Add control description text
-        ctrl_text = 'Use control arrows to move. Don\'t die to win.'
+        ctrl_text = "Use control arrows to move. Don't die to win."
         ctrl_text_obj = Text(
             ctrl_text,
             self.window.width / 2,
             5,
             color=arcade.color.YELLOW,
-            font_size=min(
-                self.window.width * 0.02, self.window.height * 0.02
-            ),
+            font_size=min(self.window.width * 0.02, self.window.height * 0.02),
             anchor_x="center",
             # anchor_y="",
             font_name="Early GameBoy",
@@ -188,8 +186,12 @@ class MenuView(arcade.View):
 
         # Switch to GameView if space is hit
         if symbol == arcade.key.SPACE:
-                EventBus.broadcast_event('switch_transition', message='Loading...', after_event='switch_game')
-                # EventBus.broadcast_event("switch_game")
+            EventBus.broadcast_event(
+                "switch_transition",
+                message="Loading...",
+                after_event="switch_game",
+            )
+            # EventBus.broadcast_event("switch_game")
 
         if symbol == arcade.key.F11:
             EventBus.broadcast_event("toggle_fullscreen")
@@ -206,7 +208,11 @@ class MenuView(arcade.View):
         for sprite in hits:
             # Start button interraction
             if sprite == self.start_button:
-                EventBus.broadcast_event('switch_transition', message='Loading...', after_event='switch_game')
+                EventBus.broadcast_event(
+                    "switch_transition",
+                    message="Loading...",
+                    after_event="switch_game",
+                )
                 # EventBus.broadcast_event("switch_game")
 
         return None
@@ -229,5 +235,5 @@ class MenuView(arcade.View):
         self.leaderboard = LeaderboardManager.load_leaderboard(
             self.engine.config.highscore_filename, self.engine.config.signature
         )
-        EventBus.broadcast_event('stop_music')
-        EventBus.broadcast_event('play_menu_music')
+        EventBus.broadcast_event("stop_music")
+        EventBus.broadcast_event("play_menu_music")

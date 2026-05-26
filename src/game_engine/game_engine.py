@@ -46,7 +46,9 @@ class GameEngine:
         self.config_data = None
         self.is_configured = False  # Set to True when Views added
         self.score_manager = ScoreManager(
-            config.pacgum_points, config.super_pacgum_points
+            config.pacgum_points,
+            config.super_pacgum_points,
+            config.ghost_points,
         )
         self.cheat_manager = CheatManager()
         self.game_manager = GameManager(
@@ -57,6 +59,7 @@ class GameEngine:
             self.maze_list[self.game_manager.current_maze],
             self.cheat_manager,
             self.game_manager,
+            config.max_time,
         )
         self.sound_mng = SoundManager()
         try:
@@ -128,8 +131,8 @@ class GameEngine:
         self.transition_view.transition_end_time = (
             time.time() + transition_time
         )
-        EventBus.broadcast_event('play_transition_sound')
-        EventBus.broadcast_event('stop_music')
+        EventBus.broadcast_event("play_transition_sound")
+        EventBus.broadcast_event("stop_music")
         self.switch_transition()
 
     def event_next_level(self) -> None:
@@ -138,8 +141,8 @@ class GameEngine:
                 self.maze_list[self.game_manager.current_maze],
                 self.cheat_manager,
                 self.game_manager,
+                self.config.max_time,
             )
-            speed = 1 + self.game_manager.current_maze / len(self.maze_list)
             EventBus.broadcast_event("stop_music")
             EventBus.broadcast_event(
                 "switch_transition",
@@ -159,7 +162,9 @@ class GameEngine:
 
     def event_reload_views(self) -> None:
         self.score_manager = ScoreManager(
-            self.config.pacgum_points, self.config.super_pacgum_points
+            self.config.pacgum_points,
+            self.config.super_pacgum_points,
+            self.config.ghost_points,
         )
         self.cheat_manager = CheatManager()
         self.game_manager = GameManager(
@@ -170,6 +175,7 @@ class GameEngine:
             self.maze_list[self.game_manager.current_maze],
             self.cheat_manager,
             self.game_manager,
+            self.config.max_time,
         )
         self.set_views(
             menu=MenuView(self),

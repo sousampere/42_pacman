@@ -1,8 +1,10 @@
-
 class ScoreManager:
-    def __init__(self, pacgum_pts: int, super_pacgum_pts: int) -> None:
+    def __init__(
+        self, pacgum_pts: int, super_pacgum_pts: int, ghost_pts: int
+    ) -> None:
         self.__pacgum_pts: int = pacgum_pts
         self.__super_pacgum_pts: int = super_pacgum_pts
+        self.__ghost_pts: int = ghost_pts
         self.__xp: int = 0
 
     def event_add_pacgum_point(self) -> None:
@@ -10,6 +12,9 @@ class ScoreManager:
 
     def event_add_super_pacgum_point(self) -> None:
         self.__xp += self.__super_pacgum_pts
+
+    def event_add_ghost_point(self) -> None:
+        self.__xp += self.__ghost_pts
 
     @property
     def xp(self) -> int:

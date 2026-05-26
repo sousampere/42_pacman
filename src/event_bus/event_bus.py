@@ -28,6 +28,11 @@ class EventBus:
             game_engine.score_manager.event_add_super_pacgum_point,
             "add_super_pacgum_point",
         )
+        pub.subscribe(
+            game_engine.score_manager.event_add_ghost_point,
+            "add_ghost_point",
+        )
+
         # Init cheat events
         pub.subscribe(
             game_engine.cheat_manager.event_enable_cheat_mode, "enable_cheat"
@@ -69,16 +74,37 @@ class EventBus:
             pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
 
         # Sound events
-        pub.subscribe(game_engine.sound_mng.event_play_game_music, 'play_game_music')
-        pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'play_menu_music')
-        pub.subscribe(game_engine.sound_mng.event_play_end_music, 'switch_finish')
-        pub.subscribe(game_engine.sound_mng.event_stop_music, 'stop_music')
-        pub.subscribe(game_engine.sound_mng.event_play_menu_music, 'switch_menu')
-        pub.subscribe(game_engine.sound_mng.event_play_die_sound, 'remove_life')
-        pub.subscribe(game_engine.sound_mng.event_play_pacgum_sound, 'play_pacgum_sound')
-        pub.subscribe(game_engine.sound_mng.event_play_super_pacgum_sound, 'play_super_pacgum_sound')
-        pub.subscribe(game_engine.sound_mng.event_play_ghost_death_sound, 'play_super_pacgum_sound')
-        pub.subscribe(game_engine.sound_mng.event_play_transition_sound, 'play_transition_sound')
+        pub.subscribe(
+            game_engine.sound_mng.event_play_game_music, "play_game_music"
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_menu_music, "play_menu_music"
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_end_music, "switch_finish"
+        )
+        pub.subscribe(game_engine.sound_mng.event_stop_music, "stop_music")
+        pub.subscribe(
+            game_engine.sound_mng.event_play_menu_music, "switch_menu"
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_die_sound, "remove_life"
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_pacgum_sound, "play_pacgum_sound"
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_super_pacgum_sound,
+            "play_super_pacgum_sound",
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_ghost_death_sound,
+            "play_super_pacgum_sound",
+        )
+        pub.subscribe(
+            game_engine.sound_mng.event_play_transition_sound,
+            "play_transition_sound",
+        )
 
     @staticmethod
     def broadcast_event(event: str, **kwargs: Any) -> None:

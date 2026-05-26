@@ -17,7 +17,7 @@ class Player(Entity, Movable):
         spawn_point: tuple[int, int],
         maze_path: ndarray,
         speed: float,
-        cheat_enabled: bool
+        cheat_enabled: bool,
     ):
         Entity.__init__(self, spawn_point, SCALE)
         Movable.__init__(self, maze_path, speed)
@@ -25,13 +25,13 @@ class Player(Entity, Movable):
         self.textures = sheet.get_texture_grid(
             size=(64, 64),
             columns=4,
-            count=12,
+            count=20,
         )
 
         # init player textures
-        self.right_texture = self.textures[9]
+        self.right_texture = self.textures[18]
         self.left_texture = self.right_texture.flip_horizontally()
-        self.right_texture_closed = self.textures[8]
+        self.right_texture_closed = self.textures[19]
         self.left_texture_closed = self.right_texture_closed.flip_horizontally()
         self.texture = self.right_texture
 
@@ -87,8 +87,8 @@ class Player(Entity, Movable):
 
     def switch_to_cheat_texture(self) -> None:
         """Changes the texture of the player to cheat textures"""
-        self.right_texture = self.textures[11]
+        self.right_texture = self.textures[16]
         self.left_texture = self.right_texture.flip_horizontally()
-        self.right_texture_closed = self.textures[10]
+        self.right_texture_closed = self.textures[17]
         self.left_texture_closed = self.right_texture_closed.flip_horizontally()
         self.texture = self.right_texture

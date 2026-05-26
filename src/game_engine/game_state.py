@@ -193,6 +193,7 @@ class GameState:
                     if not g._is_dead:
                         self.heat_map[i] = flee_map
         else:
+            EventBus.broadcast_event('is_not_edible')
             if not self.ghosts[0]._is_dead:
                 self.heat_map[0] = self.heat_map_manager.update_heat_map(
                     self._rand_target[0]
@@ -227,6 +228,8 @@ class GameState:
             if self.game_mng.is_edible:
                 g.die()
                 EventBus.broadcast_event("add_ghost_point")
+                EventBus.broadcast_event('play_ghost_death_sound')
+                # g.switch_to_death_texture()
             elif not invincibility:
                 self.player.die()
                 EventBus.broadcast_event("remove_life")

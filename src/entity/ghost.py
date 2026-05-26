@@ -24,10 +24,10 @@ class Ghost(Entity, Movable):
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
             size=(64, 64),
-            columns=4,
+            columns=5,
             count=12,
         )
-        self.texture = self.textures[ghost_id]
+        self.texture = self.textures[ghost_id * 3]
         self.__is_edible: bool = False
         self._id: int = ghost_id
         self._is_dead: bool = False

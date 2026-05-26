@@ -12,9 +12,8 @@ from src.entity.super_pacgum import SuperPacgum
 from src.event_bus import cheat_manager, game_manager
 from src.event_bus.event_bus import EventBus
 
-PLAYER_SPEED: float = 0.28
+PLAYER_SPEED: float = 0.25
 GHOST_SPEED: float = 0.3
-
 SUPER_PACGUM_TIME: int = 10
 
 
@@ -252,7 +251,6 @@ class GameState:
                     self.start_edible_time = self.remaining_time
                     EventBus.broadcast_event("is_edible")
                 self.stop_edible_time += SUPER_PACGUM_TIME
-                print(self.stop_edible_time)
                 EventBus.broadcast_event("add_super_pacgum_point")
                 EventBus.broadcast_event("play_super_pacgum_sound")
 
@@ -289,3 +287,13 @@ class GameState:
                 occupied,
                 delta_time,
             )
+
+    @staticmethod
+    def event_make_ghosts_slow() -> None:
+        global GHOST_SPEED
+        GHOST_SPEED = 0.4
+
+    @staticmethod
+    def event_make_ghosts_fast() -> None:
+        global GHOST_SPEED
+        GHOST_SPEED = 0.3

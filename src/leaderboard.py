@@ -27,7 +27,7 @@ class Leaderboard(BaseModel):
     """Leaderboard object containing the data of the current leaderboard"""
 
     signature: str
-    scores: list[dict[str, str | int]]  # keys: username->str, score->int
+    scores: list[dict[str, str | int | float]]  # keys: username->str, score->int
 
     @model_validator(mode="after")
     def validate_data(self) -> "Leaderboard":
@@ -45,11 +45,13 @@ class Leaderboard(BaseModel):
             if type(score["username"]) is not str:
                 raise LeaderboardError("Invalid username data type provided")
             # Case if score is not int
-            if type(score["score"]) is not int:
+            if type(score["score"]) is not int and type(score["score"]) is not float:
                 raise LeaderboardError("Invalid username data type provided")
             if len(score["username"]) > 10:
                 raise LeaderboardError(
                     "A username is too " "long in the leaderboard")
+            if type(score['score']) is float:
+                score['score'] = int(score['score'])
             # Case of negative score
             if score["score"] < 0:
                 raise LeaderboardError(
@@ -111,6 +113,7 @@ class LeaderboardManager(ABSLeaderboardManager):
         try:
             data = json.loads(file_content)
         except json.JSONDecodeError:
+            print('[Warning] Invalid JSON in the leaderboard. Using default values.')
             return Leaderboard(signature=signature, scores=[])
 
         # Verify each leaderboard

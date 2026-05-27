@@ -227,8 +227,9 @@ class MenuView(arcade.View):
         except LeaderboardFileError:
             print('[Warning] Invalid leaderboard file. Ignoring and using default.')
             self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
-        except LeaderboardFilePathError as e:
-            print(f'[Warning] {e}.')
+        except (LeaderboardFilePathError, LeaderboardError) as e:
+            print(f'[Warning] {e}. Ignoring this leaderboard.')
+            self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
 
         EventBus.broadcast_event("stop_music")
         EventBus.broadcast_event("play_menu_music")

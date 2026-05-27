@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from src.event_bus.event_bus import EventBus
 from src.game_engine import game_state
-from src.leaderboard import LeaderboardError, LeaderboardFileError, LeaderboardManager
+from src.leaderboard import LeaderboardError, LeaderboardFileError, LeaderboardFilePathError, LeaderboardManager
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
@@ -147,7 +147,7 @@ class FinishView(arcade.View):
             LeaderboardManager.save_score(
                 username, score, target, signature, current_leaderboard
             )
-        except LeaderboardFileError as e:
+        except (LeaderboardFileError, LeaderboardFilePathError) as e:
             print(f'[Warning] {e} Skipping saving.')
         return None
 

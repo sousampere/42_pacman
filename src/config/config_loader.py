@@ -206,6 +206,7 @@ class ConfigLoader(ABCConfigLoader):
                         or type(lvl["height"]) is not int
                         or lvl["height"] < 10
                         or lvl["height"] > 50
+                        or lvl['width'] * lvl['height'] > 400
                     ):
                         print(
                             "[Warning] Removed an invalid "
@@ -219,11 +220,9 @@ class ConfigLoader(ABCConfigLoader):
                     "[Warning] Not enough levels in config. "
                     "Using default levels."
                 )
-                # data.pop("level")
-                print(data['level'])
+                # Fill the necessary levels with default 10x10 mazes
                 while len(data['level']) != 10:
                     data['level'].append({'width': 10, 'height': 10})
-                print(data['level'])
 
         # Create the Config object
         try:

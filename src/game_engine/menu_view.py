@@ -5,7 +5,7 @@ from arcade import Text, sound
 
 from src.event_bus import event_bus
 from src.event_bus.event_bus import EventBus
-from src.leaderboard import LeaderboardManager
+from src.leaderboard import Leaderboard, LeaderboardError, LeaderboardFileError, LeaderboardFilePathError, LeaderboardManager
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
@@ -29,9 +29,7 @@ class MenuView(arcade.View):
             self.background = arcade.load_texture("assets/background/background_4.png")
         except (FileNotFoundError, PermissionError):
             raise NotImplementedError("NOT IMPLEMENTED : Missing background")
-        self.leaderboard = LeaderboardManager.load_leaderboard(
-            self.engine.config.highscore_filename, self.engine.config.signature
-        )
+        self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
 
         # Create a player sprite that will be at the bottom
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
@@ -222,8 +220,15 @@ class MenuView(arcade.View):
 
     def on_show_view(self) -> None:
         # Refresh leaderboard
-        self.leaderboard = LeaderboardManager.load_leaderboard(
-            self.engine.config.highscore_filename, self.engine.config.signature
-        )
+        try:
+            self.leaderboard = LeaderboardManager.load_leaderboard(
+                self.engine.config.highscore_filename, self.engine.config.signature
+            )
+        except LeaderboardFileError:
+            print('[Warning] Invalid leaderboard file. Ignoring and using default.')
+            self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
+        except LeaderboardFilePathError as e:
+            print(f'[Warning] {e}.')
+
         EventBus.broadcast_event("stop_music")
         EventBus.broadcast_event("play_menu_music")

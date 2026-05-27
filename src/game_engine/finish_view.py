@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from src.event_bus.event_bus import EventBus
 from src.game_engine import game_state
-from src.leaderboard import LeaderboardManager
+from src.leaderboard import LeaderboardError, LeaderboardFileError, LeaderboardManager
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
@@ -140,13 +140,15 @@ class FinishView(arcade.View):
     def event_save_score(
         self, username: str, score: int, target: str, signature: str
     ) -> None:
-        if not self.engine.game_state.cheat_mng.cheat_mode:
+        try:
             current_leaderboard = LeaderboardManager.load_leaderboard(
                 target, signature=signature
             )
             LeaderboardManager.save_score(
                 username, score, target, signature, current_leaderboard
             )
+        except LeaderboardFileError as e:
+            print(f'[Warning] {e} Skipping saving.')
         return None
 
     def on_show_view(self) -> None:

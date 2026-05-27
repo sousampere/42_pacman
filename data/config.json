@@ -1,5 +1,5 @@
 {
-  "highscore_filename": "data/leaderboard.json",
+  "highscore_filename": "/home/gtourdia/Documents/42_pacman/dataleaderboard.json",
   "lives": 5,
   "pacgum_points": 15,
   "super_pacgum_points": 50,
@@ -8,7 +8,7 @@
   "max_time": 90,
   "level": [
     {
-      "width": 20,
+      "width": 10,
       "height": 20
     },
     {

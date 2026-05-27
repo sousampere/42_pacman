@@ -238,11 +238,11 @@ class ConfigLoader(ABCConfigLoader):
             if len(data["level"]) < 10:
                 print(
                     "[Warning] Not enough levels in config. "
-                    "Using default levels."
+                    "Filling with default mazes."
                 )
-                # Fill the necessary levels with default 10x10 mazes
+                # Fill the necessary levels with default 14x10 mazes
                 while len(data['level']) != 10:
-                    data['level'].append({'width': 10, 'height': 10})
+                    data['level'].append({'width': 14, 'height': 10})
 
         # Create the Config object
         try:

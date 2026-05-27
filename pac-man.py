@@ -1,9 +1,6 @@
-# Made by gtourdia & kebertra
-
-import arcade
+# Made with <3 by gtourdia & kebertra
 
 from src.config.config_loader import Config, ConfigError, ConfigLoader
-from src.event_bus import cheat_manager
 from src.game_engine.game_engine import (
     GameEngine,
     MenuView,

@@ -91,7 +91,10 @@ class Ghost(Entity, Movable):
         self.texture = self.textures[self._id * 4 + 2]
 
     def switch_to_normal_texture(self) -> None:
-        self.texture = self.textures[self._id * 4]
+        if not self._is_dead:
+            self.texture = self.textures[self._id * 4]
+        else:
+            self.switch_to_death_texture()
 
     def switch_to_edible_texture(self) -> None:
         self.texture = self.textures[self._id * 4 + 1]

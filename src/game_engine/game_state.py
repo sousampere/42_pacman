@@ -287,3 +287,13 @@ class GameState:
                 occupied,
                 delta_time,
             )
+
+    @staticmethod
+    def event_make_ghosts_slow() -> None:
+        global GHOST_SPEED
+        GHOST_SPEED = 0.4
+
+    @staticmethod
+    def event_make_ghosts_fast() -> None:
+        global GHOST_SPEED
+        GHOST_SPEED = 0.3

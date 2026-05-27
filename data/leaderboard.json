@@ -314,5 +314,14 @@
                 "score": 120
             }
         ]
+    },
+    {
+        "signature": "96e042d05656efbba78a3e4523df369062c3e7a9e1b6b612270f74218149f3d4",
+        "scores": [
+            {
+                "username": "test",
+                "score": 2285
+            }
+        ]
     }
 ]

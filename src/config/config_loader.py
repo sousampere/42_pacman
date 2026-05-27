@@ -201,15 +201,16 @@ class ConfigLoader(ABCConfigLoader):
                 else:
                     if (
                         type(lvl["width"]) is not int
-                        or lvl["width"] < 1
+                        or lvl["width"] < 10
                         or lvl["width"] > 50
                         or type(lvl["height"]) is not int
-                        or lvl["height"] < 1
+                        or lvl["height"] < 10
                         or lvl["height"] > 50
                     ):
                         print(
                             "[Warning] Removed an invalid "
-                            "level in your config."
+                            "level in your config. (Dimensions must be at least 10x10 "
+                            ", not exceed 50 in one dimension, and have an area of 400 tiles at maximum)"
                         )
                         data["level"].remove(lvl)
         if "level" in data.keys():
@@ -218,7 +219,11 @@ class ConfigLoader(ABCConfigLoader):
                     "[Warning] Not enough levels in config. "
                     "Using default levels."
                 )
-                data.pop("level")
+                # data.pop("level")
+                print(data['level'])
+                while len(data['level']) != 10:
+                    data['level'].append({'width': 10, 'height': 10})
+                print(data['level'])
 
         # Create the Config object
         try:

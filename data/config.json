@@ -1,7 +1,7 @@
 {
   "highscore_filename": "/home/gtourdia/Documents/42_pacman/data/leaderboard.json",
   "lives": 5,
-  "pacgum_points": 15,
+  "pacgum_points": -15,
   "super_pacgum_points": 50,
   "ghost_points": 150,
   "seed": "forty-two",

@@ -20,8 +20,8 @@ def main():
     # Load config
     try:
         config = ConfigLoader.load_config("data/config.json")
-    except ConfigError:
-        print("[Error] Could not read your configuration file. Using default values.")
+    except ConfigError as e:
+        print(f"[Warning] Could not read your configuration file ({e}). Using default values.")
         levels = []
         for _ in range(10):
             levels.append({'width': 10, 'height': 10})
@@ -30,7 +30,6 @@ def main():
     # Load game engine
     engine = GameEngine(config)
 
-    
     # Set different views
     engine.set_views(
         menu=MenuView(engine),

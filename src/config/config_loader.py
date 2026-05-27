@@ -227,7 +227,10 @@ class ConfigLoader(ABCConfigLoader):
         # Create the Config object
         try:
             config = Config(**data)
-        except (ValidationError, ConfigError):
+        except (ConfigError):
             raise ConfigJSONError("Invalid data provided in your JSON file")
+        except (ValidationError):
+            raise ConfigJSONError("Invalid value in your configuration. "
+                                  "Ignoring configuration and using default parameters.")
 
         return config

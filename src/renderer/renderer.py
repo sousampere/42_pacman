@@ -221,6 +221,11 @@ class Renderer:
                 bottom=0,
                 top=0,
             )
+            # Set red text if time is less/equal than 10 seconds
+            if attribute['texture'] == self.time_texture and int(attribute['value']) <= 10:
+                color = arcade.color.RED
+            else:
+                color = arcade.color.WHITE
             arcade.draw_texture_rect(attribute["texture"], attrib_rect)
             text_size: int = int(window.height / 50)
             text = arcade.Text(
@@ -231,7 +236,7 @@ class Renderer:
                 font_name="Early GameBoy",
                 # anchor_x="center",
                 anchor_y="center",
-                color=arcade.color.WHITE,
+                color=color,
             )
             text.draw()
 

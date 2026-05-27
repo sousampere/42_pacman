@@ -29,23 +29,23 @@ class Config(BaseModel):
         description="List of levels dimensions (width,height)",
     )
     lives: int = Field(
-        ge=1, default=20, description="Number of lives of the player"
+        default=20, description="Number of lives of the player"
     )
     pacgum_points: int = Field(
-        ge=0, default=10, description="Points earned for each pacgum eaten"
+        default=10, description="Points earned for each pacgum eaten"
     )
     super_pacgum_points: int = Field(
-        ge=0, default=50, description="Points earned for each super-pacgum"
+        default=50, description="Points earned for each super-pacgum"
     )
     ghost_points: int = Field(
-        ge=0, default=200, description="Points earned for each ghost eatten"
+        default=200, description="Points earned for each ghost eatten"
     )
     seed: str = Field(
         default="forty-two",
         description="Seed on which the random generation is based",
     )
     max_time: int = Field(
-        ge=1, default=90, description="Max duration of each level"
+        default=90, description="Max duration of each level"
     )
     signature: str = Field(
         default="",
@@ -75,6 +75,26 @@ class Config(BaseModel):
                 )
         hash_obj = hashlib.sha256(signature_str.encode("utf-8"))
         self.signature = hash_obj.hexdigest()
+
+        if self.lives < 1:
+            print('[Warning] Using default value on lives.')
+            self.lives = 20
+
+        if self.pacgum_points < 0:
+            print('[Warning] Using default value on pacgum_points.')
+            self.pacgum_points = 10
+
+        if self.super_pacgum_points < 0:
+            print('[Warning] Using default value on super_pacgum_points.')
+            self.super_pacgum_points = 50
+
+        if self.ghost_points < 0:
+            print('[Warning] Using default value on ghost_points.')
+            self.ghost_points = 200
+
+        if self.max_time < 1:
+            print('[Warning] Using default value on max_time.')
+            self.max_time = 90
 
         return self
 
@@ -201,29 +221,36 @@ class ConfigLoader(ABCConfigLoader):
                 else:
                     if (
                         type(lvl["width"]) is not int
-                        or lvl["width"] < 1
+                        or lvl["width"] < 10
                         or lvl["width"] > 50
                         or type(lvl["height"]) is not int
-                        or lvl["height"] < 1
+                        or lvl["height"] < 10
                         or lvl["height"] > 50
+                        or lvl['width'] * lvl['height'] > 400
                     ):
                         print(
                             "[Warning] Removed an invalid "
-                            "level in your config."
+                            "level in your config. (Dimensions must be at least 10x10 "
+                            ", not exceed 50 in one dimension, and have an area of 400 tiles at maximum)"
                         )
                         data["level"].remove(lvl)
         if "level" in data.keys():
             if len(data["level"]) < 10:
                 print(
                     "[Warning] Not enough levels in config. "
-                    "Using default levels."
+                    "Filling with default mazes."
                 )
-                data.pop("level")
+                # Fill the necessary levels with default 14x10 mazes
+                while len(data['level']) != 10:
+                    data['level'].append({'width': 14, 'height': 10})
 
         # Create the Config object
         try:
             config = Config(**data)
-        except (ValidationError, ConfigError):
+        except (ConfigError):
             raise ConfigJSONError("Invalid data provided in your JSON file")
+        except (ValidationError):
+            raise ConfigJSONError("Invalid value in your configuration. "
+                                  "Ignoring configuration and using default parameters.")
 
         return config

@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from pathlib import Path
 from pydantic import BaseModel, ValidationError, model_validator
 import json
 
@@ -16,12 +17,17 @@ class LeaderboardFileError(Exception):
     def __init__(self, msg: str = "") -> None:
         super().__init__(f"LeaderboardFile Error: {msg}")
 
+class LeaderboardFilePathError(Exception):
+    """Error related to the leaderboard"""
+
+    def __init__(self, msg: str = "") -> None:
+        super().__init__(f"Leaderboard File Path Error: {msg}")
 
 class Leaderboard(BaseModel):
     """Leaderboard object containing the data of the current leaderboard"""
 
     signature: str
-    scores: list[dict[str, str | int]]  # keys: username->str, score->int
+    scores: list[dict[str, str | int | float]]  # keys: username->str, score->int
 
     @model_validator(mode="after")
     def validate_data(self) -> "Leaderboard":
@@ -39,11 +45,13 @@ class Leaderboard(BaseModel):
             if type(score["username"]) is not str:
                 raise LeaderboardError("Invalid username data type provided")
             # Case if score is not int
-            if type(score["score"]) is not int:
+            if type(score["score"]) is not int and type(score["score"]) is not float:
                 raise LeaderboardError("Invalid username data type provided")
             if len(score["username"]) > 10:
                 raise LeaderboardError(
                     "A username is too " "long in the leaderboard")
+            if type(score['score']) is float:
+                score['score'] = int(score['score'])
             # Case of negative score
             if score["score"] < 0:
                 raise LeaderboardError(
@@ -77,23 +85,36 @@ class LeaderboardManager(ABSLeaderboardManager):
     """Local leaderboard loader and saver (json input / output)"""
 
     @staticmethod
+    def is_safe_path(base_dir: str, target_path: str) -> bool:
+        """Checks if the path is not going out of the data folder"""
+        base = Path(base_dir).resolve()
+        target = Path(target_path).resolve()
+
+        return base in target.parents or base == target
+
+    @staticmethod
     @abstractmethod
     def load_leaderboard(source: str, signature: str) -> Leaderboard:
         """Load the given json file (path in source) and returns the
         leaderboard with the corresponding signature"""
+
+        if not LeaderboardManager.is_safe_path('data', source):
+            raise LeaderboardFilePathError('Invalid output path. Please output in the data folder')
 
         # Load the file
         try:
             with open(source, "r") as f:
                 file_content = f.read()
         except (FileNotFoundError, PermissionError):
-            raise LeaderboardFileError("Unable to load the leaderboard")
+            # raise LeaderboardFileError("Unable to load the leaderboard")
+            return Leaderboard(signature=signature, scores=[])
 
         # JSON conversion
         try:
             data = json.loads(file_content)
         except json.JSONDecodeError:
-            raise LeaderboardFileError("Invalid JSON format")
+            print('[Warning] Invalid JSON in the leaderboard. Using default values.')
+            return Leaderboard(signature=signature, scores=[])
 
         # Verify each leaderboard
         if type(data) is not list:
@@ -128,7 +149,8 @@ class LeaderboardManager(ABSLeaderboardManager):
                     )
                 )
             except ValidationError:
-                raise LeaderboardFileError("Invalid JSON format")
+                print('[Warning] Invalid leaderboard file. Ignoring and using default.')
+                leaderboards.append(Leaderboard(signature=signature, scores=[]))
 
         # Return the leaderboard if identified
         for leaderboard in leaderboards:
@@ -153,9 +175,12 @@ class LeaderboardManager(ABSLeaderboardManager):
         })
 
         # Open JSON target
-        with open(target, 'r') as f:
-            content = f.read()
-        json_data = json.loads(content)
+        try:
+            with open(target, 'r') as f:
+                content = f.read()
+                json_data = json.loads(content)
+        except (json.JSONDecodeError, FileNotFoundError, PermissionError):
+            json_data = []
 
         # Search for corresponding signature in data
         for leaderboards in json_data:
@@ -171,6 +196,10 @@ class LeaderboardManager(ABSLeaderboardManager):
             'signature': leaderboard.signature,
             'scores': leaderboard.scores
         })
-        with open(target, 'w') as f:
-            json.dump(json_data, f, indent=4)
+        try:
+            with open(target, 'w') as f:
+                json.dump(json_data, f, indent=4)
+        except PermissionError:
+            print('[Warning] Could not save the score to the leaderboard due to a lack of write permission. '
+                  f'Use chmod +w {target} to allow saving leaderboard.')
         return None

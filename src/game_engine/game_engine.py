@@ -137,6 +137,8 @@ class GameEngine:
 
     def event_next_level(self) -> None:
         if self.game_manager.current_maze < len(self.maze_list):
+            if self.game_manager.is_edible:
+                EventBus.broadcast_event('is_edible')
             self.game_state = GameState(
                 self.maze_list[self.game_manager.current_maze],
                 self.cheat_manager,

@@ -41,4 +41,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (KeyboardInterrupt, EOFError):
+        print('\033c\033[0;32m[Info] Quitting Pacman. See you soon 🤠\033[0m')

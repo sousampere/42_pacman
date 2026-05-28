@@ -53,6 +53,8 @@ class GameState:
         self._init_ghosts_super_pacgum(pts, corners)
         self._init_player(closest_point, pts)
         self._init_heatmaps(pts)
+        if self.game_mng.is_edible:
+            EventBus.broadcast_event("is_edible")
 
     def _init_pacgums(
         self,
@@ -85,7 +87,7 @@ class GameState:
             self.super_pacgum.append(p)
             self.entity.append(p)
             g = Ghost(
-                ghost_pos, pts, GHOST_SPEED, i, self.cheat_mng.cheat_mode
+                ghost_pos, pts, GHOST_SPEED, i
             )
             self.ghosts.append(g)
             self.entity.append(g)
@@ -167,6 +169,16 @@ class GameState:
         ):
             self.stop_edible_time = 0
             EventBus.broadcast_event("is_edible")
+        for g in self.ghosts:
+            if g.is_dead:
+                continue
+            if self.stop_edible_time == 0:
+                if self.cheat_mng.cheat_mode:
+                    g.switch_to_texture(2)
+                else:
+                    g.switch_to_texture(0)
+            else:
+                g.switch_to_texture(1)
 
         if len(self.pacgum) == 0:
             EventBus.broadcast_event("next_level")
@@ -192,7 +204,6 @@ class GameState:
                     if not g._is_dead:
                         self.heat_map[i] = flee_map
         else:
-            EventBus.broadcast_event('is_not_edible')
             if not self.ghosts[0]._is_dead:
                 self.heat_map[0] = self.heat_map_manager.update_heat_map(
                     self._rand_target[0]
@@ -250,6 +261,7 @@ class GameState:
                 ):
                     self.start_edible_time = self.remaining_time
                     EventBus.broadcast_event("is_edible")
+
                 self.stop_edible_time += SUPER_PACGUM_TIME
                 EventBus.broadcast_event("add_super_pacgum_point")
                 EventBus.broadcast_event("play_super_pacgum_sound")

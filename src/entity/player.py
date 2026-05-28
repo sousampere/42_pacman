@@ -1,12 +1,7 @@
 import arcade
 from numpy import ndarray
 from src.entity.entity import Entity, Movable
-import time
 
-from src.event_bus import cheat_manager
-
-SCALE: float = 0.5
-LIVES: int = 3
 WINDOWS_WIDTH: int = 800
 WINDOWS_HEIGHT: int = 600
 
@@ -19,7 +14,7 @@ class Player(Entity, Movable):
         speed: float,
         cheat_enabled: bool,
     ):
-        Entity.__init__(self, spawn_point, SCALE)
+        Entity.__init__(self, spawn_point)
         Movable.__init__(self, maze_path, speed)
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
         self.textures = sheet.get_texture_grid(
@@ -53,7 +48,7 @@ class Player(Entity, Movable):
             if self.__animation_time >= 2:
                 self.__animation_time = 0
 
-            if self.can_move_to(new_x, new_y, self.scale):
+            if self.can_move_to(new_x, new_y, (int(self.scale_x), int(self.scale_y))):
                 self._target = (float(new_x), float(new_y))
                 if dx < 0:
                     if self.__animation_time > 1 / 2:

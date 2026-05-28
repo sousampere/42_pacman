@@ -8,7 +8,6 @@ class Algorithms:
     def process(
         cls,
         ghost_pos: tuple[float, float],
-        target: tuple[float, float],
         heat_map: ndarray,
         max_x,
         max_y,

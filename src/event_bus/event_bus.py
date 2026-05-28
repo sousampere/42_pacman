@@ -70,10 +70,6 @@ class EventBus:
             game_engine.game_state.player.switch_to_cheat_texture,
             "enable_cheat",
         )
-        for g in game_engine.game_state.ghosts:
-            pub.subscribe(g.switch_to_cheat_texture, "enable_cheat")
-            pub.subscribe(g.switch_to_edible_texture, 'is_edible')
-            pub.subscribe(g.switch_to_normal_texture, 'is_not_edible')
 
         # Sound events
         pub.subscribe(

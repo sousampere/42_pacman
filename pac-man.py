@@ -9,6 +9,7 @@ from src.game_engine.game_engine import (
     FinishView,
 )
 from src.game_engine.transition_view import TransitionView
+import sys
 
 
 def main():
@@ -16,7 +17,8 @@ def main():
 
     # Load config
     try:
-        config = ConfigLoader.load_config("data/config.json")
+        config_file = sys.argv[1] if len(sys.argv) > 1 else "data/config.json"
+        config = ConfigLoader.load_config(config_file)
     except ConfigError as e:
         print(f"[Warning] Could not read your configuration file ({e}). Using default values.")
         levels = []

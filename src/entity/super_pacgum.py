@@ -10,6 +10,3 @@ class SuperPacgum(Pacgum):
         Entity.__init__(self, spawn_point)
         Collectible.__init__(self)
         self.texture = arcade.load_texture("assets/entity/super_pacgum.png")
-
-    def activate_power(self):
-        print("ULTIMATE POWAAAA")

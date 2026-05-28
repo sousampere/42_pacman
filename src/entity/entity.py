@@ -71,7 +71,3 @@ class Collectible(ABC):
             self.__already_collect = True
             return True
         return False
-
-    @abstractmethod
-    def activate_power(self) -> None:
-        pass

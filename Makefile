@@ -101,6 +101,7 @@ help:
 
 # Install project dependencies.
 install:
+	UV_SKIP_WHEEL_FILENAME_CHECK=1
 	$(ECHO) "\033[2J\033[H"
 	$(ECHO) "$(YELLOW)╔════════════════════════════════════════════════════════════════╗"
 	$(ECHO) "$(YELLOW)║                                                                ║"

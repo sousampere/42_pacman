@@ -15,10 +15,13 @@ import sys
 def main():
     """Runs the game"""
 
+    if (len(sys.argv) != 2):
+        print("No configuration file given in input. Please provide as an argument.")
+        exit(1)
+
     # Load config
     try:
-        config_file = sys.argv[1] if len(sys.argv) > 1 else "data/config.json"
-        config = ConfigLoader.load_config(config_file)
+        config = ConfigLoader.load_config(sys.argv[1])
     except ConfigError as e:
         print(f"[Warning] Could not read your configuration file ({e}). Using default values.")
         levels = []

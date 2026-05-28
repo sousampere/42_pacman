@@ -9,14 +9,19 @@ from src.game_engine.game_engine import (
     FinishView,
 )
 from src.game_engine.transition_view import TransitionView
+import sys
 
 
 def main():
     """Runs the game"""
 
+    if (len(sys.argv) != 2):
+        print("No configuration file given in input. Please provide as an argument.")
+        exit(1)
+
     # Load config
     try:
-        config = ConfigLoader.load_config("data/config.json")
+        config = ConfigLoader.load_config(sys.argv[1])
     except ConfigError as e:
         print(f"[Warning] Could not read your configuration file ({e}). Using default values.")
         levels = []
@@ -41,4 +46,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (KeyboardInterrupt, EOFError):
+        print('\033c\033[0;32m[Info] Quitting Pacman. See you soon 🤠\033[0m')

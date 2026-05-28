@@ -5,8 +5,8 @@ from numpy import ndarray
 
 
 class Entity(arcade.Sprite, ABC):
-    def __init__(self, spawn_point: tuple[int, int], scale: float) -> None:
-        arcade.Sprite.__init__(self, scale=scale)
+    def __init__(self, spawn_point: tuple[int, int]) -> None:
+        arcade.Sprite.__init__(self)
         self.spawn_point: tuple[int, int] = spawn_point
         self._x: float = float(spawn_point[0])
         self._y: float = float(spawn_point[1])
@@ -63,8 +63,7 @@ class Movable(ABC):
 
 
 class Collectible(ABC):
-    def __init__(self, score: int = 0) -> None:
-        self.__score: int = score
+    def __init__(self) -> None:
         self.__already_collect: bool = False
 
     def collect(self) -> bool:
@@ -72,11 +71,3 @@ class Collectible(ABC):
             self.__already_collect = True
             return True
         return False
-
-    @abstractmethod
-    def activate_power(self) -> None:
-        pass
-
-    @property
-    def score(self) -> int:
-        return self.__score

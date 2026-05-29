@@ -37,9 +37,10 @@ class GameView(arcade.View):
 
     def on_draw(self) -> bool | None:
         self.clear()
-        self.window.set_mouse_cursor(
-            self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
-        )
+        if self.window.current_view == self:
+            self.window.set_mouse_cursor(
+                self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
+            )
         walls, paths, _ = self.engine.maze_list[
             self.engine.game_manager.current_maze
         ]

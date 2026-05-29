@@ -58,7 +58,7 @@ class EventBus:
         pub.subscribe(game_engine.game_manager.event_is_edible, "is_edible")
 
         # Init GameEngine events
-        pub.subscribe(game_engine.event_next_level, "next_level")
+        pub.subscribe(game_engine.event_next_level, "next_engine_level")
         pub.subscribe(game_engine.event_reload_views, "reload_views")
         pub.subscribe(game_engine.event_toggle_fullscreen, "toggle_fullscreen")
         pub.subscribe(game_engine.event_game_over, "game_over")

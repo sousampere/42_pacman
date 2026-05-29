@@ -37,9 +37,10 @@ class GameView(arcade.View):
 
     def on_draw(self) -> bool | None:
         self.clear()
-        self.window.set_mouse_cursor(
-            self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
-        )
+        if self.window.current_view == self:
+            self.window.set_mouse_cursor(
+                self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
+            )
         walls, paths, _ = self.engine.maze_list[
             self.engine.game_manager.current_maze
         ]
@@ -83,6 +84,7 @@ class GameView(arcade.View):
                 EventBus.broadcast_event("add_life")
             if symbol == arcade.key.NUM_3 or symbol == arcade.key.KEY_3:
                 EventBus.broadcast_event("next_level")
+                EventBus.broadcast_event("next_engine_level")
                 EventBus.broadcast_event("reset_time")
             if symbol == arcade.key.NUM_4 or symbol == arcade.key.KEY_4:
                 EventBus.broadcast_event("toggle_freeze_ghosts")

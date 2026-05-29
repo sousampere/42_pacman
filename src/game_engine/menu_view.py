@@ -23,7 +23,9 @@ class MenuView(arcade.View):
         # -- Load sprites --
         # Load play button :
         self.start_button = arcade.Sprite("assets/buttons/play.png", 0.1)
+        self.exit_button = arcade.Sprite("assets/buttons/exit.png", 0.1)
         self.sprite_list.append(self.start_button)
+        self.sprite_list.append(self.exit_button)
         # Load background
         try:
             self.background = arcade.load_texture("assets/background/background_4.png")
@@ -115,8 +117,13 @@ class MenuView(arcade.View):
         for text in texts:
             text.draw()
 
+        # Start button placement
         self.start_button.center_x = self.window.width / 2
         self.start_button.center_y = self.window.height * 0.33
+
+        # Exit button placement
+        self.exit_button.center_x = self.window.width - 10 - self.exit_button.width / 2
+        self.exit_button.center_y = self.window.height - 10 - self.exit_button.height / 2
 
         if len(texts) != 0:
             self.start_button.center_y = texts[-1].y - self.start_button.height
@@ -153,6 +160,7 @@ class MenuView(arcade.View):
             top=0,
         )
         arcade.draw_texture_rect(self.player_texture, player_rect)
+
 
         return None
 
@@ -201,21 +209,30 @@ class MenuView(arcade.View):
                     message="Loading...",
                     after_event="switch_game",
                 )
-                # EventBus.broadcast_event("switch_game")
+            if sprite == self.exit_button:
+                exit()
+            
 
         return None
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
-        """Detect collision of the mouse with the start button, and
-        change the cursor if the mouse overlaps the start button"""
+        """Detect collision of the mouse with button, and
+        change the cursor if the mouse overlaps a button"""
         if self.start_button.collides_with_point((x, y)):
             c = self.window.get_system_mouse_cursor(self.window.CURSOR_HAND)
             self.start_button.scale = 0.105
             self.window.set_mouse_cursor(c)
+        elif self.exit_button.collides_with_point((x, y)):
+            c = self.window.get_system_mouse_cursor(self.window.CURSOR_HAND)
+            self.exit_button.scale = 0.105
+            self.window.set_mouse_cursor(c)
         else:
             c = self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
             self.start_button.scale = 0.1
+            self.exit_button.scale = 0.1
             self.window.set_mouse_cursor(c)
+
+
         return super().on_mouse_motion(x, y, dx, dy)
 
     def on_show_view(self) -> None:

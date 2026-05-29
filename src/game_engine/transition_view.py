@@ -80,3 +80,8 @@ class TransitionView(arcade.View):
             # Execute event if time is elapsed
             EventBus.broadcast_event(self.event_after_transition)
         return None
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.F11:
+            EventBus.broadcast_event('toggle_fullscreen')
+        return super().on_key_press(symbol, modifiers)

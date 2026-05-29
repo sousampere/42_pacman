@@ -13,6 +13,7 @@ from src.event_bus import cheat_manager, game_manager
 from src.event_bus.event_bus import EventBus
 
 PLAYER_SPEED: float = 0.25
+# GHOST_SPEED: float = 0.3
 GHOST_SPEED: float = 0.3
 SUPER_PACGUM_TIME: int = 10
 
@@ -182,6 +183,7 @@ class GameState:
 
         if len(self.pacgum) == 0:
             EventBus.broadcast_event("next_level")
+            EventBus.broadcast_event("next_engine_level")
 
     def _update_heatmaps(self) -> None:
         px, py = round(self.player._x), round(self.player._y)

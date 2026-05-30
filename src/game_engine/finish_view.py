@@ -62,7 +62,7 @@ class FinishView(arcade.View):
 
         # Write "Game Over !"
         game_over_text = arcade.Text(
-            self.end_game_status,
+            self.end_game_status + f' Score: {self.score}',
             self.window.width / 2,
             self.window.height * 0.9,
             color=arcade.color.WHITE_SMOKE,

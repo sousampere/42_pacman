@@ -20,8 +20,10 @@ ajouter wasd
 fix spam next level in cheat mode (indice: premier level vers 2eme spam)
 Ajouter bouton exit main menu
 Ajouter return to menu sur la pause
-Game over: display final score
-Finish: Displaye final score + GG
+
+X Game over: display final score
+
+X Finish: Displaye final score + GG
 
 # 💻 Instructions
 (WIP)

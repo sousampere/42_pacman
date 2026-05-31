@@ -70,8 +70,8 @@ Le jeu doit intégrer un générateur de labyrinthes externe (package A-Maze-ing
 
 **Must have (indispensable)**
 
-- [❌] Lancement via `python3 pac-man.py config.json`
-- [❌] Lecture et validation du fichier de configuration JSON (avec commentaires `#`) avec :
+- [✅] Lancement via `python3 pac-man.py config.json`
+- [✅] Lecture et validation du fichier de configuration JSON (avec commentaires `#`) avec :
     - [❌] Chemin de highscore
     - [❌] Liste des niveaux
         - [❌] width

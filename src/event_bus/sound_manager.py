@@ -1,3 +1,5 @@
+from pyglet.media import Player as PygletPlayer
+
 import arcade
 
 
@@ -19,7 +21,7 @@ class SoundManager:
         )
         self.ghost_death = arcade.load_sound("assets/sfx/ghost_death.wav")
         self.transition_sound = arcade.load_sound("assets/sfx/transition.wav")
-        self.music_player = None
+        self.music_player: PygletPlayer | None = None
 
     def event_play_menu_music(self, speed: float = 1) -> None:
         """Starts playing the menu music"""

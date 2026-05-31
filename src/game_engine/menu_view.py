@@ -1,11 +1,16 @@
 import arcade
 from typing import TYPE_CHECKING
 
-from arcade import Text, sound
+from arcade import Text
 
-from src.event_bus import event_bus
 from src.event_bus.event_bus import EventBus
-from src.leaderboard import Leaderboard, LeaderboardError, LeaderboardFileError, LeaderboardFilePathError, LeaderboardManager
+from src.leaderboard import (
+    Leaderboard,
+    LeaderboardError,
+    LeaderboardFileError,
+    LeaderboardFilePathError,
+    LeaderboardManager,
+)
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine
@@ -18,7 +23,8 @@ class MenuView(arcade.View):
         super().__init__()
         self.engine = engine
         self.background_color = (0, 8, 20)  # Soft black background
-        self.sprite_list: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList[arcade.Sprite] = \
+            arcade.SpriteList()
 
         # -- Load sprites --
         # Load play button :
@@ -28,10 +34,16 @@ class MenuView(arcade.View):
         self.sprite_list.append(self.exit_button)
         # Load background
         try:
-            self.background = arcade.load_texture("assets/background/background_4.png")
+            self.background = arcade.load_texture(
+                "assets/background/background_4.png"
+            )
         except (FileNotFoundError, PermissionError):
-            raise NotImplementedError("NOT IMPLEMENTED : Missing background")
-        self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
+            raise NotImplementedError(
+                "NOT IMPLEMENTED : Missing background"
+            )
+        self.leaderboard = Leaderboard(
+            signature=self.engine.config.signature, scores=[]
+        )
 
         # Create a player sprite that will be at the bottom
         sheet = arcade.load_spritesheet("assets/entity/spritesheet.png")
@@ -108,7 +120,10 @@ class MenuView(arcade.View):
                     - self.window.height / 10
                     - (self.window.height / 20) * index,
                     color=color,
-                    font_size=min(self.window.width * 0.02, self.window.height * 0.02),
+                    font_size=min(
+                        self.window.width * 0.02,
+                        self.window.height * 0.02,
+                    ),
                     anchor_x="center",
                     anchor_y="center",
                     font_name="Early GameBoy",
@@ -119,11 +134,14 @@ class MenuView(arcade.View):
 
         # Start button placement
         self.start_button.center_x = self.window.width / 2
-        self.start_button.center_y = self.window.height * 0.33
+        self.start_button.center_y = \
+            self.window.height * 0.33
 
         # Exit button placement
-        self.exit_button.center_x = self.window.width - 10 - self.exit_button.width / 2
-        self.exit_button.center_y = self.window.height - 10 - self.exit_button.height / 2
+        self.exit_button.center_x = \
+            self.window.width - 10 - self.exit_button.width / 2
+        self.exit_button.center_y = \
+            self.window.height - 10 - self.exit_button.height / 2
 
         if len(texts) != 0:
             self.start_button.center_y = texts[-1].y - self.start_button.height
@@ -134,12 +152,13 @@ class MenuView(arcade.View):
 
         # Add control description text
         ctrl_text = "Use control arrows to move. Don't die to win."
-        ctrl_text_obj = Text(
+        Text(
             ctrl_text,
             self.window.width / 2,
             5,
             color=arcade.color.YELLOW,
-            font_size=min(self.window.width * 0.02, self.window.height * 0.02),
+            font_size=min(self.window.width * 0.02,
+                          self.window.height * 0.02),
             anchor_x="center",
             # anchor_y="",
             font_name="Early GameBoy",
@@ -161,7 +180,6 @@ class MenuView(arcade.View):
         )
         arcade.draw_texture_rect(self.player_texture, player_rect)
 
-
         return None
 
     def on_update(self, delta_time: float) -> bool | None:
@@ -171,10 +189,12 @@ class MenuView(arcade.View):
         self.player_pos += 3 * self.player_direction
         if self.player_pos > self.window.width:
             self.player_direction = -1
-            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+            self.player_texture = \
+                arcade.Texture.flip_horizontally(self.player_texture)
         if self.player_pos < -self.player_texture.width:
             self.player_direction = 1
-            self.player_texture = arcade.Texture.flip_horizontally(self.player_texture)
+            self.player_texture = \
+                arcade.Texture.flip_horizontally(self.player_texture)
         return super().on_update(delta_time)
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
@@ -210,8 +230,7 @@ class MenuView(arcade.View):
                     after_event="switch_game",
                 )
             if sprite == self.exit_button:
-                exit()
-            
+                exit(0)
 
         return None
 
@@ -232,21 +251,28 @@ class MenuView(arcade.View):
             self.exit_button.scale = 0.1
             self.window.set_mouse_cursor(c)
 
-
         return super().on_mouse_motion(x, y, dx, dy)
 
     def on_show_view(self) -> None:
         # Refresh leaderboard
         try:
             self.leaderboard = LeaderboardManager.load_leaderboard(
-                self.engine.config.highscore_filename, self.engine.config.signature
+                self.engine.config.highscore_filename,
+                self.engine.config.signature,
             )
         except LeaderboardFileError:
-            print('[Warning] Invalid leaderboard file. Ignoring and using default.')
-            self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
+            print(
+                '[Warning] Invalid leaderboard file. '
+                'Ignoring and using default.'
+            )
+            self.leaderboard = Leaderboard(
+                signature=self.engine.config.signature, scores=[]
+            )
         except (LeaderboardFilePathError, LeaderboardError) as e:
             print(f'[Warning] {e}. Ignoring this leaderboard.')
-            self.leaderboard = Leaderboard(signature=self.engine.config.signature, scores=[])
+            self.leaderboard = Leaderboard(
+                signature=self.engine.config.signature, scores=[]
+            )
 
         EventBus.broadcast_event("stop_music")
         EventBus.broadcast_event("play_menu_music")

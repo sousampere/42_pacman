@@ -1,3 +1,5 @@
+from typing import Any
+
 import arcade
 from numpy import ndarray
 
@@ -30,12 +32,16 @@ class Ghost(Entity, Movable):
 
     def update(
         self,
-        heat_map,
-        max_x,
-        max_y,
-        occupied: frozenset[tuple[int, int]],
         delta_time: float = 1 / 60,
+        *args: Any,
+        heat_map: list[ndarray] | None = None,
+        max_x: int = -1,
+        max_y: int = -1,
+        occupied: frozenset[tuple[int, int]] = frozenset(),
+        **kwargs: Any,
     ) -> None:
+        if heat_map is None:
+            return
         arrived = self._move_toward_target(delta_time)
         if arrived:
             pos = (round(self._x), round(self._y))
@@ -64,5 +70,5 @@ class Ghost(Entity, Movable):
         self.texture = self.textures[self._id * 4 + id_textures]
 
     @property
-    def is_dead(self):
+    def is_dead(self) -> bool:
         return self._is_dead

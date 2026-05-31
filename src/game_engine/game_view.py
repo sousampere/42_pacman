@@ -90,17 +90,17 @@ class GameView(arcade.View):
                 EventBus.broadcast_event("toggle_freeze_ghosts")
 
         # Movement
-        if symbol == arcade.key.UP\
-            or symbol == arcade.key.W:
+        if symbol == arcade.key.UP \
+                or symbol == arcade.key.W:
             self.engine.game_state.player.dir = (0, 1)
-        if symbol == arcade.key.DOWN\
-            or symbol == arcade.key.S:
+        if symbol == arcade.key.DOWN \
+                or symbol == arcade.key.S:
             self.engine.game_state.player.dir = (0, -1)
-        if symbol == arcade.key.LEFT\
-            or symbol == arcade.key.A:
+        if symbol == arcade.key.LEFT \
+                or symbol == arcade.key.A:
             self.engine.game_state.player.dir = (-1, 0)
-        if symbol == arcade.key.RIGHT\
-            or symbol == arcade.key.D:
+        if symbol == arcade.key.RIGHT \
+                or symbol == arcade.key.D:
             self.engine.game_state.player.dir = (1, 0)
 
         if symbol == arcade.key.F11:

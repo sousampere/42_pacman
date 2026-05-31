@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Any
 
 from mazegenerator.mazegenerator import MazeGenerator
 from numpy.typing import NDArray
@@ -30,7 +31,7 @@ class MazeAdapter:
 
     def get_maze(
         self, size: tuple[int, int], seed: int = DEFAULT_SEED
-    ) -> tuple[NDArray, NDArray]:
+    ) -> tuple[NDArray[Any], NDArray[Any]]:
         try:
             maze = MazeGenerator(size=size, seed=seed)
         except RecursionError as e:
@@ -39,8 +40,8 @@ class MazeAdapter:
 
     def get_multiple_maze(
         self, levels: list[dict[str, int]], seed: int = DEFAULT_SEED
-    ) -> list[tuple[NDArray, NDArray, int]]:
-        maze_list: list[tuple[NDArray, NDArray, int]] = []
+    ) -> list[tuple[NDArray[Any], NDArray[Any], int]]:
+        maze_list: list[tuple[NDArray[Any], NDArray[Any], int]] = []
         for i, level in enumerate(levels):
             size = (level.get("width", 20), level.get("height", 10))
             if i != 0:
@@ -50,8 +51,8 @@ class MazeAdapter:
         return maze_list
 
     def get_walls_amd_path_coords(
-        self, maze: NDArray
-    ) -> tuple[NDArray, NDArray]:
+        self, maze: NDArray[Any]
+    ) -> tuple[NDArray[Any], NDArray[Any]]:
         m = maze[::-1]
         h, w = m.shape
 
@@ -77,7 +78,7 @@ class MazeAdapter:
 
         wall_coords = np.unique(np.concatenate(all_segments), axis=0)
 
-        def row_diff(A: NDArray, B: NDArray) -> np.ndarray:
+        def row_diff(A: NDArray[Any], B: NDArray[Any]) -> np.ndarray:
             A = np.ascontiguousarray(A).astype(np.int32)
             B = np.ascontiguousarray(B).astype(np.int32)
 

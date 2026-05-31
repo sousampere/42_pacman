@@ -1,8 +1,12 @@
 import time
+from typing import TYPE_CHECKING
 
 import arcade
 
 from src.event_bus.event_bus import EventBus
+
+if TYPE_CHECKING:
+    from ..game_engine.game_engine import GameEngine
 
 
 class TransitionView(arcade.View):

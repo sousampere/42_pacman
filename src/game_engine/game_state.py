@@ -1,11 +1,12 @@
-from sched import Event
 import time
+from typing import Any
 
 import numpy as np
 import arcade
 from numpy.typing import NDArray
 
 from src.algorithms.heat_map import HeatMap
+from src.entity.entity import Entity
 from src.entity.ghost import Ghost
 from src.entity.pacgum import Pacgum
 from src.entity.player import Player
@@ -22,12 +23,12 @@ SUPER_PACGUM_TIME: int = 10
 class GameState:
     def __init__(
         self,
-        maze_data: tuple[NDArray, NDArray, int],
+        maze_data: tuple[NDArray[Any], NDArray[Any], int],
         cheat_mng: cheat_manager.CheatManager,
         game_mng: game_manager.GameManager,
         max_time: int,
     ) -> None:
-        pts: NDArray = maze_data[1]
+        pts: NDArray[Any] = maze_data[1]
         self._pts = pts
         self.cheat_mng = cheat_mng
         self.game_mng = game_mng
@@ -50,7 +51,7 @@ class GameState:
             (max_x, max_y),
         ]
 
-        self.entity: arcade.SpriteList = arcade.SpriteList()
+        self.entity: arcade.SpriteList[Entity] = arcade.SpriteList()
         self._init_pacgums(pts, closest_point, corners)
         self._init_ghosts_super_pacgum(pts, corners)
         self._init_player(closest_point, pts)
@@ -60,9 +61,9 @@ class GameState:
 
     def _init_pacgums(
         self,
-        pts: NDArray,
-        closest_point: tuple,
-        corners: list,
+        pts: NDArray[Any],
+        closest_point: tuple[Any, ...],
+        corners: list[Any],
     ) -> None:
         occupied = [closest_point] + corners
         pac_gum_pts = pts.copy()
@@ -79,7 +80,9 @@ class GameState:
             self.pacgum.append(p)
             self.entity.append(p)
 
-    def _init_ghosts_super_pacgum(self, pts: NDArray, corners: list) -> None:
+    def _init_ghosts_super_pacgum(
+        self, pts: NDArray[Any], corners: list[Any]
+    ) -> None:
         self.ghosts: list[Ghost] = []
         self.super_pacgum: list[SuperPacgum] = []
         for i, corner in enumerate(corners):
@@ -97,13 +100,15 @@ class GameState:
             for g in self.ghosts:
                 g.switch_to_texture(2)
 
-    def _init_player(self, closest_point: tuple, pts: NDArray) -> None:
+    def _init_player(
+        self, closest_point: tuple[Any, ...], pts: NDArray[Any]
+    ) -> None:
         self.player = Player(
             closest_point, pts, PLAYER_SPEED, self.cheat_mng.cheat_mode
         )
         self.entity.append(self.player)
 
-    def _init_heatmaps(self, pts: NDArray) -> None:
+    def _init_heatmaps(self, pts: NDArray[Any]) -> None:
         self.heat_map_manager = HeatMap(pts)
         self._rand_target = [
             self._random_target(),
@@ -299,11 +304,11 @@ class GameState:
                 )
             )
             g.update(
-                self.heat_map,
-                self.heat_map_manager.max_x,
-                self.heat_map_manager.max_y,
-                occupied,
                 delta_time,
+                heat_map=self.heat_map,
+                max_x=self.heat_map_manager.max_x,
+                max_y=self.heat_map_manager.max_y,
+                occupied=occupied,
             )
 
     @staticmethod

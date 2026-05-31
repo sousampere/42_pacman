@@ -3,8 +3,11 @@ import arcade
 from typing import TYPE_CHECKING
 
 from src.event_bus.event_bus import EventBus
-from src.game_engine import game_state
-from src.leaderboard import LeaderboardError, LeaderboardFileError, LeaderboardFilePathError, LeaderboardManager
+from src.leaderboard import (
+    LeaderboardFileError,
+    LeaderboardFilePathError,
+    LeaderboardManager,
+)
 
 if TYPE_CHECKING:
     from ..game_engine.game_engine import GameEngine

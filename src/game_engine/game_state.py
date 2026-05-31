@@ -1,3 +1,4 @@
+from sched import Event
 import time
 
 import numpy as np
@@ -92,6 +93,9 @@ class GameState:
             )
             self.ghosts.append(g)
             self.entity.append(g)
+        if self.cheat_mng.cheat_mode:
+            for g in self.ghosts:
+                g.switch_to_texture(2)
 
     def _init_player(self, closest_point: tuple, pts: NDArray) -> None:
         self.player = Player(

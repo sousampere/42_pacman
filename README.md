@@ -16,12 +16,12 @@ The objective is to build a fully playable, modular game where players navigate 
 
 The final product is designed to be a deployment-ready package, suitable for distribution on public gaming platforms like Steam or Itch.io.
 
-ajouter wasd
-fix spam next level in cheat mode (indice: premier level vers 2eme spam)
-Ajouter bouton exit main menu
-Ajouter return to menu sur la pause
-Game over: display final score
-Finish: Displaye final score + GG
+X ajouter wasd
+X fix spam next level in cheat mode (indice: premier level vers 2eme spam)
+X Ajouter bouton exit main menu
+X Ajouter return to menu sur la pause
+X Game over: display final score
+X Finish: Displaye final score + GG
 
 # 💻 Instructions
 (WIP)

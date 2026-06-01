@@ -265,6 +265,9 @@ class GameState:
             elif not invincibility:
                 self.player.die()
                 EventBus.broadcast_event("remove_life")
+                for g in self.ghosts:
+                    g._x, g._y = g.spawn_point
+                    g._target = (g._x, g._y)
 
     def _check_pacgum_collision(self) -> None:
         player_pos = (round(self.player._x), round(self.player._y))

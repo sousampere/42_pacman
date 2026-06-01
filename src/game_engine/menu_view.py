@@ -151,7 +151,7 @@ class MenuView(arcade.View):
             )
 
         # Add control description text
-        ctrl_text = "Use control arrows to move. Don't die to win."
+        ctrl_text = "Use control arrows or WASD to move. Don't die to win."
         Text(
             ctrl_text,
             self.window.width / 2,

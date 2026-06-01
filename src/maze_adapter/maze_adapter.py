@@ -38,7 +38,7 @@ class MazeAdapter:
         self, size: tuple[int, int], seed: int = DEFAULT_SEED
     ) -> tuple[NDArray[Any], NDArray[Any]]:
         try:
-            maze = MazeGenerator(size=size, seed=seed)
+            maze = MazeGenerator(size=size, seed=seed, perfect=False)
         except RecursionError as e:
             raise MazeAdapterError(str(e))
         return self.get_walls_amd_path_coords(np.array(maze.maze))

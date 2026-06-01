@@ -16,7 +16,8 @@ def main() -> None:
 
     if (len(sys.argv) != 2):
         print(
-            "[Error] Please provide only one argument: the configuration JSON file."
+            "[Error] Please provide only one"
+            " argument: the configuration JSON file."
         )
         exit(1)
 

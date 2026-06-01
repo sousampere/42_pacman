@@ -20,7 +20,7 @@ class ConfigJSONError(ConfigError):
 
 class Config(BaseModel):
     highscore_filename: str = Field(
-        default="leaderboard.json",
+        default="data/leaderboard.json",
         description="Leaderboard input/output source",
     )
     level: list[dict[str, int]] = Field(
@@ -28,7 +28,7 @@ class Config(BaseModel):
         description="List of levels dimensions (width,height)",
     )
     lives: int = Field(
-        default=20, description="Number of lives of the player"
+        default=3, description="Number of lives of the player", le=999
     )
     pacgum_points: int = Field(
         default=10, description="Points earned for each pacgum eaten"
@@ -44,7 +44,7 @@ class Config(BaseModel):
         description="Seed on which the random generation is based",
     )
     max_time: int = Field(
-        default=90, description="Max duration of each level"
+        default=90, description="Max duration of each level", ge=90
     )
     signature: str = Field(
         default="",
@@ -77,23 +77,28 @@ class Config(BaseModel):
         self.signature = hash_obj.hexdigest()
 
         if self.lives < 1:
-            print('[Warning] Using default value on lives.')
-            self.lives = 20
+            print('[Warning] Invalid lives value. '
+                  'Using default value on lives.')
+            self.lives = 3
 
         if self.pacgum_points < 0:
-            print('[Warning] Using default value on pacgum_points.')
+            print('[Warning] Invalid pacgum_points value. '
+                  'Using default value on pacgum_points.')
             self.pacgum_points = 10
 
         if self.super_pacgum_points < 0:
-            print('[Warning] Using default value on super_pacgum_points.')
+            print('[Warning] Invalid super_pacgum_points value. '
+                  'Using default value on super_pacgum_points.')
             self.super_pacgum_points = 50
 
         if self.ghost_points < 0:
-            print('[Warning] Using default value on ghost_points.')
+            print('[Warning] Invalid ghost_points value. '
+                  'Using default value on ghost_points.')
             self.ghost_points = 200
 
         if self.max_time < 1:
-            print('[Warning] Using default value on max_time.')
+            print('[Warning] Invalid max_time value. '
+                  'Using default value on max_time.')
             self.max_time = 90
 
         return self
@@ -201,10 +206,18 @@ class ConfigLoader(ABCConfigLoader):
                 data.pop(param)  # remove item if not valid
                 ConfigLoader.warn_invalid_key(param)
         # string
-        for param in ["highscore_filename", "seed"]:
+        for param in ["highscore_filename"]:
             if param in data.keys() and type(data[param]) is not str:
                 data.pop(param)  # remove item if not valid
                 ConfigLoader.warn_invalid_key(param)
+
+        for param in ["seed"]:
+            if param in data.keys():
+                try:
+                    data['seed'] = str(data['seed'])
+                except ValueError:
+                    data.pop(param)  # remove item if not valid
+                    ConfigLoader.warn_invalid_key(param)
 
         # Verify 'level' key validity. Remove it if invalid
         if "level" in data.keys():
@@ -254,9 +267,9 @@ class ConfigLoader(ABCConfigLoader):
             config = Config(**data)
         except (ConfigError):
             raise ConfigJSONError("Invalid data provided in your JSON file")
-        except (ValidationError):
+        except (ValidationError) as e:
             raise ConfigJSONError(
-                "Invalid value in your configuration. "
+                f"Invalid value in your configuration: {e.errors()[0]['msg']} "
                 "Ignoring configuration and using default parameters."
             )
 

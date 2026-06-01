@@ -22,26 +22,26 @@
 
 | ID | Scénario | Commande | Résultat attendu | Statut |
 |---|---|---|---|---|
-| L01 | Lancement normal | `python3 pac-man.py config.json` | Jeu démarre, menu principal affiché | ☐ |
-| L02 | Argument manquant | `python3 pac-man.py` | Message d'erreur clair, pas de traceback | ☐ |
-| L03 | Argument en trop | `python3 pac-man.py a.json b.json` | Message d'erreur clair, pas de traceback | ☐ |
-| L04 | Fichier inexistant | `python3 pac-man.py absent.json` | Message d'erreur clair, pas de traceback | ☐ |
-| L05 | Fichier non JSON | `python3 pac-man.py README.md` | Message d'erreur clair, pas de traceback | ☐ |
+| L01 | Lancement normal | `python3 pac-man.py config.json` | Jeu démarre, menu principal affiché | ✅ |
+| L02 | Argument manquant | `python3 pac-man.py` | Message d'erreur clair, pas de traceback | ✅ |
+| L03 | Argument en trop | `python3 pac-man.py a.json b.json` | Message d'erreur clair, pas de traceback | ✅ |
+| L04 | Fichier inexistant | `python3 pac-man.py absent.json` | Message d'erreur clair, pas de traceback | ✅ |
+| L05 | Fichier non JSON | `python3 pac-man.py README.md` | Message d'erreur clair, pas de traceback | ✅ |
 
 ### 1.2 Robustesse de la configuration
 
 | ID | Scénario | Config injectée | Résultat attendu | Statut |
 |---|---|---|---|---|
-| C01 | Clé manquante (`lives`) | Supprimer `lives` du JSON | Clampe sur défaut (3), log message, jeu démarre | ☐ |
-| C02 | Valeur négative (`lives: -1`) | `"lives": -1` | Clampe sur défaut (3), log message, jeu démarre | ☐ |
-| C03 | Valeur trop élevée (`lives: 999`) | `"lives": 999` | Accepté ou clampe sur max, jeu démarre | ☐ |
-| C04 | Mauvais type (`lives: "trois"`) | `"lives": "trois"` | Clampe sur défaut, log message, jeu démarre | ☐ |
-| C05 | Clé inconnue | Ajouter `"foo": "bar"` | Clé ignorée, jeu démarre normalement | ☐ |
-| C06 | JSON vide | `{}` | Tous les défauts appliqués, jeu démarre | ☐ |
-| C07 | Commentaires `#` dans le JSON | Ligne `# commentaire` avant une clé | Ignoré, JSON parsé correctement | ☐ |
-| C08 | Points négatifs (`points_per_pacgum: -5`) | `"points_per_pacgum": -5` | Clampe sur 0 ou défaut, log message | ☐ |
-| C09 | Seed invalide (`seed: "abc"`) | `"seed": "abc"` | Clampe sur défaut (42), log message | ☐ |
-| C10 | Timer à 0 (`level_max_time: 0`) | `"level_max_time": 0` | Clampe sur défaut ou min, log message | ☐ |
+| C01 | Clé manquante (`lives`) | Supprimer `lives` du JSON | Clampe sur défaut (3), log message, jeu démarre | ✅ |
+| C02 | Valeur négative (`lives: -1`) | `"lives": -1` | Clampe sur défaut (3), log message, jeu démarre | ✅ |
+| C03 | Valeur trop élevée (`lives: 999`) | `"lives": 999` | Accepté ou clampe sur max, jeu démarre | ✅ |
+| C04 | Mauvais type (`lives: "trois"`) | `"lives": "trois"` | Clampe sur défaut, log message, jeu démarre | ✅ |
+| C05 | Clé inconnue | Ajouter `"foo": "bar"` | Clé ignorée, jeu démarre normalement | ✅ |
+| C06 | JSON vide | `{}` | Tous les défauts appliqués, jeu démarre | ✅ |
+| C07 | Commentaires `#` dans le JSON | Ligne `# commentaire` avant une clé | Ignoré, JSON parsé correctement | ✅ |
+| C08 | Points négatifs (`points_per_pacgum: -5`) | `"points_per_pacgum": -5` | Clampe sur 0 ou défaut, log message | ✅ |
+| C09 | Seed invalide (`seed: "abc"`) | `"seed": "abc"` | Clampe sur défaut (42), log message | ✅ |
+| C10 | Timer à 0 (`level_max_time: 0`) | `"level_max_time": 0` | Clampe sur défaut ou min, log message | ✅ |
 
 ---
 
@@ -49,8 +49,8 @@
 
 | ID | Scénario | Résultat attendu | Statut |
 |---|---|---|---|
-| M01 | Niveau 1 avec seed fixe (42) | Labyrinthe identique à chaque lancement | ☐ |
-| M02 | Niveaux suivants avec seed aléatoire | Labyrinthes différents à chaque lancement | ☐ |
+| M01 | Niveau 1 avec seed fixe (42) | Labyrinthe identique à chaque lancement | ✅ |
+| M02 | Niveaux suivants avec seed aléatoire | Labyrinthes différents à chaque lancement | ✅ |
 | M03 | Labyrinthe avec `PERFECT=False` | Corridors avec boucles, compatible Pac-Man | ☐ |
 | M04 | Dimensions configurées (width, height) | Labyrinthe respecte les dimensions | ☐ |
 | M05 | Package A-Maze-ing échoue (simuler exception) | Message d'erreur clair, pas de traceback | ☐ |

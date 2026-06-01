@@ -54,7 +54,7 @@ class GameEngine:
         self.game_manager = GameManager(
             config.lives, len(config.level), config.max_time
         )
-        self.maze_list = MazeAdapter().get_multiple_maze(config.level)
+        self.maze_list = MazeAdapter(signature=config.signature).get_multiple_maze(config.level, config.seed)
         self.game_state = GameState(
             self.maze_list[self.game_manager.current_maze],
             self.cheat_manager,

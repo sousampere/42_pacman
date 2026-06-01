@@ -101,7 +101,6 @@ help:
 
 # Install project dependencies.
 install:
-	UV_SKIP_WHEEL_FILENAME_CHECK=1
 	$(ECHO) "\033[2J\033[H"
 	$(ECHO) "$(YELLOW)╔════════════════════════════════════════════════════════════════╗"
 	$(ECHO) "$(YELLOW)║                                                                ║"
@@ -133,7 +132,7 @@ install:
 		fi;
 	fi;
 	$(ECHO) -n "$(CYAN)Installing dependencies with $(INSTALL)...$(RESET) ";
-	if $(INSTALL) $(INSTALL_CMD) > /dev/null 2>&1; then
+	if UV_SKIP_WHEEL_FILENAME_CHECK=1 $(INSTALL) $(INSTALL_CMD) > /dev/null 2>&1; then
 		$(ECHO) "$(GREEN)✓$(RESET)";
 	else
 		$(ECHO) "$(RED)✗$(RESET)";

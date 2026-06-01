@@ -16,8 +16,7 @@ def main() -> None:
 
     if (len(sys.argv) != 2):
         print(
-            "No configuration file given in input. "
-            "Please provide as an argument."
+            "[Error] Please provide only one argument: the configuration JSON file."
         )
         exit(1)
 

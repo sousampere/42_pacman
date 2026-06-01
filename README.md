@@ -3,6 +3,9 @@
 # 42 Pac-Man, by sousampere &amp; keroberos68
 A 42 project made by gtourdia &amp; kebertra, recreating the Pac-Man game in python.
 
+![Gif](https://github.com/sousampere/42_pacman/blob/fix/lint/assets/readme_assets/in-game.gif?raw=true)
+
+
 # 📝​ Description
 
 This project is a modern recreation of the iconic 1980s arcade classic, Pac-Man, developed in Python 3.10+.
@@ -99,6 +102,13 @@ In order to make highscores fair, scores are stored depending on the signature o
 # 🌅​ Maze Generation
 
 Maze generation is done in the MazeAdapter class that translates the generated maze from the provided MazeGenerator package into a usable maze for our implementation.
+
+# 🧑‍💻 Cheat Mode
+
+Use ↑ ↑ ↓ ↓ ← → ← → A B (Konami code variant) to enable Cheat Mode ;)
+
+![Gif](https://github.com/sousampere/42_pacman/blob/fix/lint/assets/readme_assets/in-game-cheat.gif?raw=true)
+
 
 # 🔬​ Implementation
 

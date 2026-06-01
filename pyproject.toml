@@ -9,7 +9,9 @@ dependencies = [
     "flake8>=7.3.0",
     "mazegenerator",
     "numpy>=2.4.4",
+    "pillow>=11.3.0",
     "pydantic>=2.13.3",
+    "pydub>=0.25.1",
     "pypubsub>=4.0.7",
 ]
 

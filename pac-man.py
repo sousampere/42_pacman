@@ -1,6 +1,7 @@
 # Made with <3 by gtourdia & kebertra
 
 from src.config.config_loader import Config, ConfigError, ConfigLoader
+from src.event_bus.asset_validator import AssetValidationError, AssetValidator
 from src.game_engine.game_engine import GameEngine
 from src.game_engine.menu_view import MenuView
 from src.game_engine.game_view import GameView
@@ -18,6 +19,13 @@ def main() -> None:
             "No configuration file given in input. "
             "Please provide as an argument."
         )
+        exit(1)
+
+    # Asset validation
+    try:
+        AssetValidator.validate_assets()
+    except AssetValidationError as e:
+        print(e)
         exit(1)
 
     # Load config

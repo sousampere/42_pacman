@@ -16,43 +16,168 @@ The objective is to build a fully playable, modular game where players navigate 
 
 The final product is designed to be a deployment-ready package, suitable for distribution on public gaming platforms like Steam or Itch.io.
 
-X ajouter wasd
-X fix spam next level in cheat mode (indice: premier level vers 2eme spam)
-X Ajouter bouton exit main menu
-X Ajouter return to menu sur la pause
-X Game over: display final score
-X Finish: Displaye final score + GG
-
 # 💻 Instructions
-(WIP)
 
-# 📖​ Resources
-(WIP)
+## Installation
+
+```make install```
+
+## Running
+
+```make run ARGV=<configuration_path>```
+
+or
+
+```uv run python3 pac-man.py <configuration_path>```
 
 # 🔧​​ Configuration
-(WIP)
+
+The provided configuration file must be a valid JSON file that supports comments with '#'.
+
+Example :
+
+```json
+# This is an example of a configuration file format
+{
+  "highscore_filename": "data/leaderboard.json",
+  "lives": 5,
+  "pacgum_points": 15,
+  "super_pacgum_points": 50,
+  "ghost_points": 150,
+  "seed": "forty-two",
+  "max_time": 90,
+  "level": [
+    {
+      "width": 10,
+      "height": 10
+    },
+    {
+      "width": 15,
+      "height": 10
+    }
+  ]
+}
+```
 
 # 🥇 Highscore
-(WIP)
+
+The highscore file path must be in the ./data folder, in a JSON format.
+
+Depending on which error was triggered by your highscore file, the highscore file can be ignored by the program, or overridden if unreadable.
+
+Example of a highscore file :
+
+```json
+[
+    {
+        "signature": "c0f3b6d07373aa4b239c2f1a99c9e6bb28b2f2d30cf1b1ba35123899056ed357",
+        "scores": [
+            {
+                "username": "gambrinus",
+                "score": 60
+            }
+        ]
+    },
+    {
+        "signature": "f8e9a2242ba341419c7c446690210dceee74f9ae88b4675c63b8a11e4315fdd6",
+        "scores": [
+            {
+                "username": "kebertra",
+                "score": 1030
+            },
+            {
+                "username": "gtourdia",
+                "score": 42
+            }
+        ]
+    }
+]
+```
+
+In order to make highscores fair, scores are stored depending on the signature of the configuration file.
 
 # 🌅​ Maze Generation
-(WIP)
+
+Maze generation is done in the MazeAdapter class that translates the generated maze from the provided MazeGenerator package into a usable maze for our implementation.
 
 # 🔬​ Implementation
-(WIP)
+
+We used arcade for the game logic and graphical rendering.
+
+Ghosts are using different algorithms (aggressive, semi-aggressive and random). The user should mostly be careful of the pink ghost.
+
+Ghosts use a hitmap to calculate their path to the player (or the random spot)
+
+Data is validated with precise error handling and pydantic validation.
 
 # 🔗​ General Software Architecture
-(WIP)
+
+### Initialization
+
+AssetValidator: Validate assets presence and format
+
+ConfigParser: Parsing config
+
+LeaderboardManager: Loading and exporting a leaderboard
+
+### Entities
+
+Ghost
+
+Pacgum
+
+Player
+
+Super Pacgum
+
+### Events
+
+EventBus: Register and trigger events
+
+### Managers
+
+GameManager: Global session-level state handling (current_level, etc.)
+
+CheatManager: Switching from normal to cheat mode
+
+ScoreManager: Manages score (getting points, etc.)
+
+SoundManager: Plays sounds in different conditions
+
+### Rendering
+
+Menu, pause, transition and finish views to render these different state
+
+GameView using Renderer to render the game with the current GameState
+
+### Maze
+
+MazeAdapter to generate the maze with the given package
+
+# 📖​ Resources
+
+Since arcade has not a lot of community support or clear usage examples, we used AI for arcade related questions.
 
 # 🚀 Project Management
-(WIP)
+
+Project Management is organized in different files in the project_management folder
+
+This includes a GANTT diagram, requirement specifications, risks, team, technical architecture and a test plan.
 
 [gtourdia / @sousampere](https://github.com/sousampere)
 
-- (WIP)
+- Config and leaderboard loading and parsing
+- Asset errors handling
+- EventBus, SoundManager
+- Visual rendering in different views
+- Assets creation
 
 [kebertra / @KeroBeros68](https://github.com/KeroBeros68)
 
-- (WIP)
+- Initial project management
+- Entities logic and interface (Entity, Movable, Ghost, Pacgum, Player, SuperPacgum)
+- Ghost chase algorithms and hitmaps
+- Code refactoring
+- ScoreManager, CheatManager, GameManager
 
 ![Logo](https://github.com/sousampere/sousampere/blob/main/42mulhouse.png?raw=true)

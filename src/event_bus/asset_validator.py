@@ -1,7 +1,6 @@
 
 from PIL import Image, UnidentifiedImageError
-from pydub import AudioSegment
-import pydub.exceptions
+import wave
 
 class AssetValidationError(Exception):
     def __init__(self, msg: str = "") -> None:
@@ -45,8 +44,8 @@ class AssetValidator:
             'assets/sfx/transition.wav',
         ]
         
-        AssetValidator.verify_images(images)
-        AssetValidator.verify_sound(sfx)
+        AssetValidator.verify_images(*images)
+        AssetValidator.verify_sound(*sfx)
         return True
     
     @staticmethod
@@ -68,7 +67,7 @@ class AssetValidator:
                 raise AssetValidationError(
                     f'Image {file} is invalid. '
                     'Please provide a valid '
-                    'asset and start again')
+                    'asset and start again.')
         return True
 
     @staticmethod
@@ -76,16 +75,18 @@ class AssetValidator:
         for file in args:
             try:
                 # Try triggering an error
-                AudioSegment.from_wav(file)
+                with wave.open(file, 'rb') as wav_file:
+                    if wav_file.getnframes() == 0:
+                        raise wave.Error('Invalid audio file.')
             except (FileNotFoundError, PermissionError, OSError):
                 raise AssetValidationError(
                     f'Sound {file} not accessible. '
                     'Please provide the '
                     'asset and start again')
-            except (pydub.exceptions.CouldntDecodeError,
+            except (wave.Error,
                     TypeError, IsADirectoryError):
                 raise AssetValidationError(
                     f'Sound {file} is invalid. '
                     'Please provide a valid '
-                    'asset and start again')
+                    'asset and start again.')
         return True

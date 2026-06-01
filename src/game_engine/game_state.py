@@ -181,7 +181,8 @@ class GameState:
         self._update_ghosts(delta_time, freeze_ghosts)
         self.player.update()
         self.remaining_time = int(
-            self.game_mng.start_time + self.max_time - time.time() + self._total_pause_time
+            self.game_mng.start_time + self.max_time - time.time(
+                ) + self._total_pause_time
         )
         if (
             self.remaining_time

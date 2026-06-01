@@ -116,4 +116,3 @@ class GameView(arcade.View):
             delta_time, cheat.freeze_ghosts, cheat.invincibility
         )
         return None
-

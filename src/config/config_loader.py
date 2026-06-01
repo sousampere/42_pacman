@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, ValidationError, model_validator
 
 class ConfigError(Exception):
     def __init__(self, msg: str = "") -> None:
-        super().__init__(f"Config Error: {msg}")
+        super().__init__(f"{msg}")
 
 
 class ConfigFileError(ConfigError):
@@ -159,6 +159,8 @@ class ConfigLoader(ABCConfigLoader):
             raise ConfigFileError("Configuration file not found")
         except PermissionError:
             raise ConfigFileError("You don't have rights to read this file")
+        except UnicodeDecodeError:
+            raise ConfigFileError("Invalid configuration file.")
 
         # Remove comments by removing all chars between a "#" and the next "\n"
         json_string = ConfigLoader.remove_comments(content)

@@ -113,7 +113,14 @@ class LeaderboardManager(ABSLeaderboardManager):
                 file_content = f.read()
         except (FileNotFoundError, PermissionError):
             # raise LeaderboardFileError("Unable to load the leaderboard")
+            print("[Warning] Unable to access your leaderboard. "
+                  "Using default.")
             return Leaderboard(signature=signature, scores=[])
+        except (UnicodeDecodeError):
+            print("[Warning] Invalid leaderboard. "
+                  "It will be overridden with a blank one.")
+            return Leaderboard(signature=signature, scores=[])
+
 
         # JSON conversion
         try:

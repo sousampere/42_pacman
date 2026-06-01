@@ -2,9 +2,11 @@
 from PIL import Image, UnidentifiedImageError
 import wave
 
+
 class AssetValidationError(Exception):
     def __init__(self, msg: str = "") -> None:
         super().__init__(f"Asset validation error: {msg}")
+
 
 class AssetValidator:
     @staticmethod
@@ -43,13 +45,13 @@ class AssetValidator:
             'assets/sfx/super_pacgum.wav',
             'assets/sfx/transition.wav',
         ]
-        
+
         AssetValidator.verify_images(*images)
         AssetValidator.verify_sound(*sfx)
         return True
-    
+
     @staticmethod
-    def verify_images(*args) -> bool:
+    def verify_images(*args: str) -> bool:
         """Load the given images as PIL Image to check its
         validity."""
         for file in args:
@@ -71,7 +73,7 @@ class AssetValidator:
         return True
 
     @staticmethod
-    def verify_sound(*args) -> bool:
+    def verify_sound(*args: str) -> bool:
         for file in args:
             try:
                 # Try triggering an error

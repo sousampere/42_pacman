@@ -2,6 +2,7 @@ import arcade
 from typing import TYPE_CHECKING
 
 from arcade import Text
+import sys
 
 from src.event_bus.event_bus import EventBus
 from src.leaderboard import (
@@ -151,7 +152,7 @@ class MenuView(arcade.View):
             )
 
         # Add control description text
-        ctrl_text = "Use control arrows to move. Don't die to win."
+        ctrl_text = "Use control arrows or WASD to move. Don't die to win."
         Text(
             ctrl_text,
             self.window.width / 2,
@@ -230,7 +231,7 @@ class MenuView(arcade.View):
                     after_event="switch_game",
                 )
             if sprite == self.exit_button:
-                exit(0)
+                sys.exit(0)
 
         return None
 

@@ -1,104 +1,14 @@
 [
     {
-        "signature": "c0f3b6d07373aa4b239c2f1a99c9e6bb28b2f2d30cf1b1ba35123899056ed357",
+        "signature": "105b51767eeb63757481128f7f9979ca08ab43f001f953a02e0a3a5ae9d329ab",
         "scores": [
             {
-                "username": "66",
-                "score": 99.5
-            }
-        ]
-    },
-    {
-        "signature": "f8e9a2242ba341419c7c446690210dceee74f9ae88b4675c63b8a11e4315fdd6",
-        "scores": [
-            {
-                "username": "lhv",
-                "score": 1030
+                "username": "ok",
+                "score": 64
             },
             {
-                "username": "ko",
-                "score": 0
-            },
-            {
-                "username": "finished",
-                "score": 225
-            },
-            {
-                "username": "gre",
-                "score": 75
-            },
-            {
-                "username": "gyu",
-                "score": 1455
-            },
-            {
-                "username": "gregre",
-                "score": 2630
-            },
-            {
-                "username": "gr",
-                "score": 2795
-            },
-            {
-                "username": "ver",
-                "score": 30
-            },
-            {
-                "username": "lucas",
-                "score": 90
-            },
-            {
-                "username": "tretre",
-                "score": 30
-            },
-            {
-                "username": "supergum",
-                "score": 60
-            },
-            {
-                "username": "fewfew",
-                "score": 30
-            },
-            {
-                "username": "dead",
-                "score": 10705
-            },
-            {
-                "username": "dead",
-                "score": 2190
-            },
-            {
-                "username": "goof",
-                "score": 2555
-            },
-            {
-                "username": "username",
-                "score": 245
-            },
-            {
-                "username": "ufwfirewal",
-                "score": 90
-            },
-            {
-                "username": "good",
-                "score": 0
-            },
-            {
-                "username": "few",
-                "score": 0
-            },
-            {
-                "username": "supergum",
-                "score": 120
-            }
-        ]
-    },
-    {
-        "signature": "3e9960054d741568d165737cec0fe8bd767b8253721905f282000ac94e294519",
-        "scores": [
-            {
-                "username": "coolplayer",
-                "score": 150
+                "username": "t",
+                "score": 128
             }
         ]
     }

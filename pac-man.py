@@ -16,17 +16,17 @@ def main() -> None:
 
     if (len(sys.argv) != 2):
         print(
-            "No configuration file given in input. "
-            "Please provide as an argument."
+            "[Error] Please provide only one"
+            " argument: the configuration JSON file."
         )
-        exit(1)
+        sys.exit(1)
 
     # Asset validation
     try:
         AssetValidator.validate_assets()
     except AssetValidationError as e:
         print(e)
-        exit(1)
+        sys.exit(1)
 
     # Load config
     try:

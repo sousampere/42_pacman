@@ -18,9 +18,14 @@ class MazeAdapter:
     def __init__(
         self,
         signature: str = DEFAULT_SIGNATURE,
-        nb_level: int = DEFAULT_NB_LEVEL,
     ) -> None:
         self.__initial_signature: str = signature
+
+    def __str_to_int(self, seed_str: str) -> int:
+        result = 0
+        for c in seed_str:
+            result = (result * 31 + ord(c)) & 0xFFFFFFFF
+        return result
 
     def __hash_to_int(self, hex_str: str) -> int:
         try:
@@ -33,14 +38,16 @@ class MazeAdapter:
         self, size: tuple[int, int], seed: int = DEFAULT_SEED
     ) -> tuple[NDArray[Any], NDArray[Any]]:
         try:
-            maze = MazeGenerator(size=size, seed=seed)
+            maze = MazeGenerator(size=size, seed=seed, perfect=False)
         except RecursionError as e:
             raise MazeAdapterError(str(e))
         return self.get_walls_amd_path_coords(np.array(maze.maze))
 
     def get_multiple_maze(
-        self, levels: list[dict[str, int]], seed: int = DEFAULT_SEED
+        self, levels: list[dict[str, int]], seed: int | str = DEFAULT_SEED
     ) -> list[tuple[NDArray[Any], NDArray[Any], int]]:
+        if isinstance(seed, str):
+            seed = self.__str_to_int(seed)
         maze_list: list[tuple[NDArray[Any], NDArray[Any], int]] = []
         for i, level in enumerate(levels):
             size = (level.get("width", 20), level.get("height", 10))

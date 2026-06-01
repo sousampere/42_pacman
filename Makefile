@@ -101,7 +101,6 @@ help:
 
 # Install project dependencies.
 install:
-	UV_SKIP_WHEEL_FILENAME_CHECK=1
 	$(ECHO) "\033[2J\033[H"
 	$(ECHO) "$(YELLOW)╔════════════════════════════════════════════════════════════════╗"
 	$(ECHO) "$(YELLOW)║                                                                ║"
@@ -133,7 +132,7 @@ install:
 		fi;
 	fi;
 	$(ECHO) -n "$(CYAN)Installing dependencies with $(INSTALL)...$(RESET) ";
-	if $(INSTALL) $(INSTALL_CMD) > /dev/null 2>&1; then
+	if UV_SKIP_WHEEL_FILENAME_CHECK=1 $(INSTALL) $(INSTALL_CMD) > /dev/null 2>&1; then
 		$(ECHO) "$(GREEN)✓$(RESET)";
 	else
 		$(ECHO) "$(RED)✗$(RESET)";
@@ -141,6 +140,11 @@ install:
 	fi;
 	$(ECHO) "$(GREEN)✓ Installation complete$(RESET)";
 
+
+package: install
+	uv run pyinstaller --onefile pac-man.py
+	cp -r ./data ./dist
+	cp -r ./assets ./dist
 
 
 # Run the main program.
@@ -227,7 +231,13 @@ clean:
 	else \
 		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)"; \
 	fi
-
+	$(ECHO) "$(CYAN)Suppression de build...$(RESET)"
+	if find . -type d -name "build"; then \
+		find . -type d -name "build" -exec rm -rf {} + 2>/dev/null; \
+		$(ECHO) "$(GREEN)✓ Dossiers build supprimé$(RESET)"; \
+	else \
+		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)"; \
+	fi
 
 
 # Remove logs after cleaning.
@@ -239,7 +249,13 @@ fclean: clean
 	else
 		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)";
 	fi
-
+	$(ECHO) "$(CYAN)Suppression de dist...$(RESET) "
+	if find . -type d -name "dist"; then \
+		find . -type d -name "dist" -exec rm -rf {} + 2>/dev/null; \
+		$(ECHO) "$(GREEN)✓ Dossiers dist supprimé$(RESET)"; \
+	else \
+		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)"; \
+	fi
 
 
 # ###		GIT RULES 		### #

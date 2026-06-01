@@ -10,7 +10,7 @@ from src.leaderboard import (
 )
 
 if TYPE_CHECKING:
-    from ..game_engine.game_engine import GameEngine
+    from .game_engine import GameEngine
 
 
 class FinishView(arcade.View):
@@ -25,7 +25,7 @@ class FinishView(arcade.View):
         self.username: str = "----------"
         self.leaderboard_output = engine.config.highscore_filename
         self.conf_signature = self.engine.config.signature
-        self.end_game_status = "Finished !"
+        self.end_game_status = "Finished GG !"
         self.score: int
 
         try:

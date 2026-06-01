@@ -32,7 +32,11 @@ class AssetValidator:
             'assets/buttons/menu.png',
             'assets/buttons/play.png',
 
-            'assets/buttons/play.png',
+            'assets/background/background_2.png',
+            'assets/background/background_3.png',
+            'assets/background/background_4.png',
+            'assets/background/background_5.png',
+            'assets/background/background_cheat.png',
         ]
 
         sfx = [

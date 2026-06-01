@@ -20,30 +20,9 @@ class TransitionView(arcade.View):
             "switch_menu"  # Event executed after transition
         )
 
-        try:
-            self.background = arcade.load_texture(
-                "assets/background/background_2.png"
-            )
-        except (FileNotFoundError, PermissionError):
-            raise NotImplementedError("NOT IMPLEMENTED : Missing background")
-
     def on_draw(self) -> bool | None:
         window = arcade.get_window()
         self.clear()
-
-        # Create background
-        if self.background is not None:
-            rect = arcade.Rect(
-                x=self.window.width / 2,
-                y=self.window.height / 2,
-                width=self.window.width,
-                height=self.window.height,
-                left=0,
-                right=0,
-                bottom=0,
-                top=0,
-            )
-            arcade.draw_texture_rect(self.background, rect)
 
         self.engine.game_view.on_draw()
 

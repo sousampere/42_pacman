@@ -121,7 +121,6 @@ class LeaderboardManager(ABSLeaderboardManager):
                   "It will be overridden with a blank one.")
             return Leaderboard(signature=signature, scores=[])
 
-
         # JSON conversion
         try:
             data = json.loads(file_content)

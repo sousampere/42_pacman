@@ -235,7 +235,8 @@ class Renderer:
             text_size: int = int(window.height / 50)
             text = arcade.Text(
                 text=attr_value,
-                x=attrib_rect.x + attrib_rect.width,
+                # x=attrib_rect.x + attrib_rect.width,
+                x=attrib_rect.x + window.width * 0.02,
                 y=attrib_rect.y,
                 font_size=text_size,
                 font_name="Early GameBoy",

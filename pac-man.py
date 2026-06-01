@@ -19,14 +19,14 @@ def main() -> None:
             "[Error] Please provide only one"
             " argument: the configuration JSON file."
         )
-        exit(1)
+        sys.exit(1)
 
     # Asset validation
     try:
         AssetValidator.validate_assets()
     except AssetValidationError as e:
         print(e)
-        exit(1)
+        sys.exit(1)
 
     # Load config
     try:

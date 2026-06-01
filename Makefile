@@ -141,6 +141,11 @@ install:
 	$(ECHO) "$(GREEN)✓ Installation complete$(RESET)";
 
 
+build: install
+	uv run pyinstaller --onefile pac-man.py
+	cp -r ./data ./dist/data
+	cp -r ./assets ./dist/assets
+
 
 # Run the main program.
 # $(PYTHON) $(NAME) $(ARGV)
@@ -238,6 +243,13 @@ fclean: clean
 	else
 		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)";
 	fi
+	$(ECHO) "$(CYAN)Suppression de dist...$(RESET) "
+	if find . -type d -name "dist"; then
+		find . -type d -name "dist" -exec rm -rf {} + 2>/dev/null; \
+		$(ECHO) "$(GREEN)✓ Dir dist supprimé$(RESET)";
+	else
+		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)";
+	rm -rf ./build
 
 
 

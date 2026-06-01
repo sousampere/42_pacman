@@ -53,7 +53,6 @@ class MazeAdapter:
             size = (level.get("width", 20), level.get("height", 10))
             if i != 0:
                 seed += self.__hash_to_int(self.__initial_signature)
-            print(seed)
             wall, path = self.get_maze(size, seed)
             maze_list.append((wall, path, seed))
         return maze_list

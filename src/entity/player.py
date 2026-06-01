@@ -25,9 +25,11 @@ class Player(Entity, Movable):
 
         # init player textures
         self.right_texture = self.textures[18]
-        self.left_texture = self.right_texture.flip_horizontally()
+        self.left_texture = \
+            self.right_texture.flip_horizontally()
         self.right_texture_closed = self.textures[19]
-        self.left_texture_closed = self.right_texture_closed.flip_horizontally()
+        self.left_texture_closed = \
+            self.right_texture_closed.flip_horizontally()
         self.texture = self.right_texture
 
         if cheat_enabled:
@@ -48,7 +50,9 @@ class Player(Entity, Movable):
             if self.__animation_time >= 2:
                 self.__animation_time = 0
 
-            if self.can_move_to(new_x, new_y, (int(self.scale_x), int(self.scale_y))):
+            if self.can_move_to(
+                new_x, new_y, (int(self.scale_x), int(self.scale_y))
+            ):
                 self._target = (float(new_x), float(new_y))
                 if dx < 0:
                     if self.__animation_time > 1 / 2:
@@ -62,14 +66,18 @@ class Player(Entity, Movable):
                         self.texture = self.right_texture_closed
                 if dy > 0:
                     if self.__animation_time > 1 / 2:
-                        self.texture = self.left_texture.flip_diagonally()
+                        self.texture = \
+                            self.left_texture.flip_diagonally()
                     else:
-                        self.texture = self.left_texture_closed.flip_diagonally()
+                        self.texture = \
+                            self.left_texture_closed.flip_diagonally()
                 if dy < 0:
                     if self.__animation_time > 1 / 2:
-                        self.texture = self.right_texture.flip_diagonally()
+                        self.texture = \
+                            self.right_texture.flip_diagonally()
                     else:
-                        self.texture = self.right_texture_closed.flip_diagonally()
+                        self.texture = \
+                            self.right_texture_closed.flip_diagonally()
 
     def die(self) -> None:
         self.respawn()
@@ -83,7 +91,9 @@ class Player(Entity, Movable):
     def switch_to_cheat_texture(self) -> None:
         """Changes the texture of the player to cheat textures"""
         self.right_texture = self.textures[16]
-        self.left_texture = self.right_texture.flip_horizontally()
+        self.left_texture = \
+            self.right_texture.flip_horizontally()
         self.right_texture_closed = self.textures[17]
-        self.left_texture_closed = self.right_texture_closed.flip_horizontally()
+        self.left_texture_closed = \
+            self.right_texture_closed.flip_horizontally()
         self.texture = self.right_texture

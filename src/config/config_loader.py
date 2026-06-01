@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 from json import JSONDecodeError
-from typing import List
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
 
 class ConfigError(Exception):
     def __init__(self, msg: str = "") -> None:
-        super().__init__(f"Config Error: {msg}")
+        super().__init__(f"{msg}")
 
 
 class ConfigFileError(ConfigError):
@@ -67,7 +66,8 @@ class Config(BaseModel):
             f"{self.ghost_points}{self.seed}{self.max_time}"
         )
         for i in range(len(self.level)):
-            if 'width' in self.level[i].keys() and 'height' in self.level[i].keys():
+            if 'width' in self.level[i].keys() \
+                    and 'height' in self.level[i].keys():
                 signature_str = (
                     signature_str
                     + str(self.level[i]["width"])
@@ -159,6 +159,8 @@ class ConfigLoader(ABCConfigLoader):
             raise ConfigFileError("Configuration file not found")
         except PermissionError:
             raise ConfigFileError("You don't have rights to read this file")
+        except UnicodeDecodeError:
+            raise ConfigFileError("Invalid configuration file.")
 
         # Remove comments by removing all chars between a "#" and the next "\n"
         json_string = ConfigLoader.remove_comments(content)
@@ -230,8 +232,11 @@ class ConfigLoader(ABCConfigLoader):
                     ):
                         print(
                             "[Warning] Removed an invalid "
-                            "level in your config. (Dimensions must be at least 10x10 "
-                            ", not exceed 50 in one dimension, and have an area of 400 tiles at maximum)"
+                            "level in your config. "
+                            "(Dimensions must be at least "
+                            "10x10, not exceed 50 in one "
+                            "dimension, and have an area of "
+                            "400 tiles at maximum)"
                         )
                         data["level"].remove(lvl)
         if "level" in data.keys():
@@ -250,7 +255,9 @@ class ConfigLoader(ABCConfigLoader):
         except (ConfigError):
             raise ConfigJSONError("Invalid data provided in your JSON file")
         except (ValidationError):
-            raise ConfigJSONError("Invalid value in your configuration. "
-                                  "Ignoring configuration and using default parameters.")
+            raise ConfigJSONError(
+                "Invalid value in your configuration. "
+                "Ignoring configuration and using default parameters."
+            )
 
         return config

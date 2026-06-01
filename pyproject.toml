@@ -9,6 +9,7 @@ dependencies = [
     "flake8>=7.3.0",
     "mazegenerator",
     "numpy>=2.4.4",
+    "pillow>=11.3.0",
     "pydantic>=2.13.3",
     "pypubsub>=4.0.7",
 ]
@@ -19,6 +20,11 @@ dev = [
     "flake8>=7.3.0",
     "mypy>=1.20.2",
 ]
+
+[tool.mypy]
+[[tool.mypy.overrides]]
+module = "mazegenerator.*"
+ignore_missing_imports = true
 
 [tool.uv.sources]
 mazegenerator = { path = "maze_gen/mazegenerator-00001-py3-none-any.whl" }

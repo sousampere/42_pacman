@@ -16,10 +16,10 @@ class PauseView(arcade.View):
         self.background_color = arcade.color.GRAY
 
         # Sprite for menu button
-        self.sprite_list: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
+        self.sprite_list: arcade.SpriteList[arcade.Sprite] = \
+            arcade.SpriteList()
         self.menu_btn = arcade.Sprite("assets/buttons/menu.png", 0.1)
         self.sprite_list.append(self.menu_btn)
-
 
     def on_draw(self) -> bool | None:
         self.clear()
@@ -79,7 +79,7 @@ class PauseView(arcade.View):
                 EventBus.broadcast_event('reload_views')
 
         return None
-    
+
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
         """Detect collision of the mouse with the menu button, and
         change the cursor if the mouse overlaps the menu button"""
@@ -91,3 +91,4 @@ class PauseView(arcade.View):
             c = self.window.get_system_mouse_cursor(self.window.CURSOR_DEFAULT)
             self.menu_btn.scale = 0.1
             self.window.set_mouse_cursor(c)
+        return None

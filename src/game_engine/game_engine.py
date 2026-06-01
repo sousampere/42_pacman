@@ -102,6 +102,7 @@ class GameEngine:
 
     def switch_game(self) -> None:
         """Change the current to the game view"""
+        self.game_state.resume_timer()
         self.window.show_view(self.game_view)
         speed = 1 + self.game_manager.current_maze / len(self.maze_list)
         EventBus.broadcast_event("stop_music")
@@ -109,6 +110,7 @@ class GameEngine:
 
     def switch_pause(self) -> None:
         """Change the current to the pause view"""
+        self.game_state.pause_timer()
         self.window.show_view(self.pause_view)
 
     def switch_finish(self) -> None:
@@ -145,6 +147,7 @@ class GameEngine:
                 self.game_manager,
                 self.config.max_time,
             )
+            EventBus.broadcast_event("reset_time")
             EventBus.broadcast_event("stop_music")
             EventBus.broadcast_event(
                 "switch_transition",

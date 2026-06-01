@@ -17,17 +17,20 @@ class LeaderboardFileError(Exception):
     def __init__(self, msg: str = "") -> None:
         super().__init__(f"LeaderboardFile Error: {msg}")
 
+
 class LeaderboardFilePathError(Exception):
     """Error related to the leaderboard"""
 
     def __init__(self, msg: str = "") -> None:
         super().__init__(f"Leaderboard File Path Error: {msg}")
 
+
 class Leaderboard(BaseModel):
     """Leaderboard object containing the data of the current leaderboard"""
 
     signature: str
-    scores: list[dict[str, str | int | float]]  # keys: username->str, score->int
+    scores: list[dict[str, str | int | float]]  \
+        # keys: username->str, score->int
 
     @model_validator(mode="after")
     def validate_data(self) -> "Leaderboard":
@@ -45,7 +48,8 @@ class Leaderboard(BaseModel):
             if type(score["username"]) is not str:
                 raise LeaderboardError("Invalid username data type provided")
             # Case if score is not int
-            if type(score["score"]) is not int and type(score["score"]) is not float:
+            if type(score["score"]) is not int \
+                    and type(score["score"]) is not float:
                 raise LeaderboardError("Invalid username data type provided")
             if len(score["username"]) > 10:
                 raise LeaderboardError(
@@ -99,7 +103,9 @@ class LeaderboardManager(ABSLeaderboardManager):
         leaderboard with the corresponding signature"""
 
         if not LeaderboardManager.is_safe_path('data', source):
-            raise LeaderboardFilePathError('Invalid output path. Please output in the data folder')
+            raise LeaderboardFilePathError(
+                'Invalid output path. Please output in the data folder'
+            )
 
         # Load the file
         try:
@@ -107,13 +113,22 @@ class LeaderboardManager(ABSLeaderboardManager):
                 file_content = f.read()
         except (FileNotFoundError, PermissionError):
             # raise LeaderboardFileError("Unable to load the leaderboard")
+            print("[Warning] Unable to access your leaderboard. "
+                  "Using default.")
+            return Leaderboard(signature=signature, scores=[])
+        except (UnicodeDecodeError):
+            print("[Warning] Invalid leaderboard. "
+                  "It will be overridden with a blank one.")
             return Leaderboard(signature=signature, scores=[])
 
         # JSON conversion
         try:
             data = json.loads(file_content)
         except json.JSONDecodeError:
-            print('[Warning] Invalid JSON in the leaderboard. Using default values.')
+            print(
+                '[Warning] Invalid JSON in the leaderboard. '
+                'Using default values.'
+            )
             return Leaderboard(signature=signature, scores=[])
 
         # Verify each leaderboard
@@ -149,8 +164,13 @@ class LeaderboardManager(ABSLeaderboardManager):
                     )
                 )
             except ValidationError:
-                print('[Warning] Invalid leaderboard file. Ignoring and using default.')
-                leaderboards.append(Leaderboard(signature=signature, scores=[]))
+                print(
+                    '[Warning] Invalid leaderboard file. '
+                    'Ignoring and using default.'
+                )
+                leaderboards.append(
+                    Leaderboard(signature=signature, scores=[])
+                )
 
         # Return the leaderboard if identified
         for leaderboard in leaderboards:
@@ -200,6 +220,9 @@ class LeaderboardManager(ABSLeaderboardManager):
             with open(target, 'w') as f:
                 json.dump(json_data, f, indent=4)
         except PermissionError:
-            print('[Warning] Could not save the score to the leaderboard due to a lack of write permission. '
-                  f'Use chmod +w {target} to allow saving leaderboard.')
+            print(
+                '[Warning] Could not save the score to the leaderboard '
+                'due to a lack of write permission. '
+                f'Use chmod +w {target} to allow saving leaderboard.'
+            )
         return None

@@ -3,10 +3,8 @@ from typing import Any
 import arcade
 from numpy.typing import NDArray
 
-from src.entity.ghost import Ghost
+from src.entity.entity import Entity
 from src.entity.pacgum import Pacgum
-from src.entity.player import Player
-from src.entity.super_pacgum import SuperPacgum
 
 
 class Renderer:
@@ -66,13 +64,13 @@ class Renderer:
         self.attributes_sprites: list[arcade.Rect] = []
 
         # Cache key: (window_size, maze_array_id, cheat_mode)
-        self._cache_key: tuple = ()
+        self._cache_key: tuple[Any, ...] = ()
 
     def render_game(
         self,
         maze: NDArray[Any],
         path: NDArray[Any],
-        entity_list: arcade.SpriteList[Player | Ghost | Pacgum | SuperPacgum],
+        entity_list: arcade.SpriteList[Entity],
         lifes: int,
         time: int,
         xp: int,
@@ -176,13 +174,13 @@ class Renderer:
         for text in texts:
             text.draw()
 
-        font_size: int = int(window.height / 50)
+        fps_font_size: int = int(window.height / 50)
         fps_text = arcade.Text(
             f"FPS: {int(fps)}",
             10,
             window.height - 10 - 18,
             (50, 255, 50),
-            font_size,
+            fps_font_size,
             font_name="Early GameBoy",
         )
         fps_text.draw()
@@ -221,16 +219,24 @@ class Renderer:
                 bottom=0,
                 top=0,
             )
+            # Narrow types for mypy
+            attr_texture = attribute["texture"]
+            attr_value = attribute["value"]
+            assert isinstance(attr_texture, arcade.Texture)
+            assert isinstance(attr_value, str)
+
             # Set red text if time is less/equal than 10 seconds
-            if attribute['texture'] == self.time_texture and int(attribute['value']) <= 10:
+            if attr_texture == self.time_texture \
+                    and int(attr_value) <= 10:
                 color = arcade.color.RED
             else:
                 color = arcade.color.WHITE
-            arcade.draw_texture_rect(attribute["texture"], attrib_rect)
+            arcade.draw_texture_rect(attr_texture, attrib_rect)
             text_size: int = int(window.height / 50)
             text = arcade.Text(
-                text=attribute["value"],
-                x=attrib_rect.x + attrib_rect.width,
+                text=attr_value,
+                # x=attrib_rect.x + attrib_rect.width,
+                x=attrib_rect.x + window.width * 0.02,
                 y=attrib_rect.y,
                 font_size=text_size,
                 font_name="Early GameBoy",

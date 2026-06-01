@@ -1,10 +1,11 @@
 from collections import deque
 
 import numpy as np
+from numpy import ndarray
 
 
 class HeatMap:
-    def __init__(self, coords_array) -> None:
+    def __init__(self, coords_array: ndarray) -> None:
         self.max_x = int(np.max(coords_array[:, 0])) + 1
         self.max_y = int(np.max(coords_array[:, 1])) + 1
 
@@ -12,9 +13,9 @@ class HeatMap:
         for x, y in coords_array:
             self.grid[x, y] = 999999
 
-        self.heat_map_cache: dict = {}
+        self.heat_map_cache: dict[tuple[int, int], ndarray] = {}
 
-    def update_heat_map(self, pos):
+    def update_heat_map(self, pos: tuple[int, int]) -> ndarray:
         if pos in self.heat_map_cache:
             return self.heat_map_cache[pos]
 
@@ -45,7 +46,7 @@ class HeatMap:
         self.heat_map_cache[pos] = heat_map
         return heat_map
 
-    def update_flee_map(self, pos_pacman):
+    def update_flee_map(self, pos_pacman: tuple[int, int]) -> ndarray:
         regular = self.update_heat_map(pos_pacman)
         reachable = (regular >= 0) & (regular < 999999)
         if not np.any(reachable):

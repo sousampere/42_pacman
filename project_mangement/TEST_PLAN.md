@@ -178,10 +178,10 @@
 
 | ID | Scénario | Résultat attendu | Statut |
 |---|---|---|---|
-| D01 | Build PyInstaller généré | `make package` ou script dédié | Binaire ou archive produit sans erreur | ☐ |
-| D02 | Binaire fonctionnel hors venv | Lancement du build dans env propre | Jeu démarre sans dépendances externes | ☐ |
+| D01 | Build PyInstaller généré | `make package` ou script dédié | Binaire ou archive produit sans erreur | ✅ |
+| D02 | Binaire fonctionnel hors venv | Lancement du build dans env propre | Jeu démarre sans dépendances externes | ✅ |
 | D03 | Jeu disponible sur la plateforme | Lien Steam / Itch.io | Téléchargeable et jouable | ☐ |
-| D04 | Re-génération du build pendant la soutenance | `make package` relancé | Build reproduit en quelques minutes | ☐ |
+| D04 | Re-génération du build pendant la soutenance | `make package` relancé | Build reproduit en quelques minutes | ✅ |
 
 ---
 

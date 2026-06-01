@@ -141,10 +141,10 @@ install:
 	$(ECHO) "$(GREEN)✓ Installation complete$(RESET)";
 
 
-build: install
+package: install
 	uv run pyinstaller --onefile pac-man.py
-	cp -r ./data ./dist/data
-	cp -r ./assets ./dist/assets
+	cp -r ./data ./dist
+	cp -r ./assets ./dist
 
 
 # Run the main program.
@@ -231,7 +231,13 @@ clean:
 	else \
 		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)"; \
 	fi
-
+	$(ECHO) "$(CYAN)Suppression de build...$(RESET)"
+	if find . -type d -name "build"; then \
+		find . -type d -name "build" -exec rm -rf {} + 2>/dev/null; \
+		$(ECHO) "$(GREEN)✓ Dossiers build supprimé$(RESET)"; \
+	else \
+		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)"; \
+	fi
 
 
 # Remove logs after cleaning.
@@ -244,13 +250,12 @@ fclean: clean
 		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)";
 	fi
 	$(ECHO) "$(CYAN)Suppression de dist...$(RESET) "
-	if find . -type d -name "dist"; then
+	if find . -type d -name "dist"; then \
 		find . -type d -name "dist" -exec rm -rf {} + 2>/dev/null; \
-		$(ECHO) "$(GREEN)✓ Dir dist supprimé$(RESET)";
-	else
-		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)";
-	rm -rf ./build
-
+		$(ECHO) "$(GREEN)✓ Dossiers dist supprimé$(RESET)"; \
+	else \
+		$(ECHO) "$(YELLOW)⚠ Rien à nettoyer$(RESET)"; \
+	fi
 
 
 # ###		GIT RULES 		### #

@@ -117,5 +117,3 @@ class GameView(arcade.View):
         )
         return None
 
-    def on_show_view(self) -> None:
-        EventBus.broadcast_event("reset_time")

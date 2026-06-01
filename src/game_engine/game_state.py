@@ -37,6 +37,8 @@ class GameState:
         self.remaining_time: int = self.max_time
         self.start_edible_time: int = 0
         self.stop_edible_time: int = 0
+        self._total_pause_time: float = 0.0
+        self._pause_start: float = 0.0
 
         center_point = pts.mean(axis=0)
         distances = np.sum((pts - center_point) ** 2, axis=1)
@@ -148,6 +150,14 @@ class GameState:
         coord = np.random.default_rng().choice(self._pts)
         return (int(coord[0]), int(coord[1]))
 
+    def pause_timer(self) -> None:
+        self._pause_start = time.time()
+
+    def resume_timer(self) -> None:
+        if self._pause_start > 0:
+            self._total_pause_time += time.time() - self._pause_start
+            self._pause_start = 0.0
+
     def _player_lookahead(self, steps: int = 4) -> tuple[int, int]:
         px, py = round(self.player._x), round(self.player._y)
         dx, dy = int(self.player.dir[0]), int(self.player.dir[1])
@@ -171,7 +181,7 @@ class GameState:
         self._update_ghosts(delta_time, freeze_ghosts)
         self.player.update()
         self.remaining_time = int(
-            self.game_mng.start_time + self.max_time - int(time.time())
+            self.game_mng.start_time + self.max_time - time.time() + self._total_pause_time
         )
         if (
             self.remaining_time

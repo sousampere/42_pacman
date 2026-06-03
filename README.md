@@ -3,8 +3,11 @@
 # 42 Pac-Man, by sousampere &amp; keroberos68
 A 42 project made by gtourdia &amp; kebertra, recreating the Pac-Man game in python.
 
-![Gif](https://github.com/sousampere/42_pacman/blob/fix/lint/assets/readme_assets/in-game.gif?raw=true)
+<div align="center">
 
+![42Mulhouse](https://github.com/sousampere/42_pacman/blob/main/assets/readme_assets/in-game.gif?raw=true)
+
+</div>
 
 # 📝​ Description
 
@@ -107,8 +110,11 @@ Maze generation is done in the MazeAdapter class that translates the generated m
 
 Use ↑ ↑ ↓ ↓ ← → ← → A B (Konami code variant) to enable Cheat Mode ;)
 
-![Gif](https://github.com/sousampere/42_pacman/blob/fix/lint/assets/readme_assets/in-game-cheat.gif?raw=true)
+<div align="center">
 
+![42Mulhouse](https://github.com/sousampere/42_pacman/blob/fix/lint/assets/readme_assets/in-game-cheat.gif?raw=true)
+
+</div>
 
 # 🔬​ Implementation
 
